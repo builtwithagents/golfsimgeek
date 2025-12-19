@@ -9,24 +9,10 @@ import { siteConfig } from "~/config/site"
 import { EmailVerifyDomain } from "~/emails/verify-domain"
 import { auth } from "~/lib/auth"
 import { sendEmail } from "~/lib/email"
-import { getIP, isRateLimited } from "~/lib/rate-limiter"
+import { isRateLimited } from "~/lib/rate-limiter"
 import { userActionClient } from "~/lib/safe-actions"
 import { createClaimToolEmailSchema, createClaimToolOtpSchema } from "~/server/web/shared/schema"
 import { db } from "~/services/db"
-
-/**
- * Check rate limiting for claim actions
- */
-const checkRateLimit = async (action: string) => {
-  const ip = await getIP()
-  const rateLimitKey = `claim-${action}:${ip}`
-
-  if (await isRateLimited(rateLimitKey, "claim")) {
-    throw new Error("Too many requests. Please try again later")
-  }
-
-  return { ip, rateLimitKey }
-}
 
 /**
  * Get tool by slug and verify it's claimable
@@ -103,9 +89,11 @@ export const sendToolClaimOtp = userActionClient
     const t = await getTranslations("schema")
     return createClaimToolEmailSchema(t)
   })
-  .action(async ({ parsedInput: { toolId, email } }) => {
-    // Check rate limiting
-    await checkRateLimit("otp")
+  .action(async ({ parsedInput: { toolId, email }, ctx: { user } }) => {
+    // Rate limiting check
+    if (await isRateLimited("claim", "claim-otp", user.id)) {
+      throw new Error("Too many requests. Please try again later")
+    }
 
     // Get and validate tool
     const tool = await getClaimableTool(toolId)
@@ -127,17 +115,17 @@ export const verifyToolClaimOtp = userActionClient
     const t = await getTranslations("schema")
     return createClaimToolOtpSchema(t)
   })
-  .action(async ({ parsedInput: { toolId, otp } }) => {
-    // Check rate limiting
-    await checkRateLimit("verify")
+  .action(async ({ parsedInput: { toolId, otp }, ctx: { user } }) => {
+    // Rate limiting check
+    if (await isRateLimited("claim", "claim-verify", user.id)) {
+      throw new Error("Too many requests. Please try again later")
+    }
 
     // Get and validate tool
     const tool = await getClaimableTool(toolId)
 
     // Verify otp
-    const { user } = await auth.api.verifyOneTimeToken({
-      body: { token: otp },
-    })
+    await auth.api.verifyOneTimeToken({ body: { token: otp } })
 
     // Claim tool and revalidate
     await claimToolForUser(tool.id, user.id)

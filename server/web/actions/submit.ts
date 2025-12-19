@@ -8,7 +8,7 @@ import { isDev } from "~/env"
 import { getServerSession } from "~/lib/auth"
 import { isDisposableEmail } from "~/lib/email"
 import { notifySubmitterOfToolSubmitted } from "~/lib/notifications"
-import { getIP, isRateLimited } from "~/lib/rate-limiter"
+import { isRateLimited } from "~/lib/rate-limiter"
 import { actionClient } from "~/lib/safe-actions"
 import { createSubmitToolSchema } from "~/server/web/shared/schema"
 import { db } from "~/services/db"
@@ -26,13 +26,11 @@ export const submitTool = actionClient
   })
   .action(async ({ parsedInput: { newsletterOptIn, ...data } }) => {
     const session = await getServerSession()
-    const ip = await getIP()
-    const rateLimitKey = `submission:${ip}`
     const domain = getDomain(data.websiteUrl)
     const websiteUrl = normalizeUrl(data.websiteUrl)
 
     // Rate limiting check
-    if (await isRateLimited(rateLimitKey, "submission")) {
+    if (await isRateLimited("submission")) {
       throw new Error("Too many submissions. Please try again later.")
     }
 

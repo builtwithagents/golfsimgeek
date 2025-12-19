@@ -1,8 +1,28 @@
-import { Redis } from "@upstash/redis"
+import Redis from "ioredis"
 import { env } from "~/env"
 
-const url = env.REDIS_REST_URL
-const token = env.REDIS_REST_TOKEN
+const createRedisClient = () => {
+  if (!env.REDIS_URL) {
+    return null
+  }
 
-// Create Redis client only if credentials are provided
-export const redis = url && token ? new Redis({ url, token }) : null
+  try {
+    return new Redis(env.REDIS_URL, {
+      maxRetriesPerRequest: 3,
+      lazyConnect: true,
+    })
+  } catch (error) {
+    console.error("Failed to create Redis client:", error)
+    return null
+  }
+}
+
+declare const globalThis: {
+  redisGlobal: ReturnType<typeof createRedisClient>
+} & typeof global
+
+const redis = globalThis.redisGlobal ?? createRedisClient()
+
+export { redis }
+
+if (process.env.NODE_ENV !== "production") globalThis.redisGlobal = redis

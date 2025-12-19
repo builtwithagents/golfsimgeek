@@ -3,7 +3,7 @@
 import { tryCatch } from "@primoui/utils"
 import { getTranslations } from "next-intl/server"
 import { reportsConfig } from "~/config/reports"
-import { getIP, isRateLimited } from "~/lib/rate-limiter"
+import { isRateLimited } from "~/lib/rate-limiter"
 import { actionClient, userActionClient } from "~/lib/safe-actions"
 import { createFeedbackSchema, createReportToolSchema } from "~/server/web/shared/schema"
 import { db } from "~/services/db"
@@ -14,11 +14,8 @@ export const reportTool = (reportsConfig.requireSignIn ? userActionClient : acti
     return createReportToolSchema(t)
   })
   .action(async ({ parsedInput: { toolId, type, email, message } }) => {
-    const ip = await getIP()
-    const rateLimitKey = `report:${ip}`
-
     // Rate limiting check
-    if (await isRateLimited(rateLimitKey, "report")) {
+    if (await isRateLimited("report")) {
       throw new Error("Too many requests. Please try again later.")
     }
 
@@ -47,11 +44,8 @@ export const reportFeedback = actionClient
     return createFeedbackSchema(t)
   })
   .action(async ({ parsedInput: { email, message } }) => {
-    const ip = await getIP()
-    const rateLimitKey = `feedback:${ip}`
-
     // Rate limiting check
-    if (await isRateLimited(rateLimitKey, "report")) {
+    if (await isRateLimited("report", "feedback")) {
       throw new Error("Too many requests. Please try again later.")
     }
 

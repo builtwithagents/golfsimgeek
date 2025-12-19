@@ -2,7 +2,7 @@
 
 import { getTranslations } from "next-intl/server"
 import { isDisposableEmail } from "~/lib/email"
-import { getIP, isRateLimited } from "~/lib/rate-limiter"
+import { isRateLimited } from "~/lib/rate-limiter"
 import { actionClient } from "~/lib/safe-actions"
 import { createNewsletterSchema } from "~/server/web/shared/schema"
 import { createResendContact } from "~/services/resend"
@@ -18,11 +18,8 @@ export const subscribeToNewsletter = actionClient
     return createNewsletterSchema(t)
   })
   .action(async ({ parsedInput: { value: email } }) => {
-    const ip = await getIP()
-    const rateLimitKey = `newsletter:${ip}`
-
     // Rate limiting check
-    if (await isRateLimited(rateLimitKey, "newsletter")) {
+    if (await isRateLimited("newsletter")) {
       throw new Error("Too many attempts. Please try again later.")
     }
 
