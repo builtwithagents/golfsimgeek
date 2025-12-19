@@ -8,17 +8,19 @@ export const fontSans = Geist({
   weight: "variable",
 })
 
-export const loadGoogleFont = async (font: string, weight: FontWeight) => {
-  const url = `https://fonts.googleapis.com/css2?family=${font}:wght@${weight}`
-  const css = await (await fetch(url)).text()
-  const resource = css.match(/src: url\((.+)\) format\('(opentype|truetype)'\)/)
+export const loadGoogleFont = async (font: string, weight: FontWeight): Promise<ArrayBuffer> => {
+  const url = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(font)}:wght@${weight}`
+  const css = await fetch(url).then(r => r.text())
 
-  if (resource) {
-    const response = await fetch(resource[1])
-    if (response.status === 200) {
-      return await response.arrayBuffer()
-    }
+  const match = css.match(/src: url\(([^)]+)\) format\('(?:opentype|truetype)'\)/)
+  if (!match) {
+    throw new Error(`Could not parse font URL for ${font}`)
   }
 
-  throw new Error("failed to load font data")
+  const response = await fetch(match[1])
+  if (!response.ok) {
+    throw new Error(`Failed to fetch font: ${response.status}`)
+  }
+
+  return response.arrayBuffer()
 }
