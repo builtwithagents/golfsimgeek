@@ -12,7 +12,7 @@ export const ToolHoverCard = ({ tool, ...props }: ToolHoverCardProps) => {
     <HoverCard openDelay={200} closeDelay={100}>
       <HoverCardTrigger asChild {...props} />
 
-      <HoverCardContent align="start" className="max-w-72" asChild>
+      <HoverCardContent align="start" asChild>
         <ToolCard tool={tool} />
       </HoverCardContent>
     </HoverCard>
