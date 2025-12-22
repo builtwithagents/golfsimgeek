@@ -6,7 +6,6 @@ import { getTranslations } from "next-intl/server"
 import { ToolStatus } from "~/.generated/prisma/client"
 import { isDev } from "~/env"
 import { getServerSession } from "~/lib/auth"
-import { isDisposableEmail } from "~/lib/email"
 import { notifySubmitterOfToolSubmitted } from "~/lib/notifications"
 import { isRateLimited } from "~/lib/rate-limiter"
 import { actionClient } from "~/lib/safe-actions"
@@ -32,11 +31,6 @@ export const submitTool = actionClient
     // Rate limiting check
     if (await isRateLimited("submission")) {
       throw new Error("Too many submissions. Please try again later.")
-    }
-
-    // Disposable email check
-    if (!session?.user && (await isDisposableEmail(data.submitterEmail))) {
-      throw new Error("Invalid email address, please use a real one")
     }
 
     if (newsletterOptIn) {

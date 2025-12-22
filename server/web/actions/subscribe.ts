@@ -1,7 +1,6 @@
 "use server"
 
 import { getTranslations } from "next-intl/server"
-import { isDisposableEmail } from "~/lib/email"
 import { isRateLimited } from "~/lib/rate-limiter"
 import { actionClient } from "~/lib/safe-actions"
 import { createNewsletterSchema } from "~/server/web/shared/schema"
@@ -21,11 +20,6 @@ export const subscribeToNewsletter = actionClient
     // Rate limiting check
     if (await isRateLimited("newsletter")) {
       throw new Error("Too many attempts. Please try again later.")
-    }
-
-    // Disposable email check
-    if (await isDisposableEmail(email)) {
-      throw new Error("Invalid email address, please use a real one")
     }
 
     // Create a resend contact

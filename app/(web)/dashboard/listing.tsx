@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation"
-import type { SearchParams } from "nuqs"
 import { DashboardTable } from "~/app/(web)/dashboard/table"
 import { getServerSession } from "~/lib/auth"
 import { findTools } from "~/server/admin/tools/queries"
