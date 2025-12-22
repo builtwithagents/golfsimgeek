@@ -62,7 +62,7 @@ export const getColumns = (): ColumnDef<Tag & { _count?: { tools: number } }>[] 
     {
       accessorKey: "createdAt",
       header: ({ column }) => <DataTableColumnHeader column={column} title="Created At" />,
-      cell: ({ cell }) => <Note>{formatDate(cell.getValue() as Date)}</Note>,
+      cell: ({ row }) => <Note>{formatDate(row.getValue<Date>("createdAt"))}</Note>,
     },
     {
       id: "actions",

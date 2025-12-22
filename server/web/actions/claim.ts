@@ -77,8 +77,8 @@ const claimToolForUser = async (toolId: string, userId: string) => {
   })
 
   // Revalidate tools
-  updateTag("tools", "infinite")
-  updateTag(`tool-${tool.slug}`, "infinite")
+  updateTag("tools")
+  updateTag(`tool-${tool.slug}`)
 }
 
 /**

@@ -39,7 +39,7 @@ export const Stats = ({ alignment, className, ...props }: StatsProps) => {
       {stats.map(({ value, label }, index) => (
         <MDXComponents.a
           key={`${index}-${label}`}
-          className="space-y-1 basis-40 hover:[&[href]]:opacity-80 lg:basis-48"
+          className="space-y-1 basis-40 hover:[[href]]:opacity-80 lg:basis-48"
         >
           <Stat
             value={value}
