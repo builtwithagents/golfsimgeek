@@ -1,10 +1,10 @@
 import { isTruthy } from "@primoui/utils"
 import { endOfDay, startOfDay } from "date-fns"
 import { type Prisma, ToolStatus } from "~/.generated/prisma/client"
-import type { ToolsTableSchema } from "~/server/admin/tools/schema"
+import type { ToolTableSchema } from "~/server/admin/tools/schema"
 import { db } from "~/services/db"
 
-export const findTools = async (search: ToolsTableSchema, where?: Prisma.ToolWhereInput) => {
+export const findTools = async (search: ToolTableSchema, where?: Prisma.ToolWhereInput) => {
   const { name, sort, page, perPage, from, to, operator, status } = search
 
   // Offset to paginate the results

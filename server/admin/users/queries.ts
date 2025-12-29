@@ -2,9 +2,9 @@ import { isTruthy } from "@primoui/utils"
 import { endOfDay, startOfDay } from "date-fns"
 import type { Prisma } from "~/.generated/prisma/client"
 import { db } from "~/services/db"
-import type { UsersTableSchema } from "./schema"
+import type { UserTableSchema } from "./schema"
 
-export const findUsers = async (search: UsersTableSchema) => {
+export const findUsers = async (search: UserTableSchema) => {
   const { name, page, perPage, sort, from, to, operator } = search
 
   // Offset to paginate the results
