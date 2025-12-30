@@ -6,9 +6,9 @@ const buildSitemapIndex = (sitemaps: string[]) => {
   let xml = '<?xml version="1.0" encoding="UTF-8"?>'
   xml += '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
 
-  for (const sitemapURL of sitemaps) {
+  for (const url of sitemaps) {
     xml += "<sitemap>"
-    xml += `<loc>${sitemapURL}</loc>`
+    xml += `<loc>${url}</loc>`
     xml += "</sitemap>"
   }
 

@@ -5,9 +5,7 @@ import { findCategorySlugs } from "~/server/web/categories/queries"
 import { findTagSlugs } from "~/server/web/tags/queries"
 import { findToolSlugs } from "~/server/web/tools/queries"
 
-type SitemapId = "pages" | "tools" | "categories" | "tags" | "posts"
-
-export const sitemaps: SitemapId[] = ["pages", "tools", "categories", "tags", "posts"]
+export const sitemaps = ["pages", "tools", "categories", "tags", "posts"] as const
 
 type SitemapEntry = {
   url: string
@@ -39,17 +37,17 @@ const buildSitemapXML = (entries: SitemapEntry[]) => {
   return xml
 }
 
-export const GET = async (_request: Request, { params }: { params: Promise<{ id: string }> }) => {
+export async function generateStaticParams() {
+  return sitemaps.map(id => ({ id }))
+}
+
+export const GET = async (_: Request, { params }: RouteContext<"/sitemap/[id]">) => {
   const { id } = await params
   const siteUrl = siteConfig.url
 
-  if (!sitemaps.includes(id as SitemapId)) {
-    return new NextResponse("Not Found", { status: 404 })
-  }
-
   let entries: SitemapEntry[] = []
 
-  switch (id as SitemapId) {
+  switch (id) {
     case "pages": {
       const pages = [
         `${siteUrl}/`,
@@ -110,7 +108,7 @@ export const GET = async (_request: Request, { params }: { params: Promise<{ id:
     case "posts": {
       entries = allPosts.map(post => ({
         url: `${siteUrl}/blog/${post._meta.path}`,
-        lastModified: post.updatedAt ? new Date(post.updatedAt) : new Date(post.publishedAt),
+        lastModified: new Date(post.updatedAt ?? post.publishedAt),
         changeFrequency: "monthly",
         priority: 0.7,
       }))
