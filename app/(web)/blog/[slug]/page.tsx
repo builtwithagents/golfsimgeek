@@ -53,8 +53,16 @@ export const generateStaticParams = () => {
 }
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => {
-  const { url, metadata } = await getData(props)
-  return getPageMetadata({ url, metadata })
+  const { post, url, metadata } = await getData(props)
+
+  const openGraph: Metadata["openGraph"] = {
+    type: "article",
+    publishedTime: post.publishedAt.toISOString(),
+    modifiedTime: (post.updatedAt ?? post.publishedAt).toISOString(),
+    authors: post.author?.name,
+  }
+
+  return getPageMetadata({ url, metadata: { ...metadata, openGraph } })
 }
 
 export default async function (props: Props) {
@@ -82,11 +90,10 @@ export default async function (props: Props) {
             prefix={t("posts.written_by")}
             note={
               <>
-                {post.publishedAt && (
-                  <time dateTime={post.publishedAt.toISOString()}>
-                    {format.dateTime(post.publishedAt, { dateStyle: "long" })}
-                  </time>
-                )}
+                <time dateTime={(post.updatedAt ?? post.publishedAt).toISOString()}>
+                  {post.updatedAt && `${t("posts.last_updated")}: `}
+                  {format.dateTime(post.updatedAt ?? post.publishedAt, { dateStyle: "long" })}
+                </time>
                 <span className="px-1.5">&bull;</span>
                 <span>{t("posts.read_time", { count: getReadTime(post.content) })}</span>
               </>

@@ -218,7 +218,7 @@ export const generateFAQ = (questions: Array<{ question: string; answer: string 
  * Generates article/blog posting schema
  */
 export const generateArticle = (url: string, post: Post): Article => {
-  const { title, description, publishedAt, author, image, content, locale } = post
+  const { title, description, publishedAt, updatedAt, author, image, content, locale } = post
 
   return {
     "@type": "Article",
@@ -226,7 +226,7 @@ export const generateArticle = (url: string, post: Post): Article => {
     description,
     url: toAbsoluteUrl(url),
     datePublished: publishedAt.toISOString(),
-    dateModified: publishedAt.toISOString(),
+    dateModified: (updatedAt ?? publishedAt).toISOString(),
     publisher: getOrganization(),
     author: author
       ? {
@@ -293,6 +293,7 @@ export const generateBlog = (
       description: post.description || undefined,
       url: toAbsoluteUrl(`/blog/${post._meta.path}`),
       datePublished: post.publishedAt.toISOString(),
+      dateModified: (post.updatedAt ?? post.publishedAt).toISOString(),
     })),
   }
 }

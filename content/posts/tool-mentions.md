@@ -2,7 +2,8 @@
 title: "How to Mention Tools in Your Blog Posts with Dirstarter"
 description: "Learn how to create engaging, SEO-friendly blog posts by embedding tool entries directly in your content. A unique feature that sets Dirstarter apart."
 image: "/content/tool-mentions.webp"
-publishedAt: 2025-01-15
+publishedAt: 2026-01-01
+updatedAt: 2026-01-08
 author:
   name: Piotr Kulpinski
   image: "/authors/piotrkulpinski.webp"
