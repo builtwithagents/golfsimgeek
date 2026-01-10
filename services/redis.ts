@@ -6,15 +6,15 @@ const createRedisClient = () => {
     return null
   }
 
-  try {
-    return new Redis(env.REDIS_URL, {
-      maxRetriesPerRequest: 3,
-      lazyConnect: true,
-    })
-  } catch (error) {
-    console.error("Failed to create Redis client:", error)
-    return null
-  }
+  const client = new Redis(env.REDIS_URL, {
+    maxRetriesPerRequest: null,
+    lazyConnect: true,
+    retryStrategy: () => null,
+  })
+
+  client.on("error", () => {})
+
+  return client
 }
 
 declare const globalThis: {

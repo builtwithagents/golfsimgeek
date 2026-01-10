@@ -6,15 +6,13 @@ import { z } from "zod"
 export const contentSchema = z.object({
   tagline: z
     .string()
-    .max(60)
     .describe(
-      "A compelling tagline (max 60 chars) that captures the tool's unique value proposition. Avoid tool name, focus on benefits.",
+      "A compelling tagline (max 60 characters) that captures the tool's unique value proposition. Avoid tool name, focus on benefits.",
     ),
   description: z
     .string()
-    .max(160)
     .describe(
-      "A concise meta description (max 160 chars) highlighting key features and benefits. Use active voice, avoid tool name.",
+      "A concise meta description (max 160 characters) highlighting key features and benefits. Use active voice, avoid tool name.",
     ),
   content: z
     .string()
