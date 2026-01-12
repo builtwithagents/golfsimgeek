@@ -5,10 +5,9 @@ import { after } from "next/server"
 import { getTranslations } from "next-intl/server"
 import { ToolStatus } from "~/.generated/prisma/client"
 import { isDev } from "~/env"
-import { getServerSession } from "~/lib/auth"
 import { notifySubmitterOfToolSubmitted } from "~/lib/notifications"
 import { isRateLimited } from "~/lib/rate-limiter"
-import { actionClient } from "~/lib/safe-actions"
+import { userActionClient } from "~/lib/safe-actions"
 import { createSubmitToolSchema } from "~/server/web/shared/schema"
 import { db } from "~/services/db"
 import { createResendContact } from "~/services/resend"
@@ -18,13 +17,12 @@ import { createResendContact } from "~/services/resend"
  * @param input - The tool data to submit
  * @returns The tool that was submitted
  */
-export const submitTool = actionClient
+export const submitTool = userActionClient
   .inputSchema(async () => {
     const t = await getTranslations("schema")
     return createSubmitToolSchema(t)
   })
-  .action(async ({ parsedInput: { newsletterOptIn, ...data } }) => {
-    const session = await getServerSession()
+  .action(async ({ parsedInput: { newsletterOptIn, ...data }, ctx: { user } }) => {
     const domain = getDomain(data.websiteUrl)
     const websiteUrl = normalizeUrl(data.websiteUrl)
 
@@ -45,7 +43,7 @@ export const submitTool = actionClient
     }
 
     // Check if the email domain matches the tool's website domain
-    const ownerId = session?.user.email.includes(domain) ? session?.user.id : undefined
+    const ownerId = user.email.includes(domain) ? user.id : undefined
 
     // Check if the tool already exists
     const existingTool = await db.tool.findFirst({
