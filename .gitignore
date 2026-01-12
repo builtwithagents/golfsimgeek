@@ -45,6 +45,7 @@ next-env.d.ts
 .content-collections
 
 # IDE Rules
+.agent
 .cursor
 .claude
 CLAUDE.md
