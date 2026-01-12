@@ -33,8 +33,9 @@ export const createSubmitToolSchema = (t: TFunction) => {
       .url(t("invalidUrl"))
       .min(1, { error: t("required") })
       .trim(),
-    submitterName: z.string().min(1, { error: t("required") }),
-    submitterEmail: z.email({ error: t("invalidEmail") }),
+    // Optional: populated from authenticated user context
+    submitterName: z.string().optional(),
+    submitterEmail: z.email({ error: t("invalidEmail") }).optional(),
     submitterNote: z
       .string()
       .max(256, { error: issue => t("maxLength", { length: Number(issue.maximum) }) }),
