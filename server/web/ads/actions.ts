@@ -6,9 +6,8 @@ import z from "zod"
 import { AdType, type Prisma } from "~/.generated/prisma/client"
 import { adsConfig } from "~/config/ads"
 import { siteConfig } from "~/config/site"
-import { getFaviconFetchUrl } from "~/lib/media"
+import { fetchAndUploadMedia } from "~/lib/media"
 import { actionClient } from "~/lib/safe-actions"
-import { fetchMedia } from "~/server/web/actions/media"
 import type { AdOne } from "~/server/web/ads/payloads"
 import { findActiveAds } from "~/server/web/ads/queries"
 import { createAdDetailsSchema } from "~/server/web/shared/schema"
@@ -103,11 +102,10 @@ export const createAdFromCheckout = actionClient
     }
 
     const adDomain = getDomain(adDetails.websiteUrl)
-    const faviconFetchUrl = getFaviconFetchUrl(adDetails.websiteUrl)
     const faviconPath = `ads/${adDomain}/favicon`
 
     // Upload favicon
-    const { data: faviconUrl } = await fetchMedia({ url: faviconFetchUrl, path: faviconPath })
+    const faviconUrl = await fetchAndUploadMedia(adDetails.websiteUrl, faviconPath, "favicon")
 
     // Check if ads already exist for specific sessionId
     const existingAds = await db.ad.findMany({

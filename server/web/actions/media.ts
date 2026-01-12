@@ -1,9 +1,7 @@
 "use server"
 
-import { tryCatch } from "@primoui/utils"
 import { getTranslations } from "next-intl/server"
-import wretch from "wretch"
-import { getFaviconFetchUrl, getScreenshotFetchUrl, uploadToS3Storage } from "~/lib/media"
+import { fetchAndUploadMedia, uploadToS3Storage } from "~/lib/media"
 import { actionClient } from "~/lib/safe-actions"
 import { createFetchMediaSchema, createUploadMediaSchema } from "~/server/web/shared/schema"
 
@@ -13,15 +11,7 @@ export const fetchMedia = actionClient
     return createFetchMediaSchema(t)
   })
   .action(async ({ parsedInput: { url, path, type } }) => {
-    const endpoint = type === "favicon" ? getFaviconFetchUrl(url) : getScreenshotFetchUrl(url)
-    const { data, error } = await tryCatch(wretch(endpoint).get().arrayBuffer().then(Buffer.from))
-
-    if (error) {
-      console.error("Failed to fetch media:", error)
-      throw error
-    }
-
-    return await uploadToS3Storage(data, path)
+    return fetchAndUploadMedia(url, path, type)
   })
 
 export async function uploadMedia(formData: FormData) {

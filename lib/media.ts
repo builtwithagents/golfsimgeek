@@ -1,7 +1,8 @@
 import { DeleteObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3"
 import { Upload } from "@aws-sdk/lib-storage"
-import { getDomain, tryCatch } from "@primoui/utils"
+import { getDomain, getErrorMessage, tryCatch } from "@primoui/utils"
 import { fileTypeFromBuffer } from "file-type"
+import wretch from "wretch"
 import { env, isProd } from "~/env"
 import { s3Client } from "~/services/s3"
 
@@ -32,12 +33,11 @@ export const uploadToS3Storage = async (file: Buffer, key: string) => {
   const { data, error } = await tryCatch(upload.done())
 
   if (error) {
-    console.error("Failed to upload:", error)
-    throw error
+    throw new Error(`Failed to upload ${key} to S3: ${getErrorMessage(error)}`)
   }
 
   if (!data.Key) {
-    throw new Error("Failed to upload")
+    throw new Error(`Failed to upload ${key} to S3`)
   }
 
   return `${endpoint}/${data.Key}?v=${Date.now()}`
@@ -132,4 +132,26 @@ export const getScreenshotFetchUrl = (url: string) => {
   })
 
   return `https://api.screenshotone.com/take?${params.toString()}`
+}
+
+/**
+ * Fetches media (favicon or screenshot) from a URL and uploads it to S3.
+ * @param url - The website URL to fetch media from.
+ * @param path - The S3 key path (without extension).
+ * @param type - The type of media to fetch ("favicon" or "screenshot").
+ * @returns The S3 URL of the uploaded file, or null on failure.
+ */
+export const fetchAndUploadMedia = async (
+  url: string,
+  path: string,
+  type: "favicon" | "screenshot",
+) => {
+  const endpoint = type === "favicon" ? getFaviconFetchUrl(url) : getScreenshotFetchUrl(url)
+  const { data, error } = await tryCatch(wretch(endpoint).get().arrayBuffer().then(Buffer.from))
+
+  if (error) {
+    throw new Error(`Failed to fetch ${type} from ${url}: ${getErrorMessage(error)}`)
+  }
+
+  return uploadToS3Storage(data, path)
 }
