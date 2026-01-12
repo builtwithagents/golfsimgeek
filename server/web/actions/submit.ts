@@ -5,6 +5,7 @@ import { after } from "next/server"
 import { getTranslations } from "next-intl/server"
 import { ToolStatus } from "~/.generated/prisma/client"
 import { isDev } from "~/env"
+import { isBlockedDomain } from "~/lib/blocked-domains"
 import { notifySubmitterOfToolSubmitted } from "~/lib/notifications"
 import { isRateLimited } from "~/lib/rate-limiter"
 import { userActionClient } from "~/lib/safe-actions"
@@ -25,6 +26,13 @@ export const submitTool = userActionClient
   .action(async ({ parsedInput: { newsletterOptIn, ...data }, ctx: { user } }) => {
     const domain = getDomain(data.websiteUrl)
     const websiteUrl = normalizeUrl(data.websiteUrl)
+
+    // Check for blocked domains (temporary hosting providers)
+    if (isBlockedDomain(domain)) {
+      throw new Error(
+        "Temporary hosting domains (e.g. vercel.app, netlify.app) are not allowed. Please use a custom domain.",
+      )
+    }
 
     // Rate limiting check
     if (await isRateLimited("submission")) {
