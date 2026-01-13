@@ -27,7 +27,11 @@ export const submitTool = userActionClient
   .action(async ({ parsedInput: { newsletterOptIn, ...data }, ctx: { user } }) => {
     const t = await getTranslations("forms.submit.errors")
     const domain = getDomain(data.websiteUrl)
-    const websiteUrl = normalizeUrl(data.websiteUrl)
+
+    // Rate limiting check
+    if (await isRateLimited("submission")) {
+      throw new Error(t("rate_limited"))
+    }
 
     // Check for blocked domains (temporary hosting providers)
     if (isBlockedDomain(domain)) {
@@ -35,17 +39,11 @@ export const submitTool = userActionClient
     }
 
     // Check if the website URL is accessible
-    const isUrlAccessible = await checkUrlAvailability(websiteUrl)
-    if (!isUrlAccessible) {
+    if (!(await checkUrlAvailability(data.websiteUrl))) {
       throw new Error(t("url_not_accessible"))
     }
 
-    // Rate limiting check
-    if (await isRateLimited("submission")) {
-      throw new Error(t("rate_limited"))
-    }
-
-    if (newsletterOptIn && user.name) {
+    if (newsletterOptIn) {
       const [firstName, ...restOfName] = user.name.trim().split(/\s+/)
       const lastName = restOfName.join(" ")
 
@@ -57,25 +55,20 @@ export const submitTool = userActionClient
     }
 
     // Check if the email domain matches the tool's website domain
-    const ownerId = user.email.includes(domain) ? user.id : undefined
+    const owner = user.email.includes(domain) ? { connect: { id: user.id } } : undefined
 
     // Check if the tool already exists
     const existingTool = await db.tool.findFirst({
-      where: { websiteUrl },
+      where: { websiteUrl: data.websiteUrl },
     })
 
     // If the tool exists, redirect to the tool or submit page
     if (existingTool) {
-      if (!existingTool.submitterEmail) {
-        // Update the tool with the new submitter information from authenticated user
+      if (owner) {
+        // Update the tool with the new owner information
         await db.tool.update({
           where: { id: existingTool.id },
-          data: {
-            submitterEmail: user.email,
-            submitterName: user.name,
-            submitterNote: data.submitterNote,
-            ownerId,
-          },
+          data: { owner },
         })
       }
 
@@ -86,14 +79,12 @@ export const submitTool = userActionClient
     const { data: tool, error } = await tryCatch(
       db.tool.create({
         data: {
-          name: data.name,
-          websiteUrl,
+          ...data,
           submitterEmail: user.email,
           submitterName: user.name,
-          submitterNote: data.submitterNote,
           slug: "",
-          ownerId,
           status: ToolStatus.Pending,
+          owner,
         },
       }),
     )

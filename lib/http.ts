@@ -1,3 +1,5 @@
+import { siteConfig } from "~/config/site"
+
 /**
  * Default timeout for HTTP requests in milliseconds (10 seconds)
  */
@@ -6,7 +8,7 @@ const DEFAULT_TIMEOUT = 10_000
 /**
  * User-Agent string for HTTP requests to avoid being blocked
  */
-const USER_AGENT = "Mozilla/5.0 (compatible; DirStarter/1.0; +https://dirstarter.com)"
+const USER_AGENT = `Mozilla/5.0 (compatible; ${siteConfig.name}/1.0; +${siteConfig.url})`
 
 /**
  * Checks if a URL is accessible by making an HTTP request.
@@ -33,9 +35,7 @@ export const checkUrlAvailability = async (url: string): Promise<boolean> => {
         method: "HEAD",
         signal: controller.signal,
         redirect: "follow",
-        headers: {
-          "User-Agent": USER_AGENT,
-        },
+        headers: { "User-Agent": USER_AGENT },
       })
 
       clearTimeout(timeoutId)

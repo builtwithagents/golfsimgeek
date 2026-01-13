@@ -1,4 +1,4 @@
-import { isMimeTypeMatch } from "@primoui/utils"
+import { isMimeTypeMatch, normalizeUrl } from "@primoui/utils"
 import type { useTranslations } from "next-intl"
 import { z } from "zod"
 
@@ -32,10 +32,9 @@ export const createSubmitToolSchema = (t: TFunction) => {
     websiteUrl: z
       .url(t("invalidUrl"))
       .min(1, { error: t("required") })
-      .trim(),
-    // Optional: populated from authenticated user context
-    submitterName: z.string().optional(),
-    submitterEmail: z.email({ error: t("invalidEmail") }).optional(),
+      .trim()
+      .toLowerCase()
+      .transform(url => normalizeUrl(url)),
     submitterNote: z
       .string()
       .max(256, { error: issue => t("maxLength", { length: Number(issue.maximum) }) }),

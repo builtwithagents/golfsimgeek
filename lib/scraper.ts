@@ -3,16 +3,7 @@ import wretch from "wretch"
 import { env } from "~/env"
 import { getCache, setCache } from "~/lib/cache"
 
-type JinaResponse = {
-  data: {
-    title: string
-    description: string
-    url: string
-    content: string
-  }
-}
-
-type ScrapedData = {
+export type ScrapedData = {
   title: string
   description: string
   url: string
@@ -65,16 +56,13 @@ export const scrapeWebsiteData = async (
     jinaApi = jinaApi.auth(`Bearer ${env.JINA_API_KEY}`)
   }
 
-  const { data, error } = await tryCatch(jinaApi.post({ url }).json<JinaResponse>())
+  const { data, error } = await tryCatch(jinaApi.post({ url }).json<{ data: ScrapedData }>())
 
   if (error) {
     throw new Error(error.message)
   }
 
-  const scrapedData = data.data
-
   // Cache the scraped data for future requests
-  await setCache(cacheKey, scrapedData)
-
-  return scrapedData
+  await setCache(cacheKey, data.data)
+  return data.data
 }
