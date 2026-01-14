@@ -1,3 +1,4 @@
+import { normalizeUrl } from "@primoui/utils"
 import { siteConfig } from "~/config/site"
 
 /**
@@ -23,7 +24,7 @@ export const checkUrlAvailability = async (url: string): Promise<boolean> => {
 
   try {
     // Normalize URL
-    const normalizedUrl = url.startsWith("http") ? url : `https://${url}`
+    const normalizedUrl = normalizeUrl(url)
 
     // Create abort controller for timeout
     const controller = new AbortController()
@@ -53,9 +54,7 @@ export const checkUrlAvailability = async (url: string): Promise<boolean> => {
           method: "GET",
           signal: getController.signal,
           redirect: "follow",
-          headers: {
-            "User-Agent": USER_AGENT,
-          },
+          headers: { "User-Agent": USER_AGENT },
         })
 
         clearTimeout(getTimeoutId)

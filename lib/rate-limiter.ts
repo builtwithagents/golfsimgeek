@@ -59,7 +59,7 @@ export const isRateLimited = async (
   identifier?: string,
 ): Promise<boolean> => {
   const id = identifier ?? (await getIP())
-  const key = `${keyPrefix ?? action}:${id}`
+  const key = keyPrefix ? `${keyPrefix}:${id}` : id
 
   const { error } = await tryCatch(limiters[action].consume(key))
 

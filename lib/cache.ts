@@ -1,11 +1,6 @@
 import { redis } from "~/services/redis"
 
 /**
- * Default cache TTL in seconds (24 hours)
- */
-const DEFAULT_TTL = 60 * 60 * 24
-
-/**
  * Get a cached value from Redis
  * @param key - The cache key
  * @returns The cached value or null if not found or Redis is unavailable
@@ -34,11 +29,7 @@ export const getCache = async <T>(key: string): Promise<T | null> => {
  * @param value - The value to cache
  * @param ttl - Time to live in seconds (defaults to 24 hours)
  */
-export const setCache = async (
-  key: string,
-  value: unknown,
-  ttl: number = DEFAULT_TTL,
-): Promise<void> => {
+export const setCache = async (key: string, value: unknown, ttl = 60 * 60 * 24): Promise<void> => {
   if (!redis) {
     return
   }

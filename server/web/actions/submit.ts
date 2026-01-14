@@ -1,11 +1,10 @@
 "use server"
 
-import { getDomain, normalizeUrl, tryCatch } from "@primoui/utils"
+import { getDomain, tryCatch } from "@primoui/utils"
 import { after } from "next/server"
 import { getTranslations } from "next-intl/server"
 import { ToolStatus } from "~/.generated/prisma/client"
 import { isDev } from "~/env"
-import { isBlockedDomain } from "~/lib/blocked-domains"
 import { checkUrlAvailability } from "~/lib/http"
 import { notifySubmitterOfToolSubmitted } from "~/lib/notifications"
 import { isRateLimited } from "~/lib/rate-limiter"
@@ -31,11 +30,6 @@ export const submitTool = userActionClient
     // Rate limiting check
     if (await isRateLimited("submission")) {
       throw new Error(t("rate_limited"))
-    }
-
-    // Check for blocked domains (temporary hosting providers)
-    if (isBlockedDomain(domain)) {
-      throw new Error(t("blocked_domain"))
     }
 
     // Check if the website URL is accessible

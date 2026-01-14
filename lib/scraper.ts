@@ -15,13 +15,6 @@ type ScrapeOptions = {
 }
 
 /**
- * Generate a cache key for the scraper
- */
-const getCacheKey = (url: string): string => {
-  return `scraper:website:${url}`
-}
-
-/**
  * Scrapes a website and returns the scraped data using Jina.ai's Reader API.
  * Supports optional caching to reduce API calls for repeated requests.
  * @param url The URL of the website to scrape.
@@ -33,7 +26,7 @@ export const scrapeWebsiteData = async (
   options: ScrapeOptions = {},
 ): Promise<ScrapedData> => {
   const { skipCache = false } = options
-  const cacheKey = getCacheKey(url)
+  const cacheKey = `scraper:website:${url}`
 
   // Check cache first (unless skipCache is true)
   if (!skipCache) {
@@ -59,7 +52,7 @@ export const scrapeWebsiteData = async (
   const { data, error } = await tryCatch(jinaApi.post({ url }).json<{ data: ScrapedData }>())
 
   if (error) {
-    throw new Error(error.message)
+    throw new Error(`Failed to scrape ${url}: ${error.message}`)
   }
 
   // Cache the scraped data for future requests

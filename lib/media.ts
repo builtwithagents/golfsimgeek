@@ -116,6 +116,7 @@ export const getScreenshotFetchUrl = (url: string) => {
   const params = new URLSearchParams({
     url,
     access_key: env.SCREENSHOTONE_ACCESS_KEY,
+    cache: "true",
 
     // Blockers
     delay: "1",

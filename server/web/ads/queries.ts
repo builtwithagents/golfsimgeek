@@ -3,7 +3,7 @@ import type { Prisma } from "~/.generated/prisma/client"
 import { adManyPayload, adOnePayload } from "~/server/web/ads/payloads"
 import { db } from "~/services/db"
 
-export const findAds = async ({ where, orderBy, ...args }: Prisma.AdFindManyArgs) => {
+export const findAds = async ({ orderBy, ...args }: Prisma.AdFindManyArgs) => {
   "use cache"
 
   cacheTag("ads")

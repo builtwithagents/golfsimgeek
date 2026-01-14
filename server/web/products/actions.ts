@@ -11,12 +11,12 @@ export const createStripeCheckout = actionClient
   .action(async ({ parsedInput: { lineItems, successUrl, cancelUrl, mode, metadata, coupon } }) => {
     const checkout = await stripe.checkout.sessions.create({
       mode,
+      metadata,
       line_items: lineItems,
       automatic_tax: { enabled: true },
       tax_id_collection: { enabled: true },
       customer_creation: mode === "payment" ? "if_required" : undefined,
       invoice_creation: mode === "payment" ? { enabled: true } : undefined,
-      metadata: mode === "payment" ? metadata : undefined,
       subscription_data: mode === "subscription" && metadata ? { metadata } : undefined,
       allow_promotion_codes: coupon ? undefined : true,
       discounts: coupon ? [{ coupon }] : undefined,

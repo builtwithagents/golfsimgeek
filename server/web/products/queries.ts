@@ -27,7 +27,8 @@ export const findStripePricesByProduct = async (productId: string) => {
   "use cache"
 
   cacheTag(`stripe-prices-${productId}`)
-  cacheLife("hours")
+  cacheTag("stripe-prices")
+  cacheLife("days")
 
   try {
     const { data: prices } = await stripe.prices.list({
@@ -47,7 +48,8 @@ export const findStripeCoupon = async (code?: string) => {
   "use cache"
 
   cacheTag(`stripe-coupon-${code}`)
-  cacheLife("hours")
+  cacheTag("stripe-coupon")
+  cacheLife("days")
 
   if (!code?.trim()) return undefined
 

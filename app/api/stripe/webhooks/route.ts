@@ -75,6 +75,9 @@ export const POST = async (req: Request) => {
           }
         }
 
+        // Revalidate coupon in case it was used
+        revalidateTag("stripe-coupon", "infinite")
+
         break
       }
 
