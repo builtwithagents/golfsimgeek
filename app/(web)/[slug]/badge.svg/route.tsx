@@ -6,7 +6,7 @@ import satori from "satori"
 import { ToolStatus } from "~/.generated/prisma/client"
 import { LogoSymbol } from "~/components/web/ui/logo-symbol"
 import { siteConfig } from "~/config/site"
-import { loadGoogleFont } from "~/lib/fonts"
+import { fonts } from "~/lib/fonts"
 import { isToolPublished } from "~/lib/tools"
 import { findTool } from "~/server/web/tools/queries"
 
@@ -83,7 +83,8 @@ const SvgBadge = ({ theme, label }: SvgBadgeProps) => {
         <span
           style={{
             fontSize: 16,
-            fontFamily: "GeistBold",
+            fontFamily: "Geist",
+            fontWeight: 600,
             lineHeight: 1.2,
             letterSpacing: "-0.025em",
             whiteSpace: "nowrap",
@@ -133,30 +134,13 @@ export const GET = async ({ url }: NextRequest, { params }: RouteContext<"/[slug
 
   const t = await getTranslations()
   const label = t(`common.${isToolPublished(tool) ? "featured" : "coming_soon"}`)
-
-  const svg = await satori(<SvgBadge theme={theme} label={label} />, {
-    width,
-    height,
-    fonts: [
-      {
-        name: "Geist",
-        data: await loadGoogleFont("Geist", 400),
-        weight: 400,
-        style: "normal",
-      },
-      {
-        name: "GeistBold",
-        data: await loadGoogleFont("Geist", 600),
-        weight: 600,
-        style: "normal",
-      },
-    ],
-  })
+  const svg = await satori(<SvgBadge theme={theme} label={label} />, { width, height, fonts })
 
   return new Response(svg, {
     headers: {
       "Content-Type": "image/svg+xml",
-      "Cache-Control": "public, max-age=3600",
+      "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
+      "CDN-Cache-Control": "max-age=86400",
     },
   })
 }

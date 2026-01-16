@@ -60,7 +60,8 @@ export const OgBase = ({ title, description, faviconUrl, siteName, siteTagline }
               marginTop: "-1%",
               marginBottom: "-1%",
               fontSize: "3.4rem",
-              fontFamily: "GeistBold",
+              fontFamily: "Geist",
+              fontWeight: 600,
               lineHeight: "1.05",
               textWrap: "balance",
             }}

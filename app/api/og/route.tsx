@@ -5,7 +5,7 @@ import { createLoader } from "nuqs/server"
 import type { ComponentProps } from "react"
 import { OgBase } from "~/components/web/og/og-base"
 import { siteConfig } from "~/config/site"
-import { loadGoogleFont } from "~/lib/fonts"
+import { fonts } from "~/lib/fonts"
 import { openGraphSearchParams } from "~/lib/opengraph"
 
 export const contentType = "image/png"
@@ -27,19 +27,10 @@ export const GET = async (req: NextRequest) => {
   return new ImageResponse(<OgBase {...params} />, {
     width: 1200,
     height: 630,
-    fonts: [
-      {
-        name: "Geist",
-        data: await loadGoogleFont("Geist", 400),
-        weight: 400,
-        style: "normal",
-      },
-      {
-        name: "GeistBold",
-        data: await loadGoogleFont("Geist", 600),
-        weight: 600,
-        style: "normal",
-      },
-    ],
+    fonts,
+    headers: {
+      "Cache-Control": "public, max-age=3600, s-maxage=86400",
+      "CDN-Cache-Control": "max-age=86400",
+    },
   })
 }
