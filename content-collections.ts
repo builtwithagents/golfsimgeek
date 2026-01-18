@@ -18,6 +18,7 @@ const posts = defineCollection({
   include: "**/*.{md,mdx}",
 
   schema: z.object({
+    content: z.string(),
     title: z.string(),
     description: z.string(),
     image: z.string().optional(),

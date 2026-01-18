@@ -8,7 +8,6 @@ const withPlausible = withPlausibleProxy({ customDomain: process.env.NEXT_PUBLIC
 
 const nextConfig: NextConfig = {
   typedRoutes: true,
-  reactStrictMode: false,
 
   cacheLife: {
     infinite: {
@@ -21,6 +20,7 @@ const nextConfig: NextConfig = {
   experimental: {
     useCache: true,
     turbopackFileSystemCacheForDev: true,
+    turbopackFileSystemCacheForBuild: true,
 
     optimizePackageImports: [
       "@content-collections/core",
