@@ -1,0 +1,385 @@
+"use client"
+
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks"
+import { formatDate } from "date-fns"
+import { CalendarIcon } from "lucide-react"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { type ComponentProps, useMemo, useState } from "react"
+import { toast } from "sonner"
+import { type Ad, AdType } from "~/.generated/prisma/browser"
+import { AdActions } from "~/app/admin/ads/_components/ad-actions"
+import { Button } from "~/components/common/button"
+import { Calendar } from "~/components/common/calendar"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "~/components/common/dialog"
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "~/components/common/form"
+import { FormMedia } from "~/components/common/form-media"
+import { H3 } from "~/components/common/heading"
+import { Input } from "~/components/common/input"
+import { Link } from "~/components/common/link"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/common/select"
+import { Stack } from "~/components/common/stack"
+import { TextArea } from "~/components/common/textarea"
+import { cx } from "~/lib/utils"
+import { upsertAd } from "~/server/admin/ads/actions"
+import { adSchema } from "~/server/admin/ads/schema"
+
+type AdFormProps = ComponentProps<"form"> & {
+  ad?: Ad
+}
+
+export function AdForm({ children, className, title, ad, ...props }: AdFormProps) {
+  const router = useRouter()
+  const resolver = zodResolver(adSchema)
+  const [isStartsAtOpen, setIsStartsAtOpen] = useState(false)
+  const [isEndsAtOpen, setIsEndsAtOpen] = useState(false)
+
+  const { form, action, handleSubmitWithAction } = useHookFormAction(upsertAd, resolver, {
+    formProps: {
+      defaultValues: {
+        id: ad?.id ?? "",
+        name: ad?.name ?? "",
+        email: ad?.email ?? "",
+        description: ad?.description ?? "",
+        websiteUrl: ad?.websiteUrl ?? "",
+        faviconUrl: ad?.faviconUrl ?? "",
+        bannerUrl: ad?.bannerUrl ?? "",
+        buttonLabel: ad?.buttonLabel ?? "",
+        type: ad?.type ?? AdType.All,
+        startsAt: ad?.startsAt ?? new Date(),
+        endsAt: ad?.endsAt ?? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+      },
+    },
+
+    actionProps: {
+      onSuccess: ({ data }) => {
+        toast.success(`Ad successfully ${ad ? "updated" : "created"}`)
+        router.push(`/admin/ads/${data?.id}`)
+      },
+
+      onError: ({ error }) => {
+        toast.error(error.serverError)
+      },
+    },
+  })
+
+  const websiteUrl = form.watch("websiteUrl")
+  const startsAt = form.watch("startsAt") as Date
+  const endsAt = form.watch("endsAt") as Date
+
+  const path = useMemo(() => `ads/${ad?.id || "new"}`, [ad?.id])
+
+  const startsAtDate = startsAt instanceof Date ? startsAt : new Date(startsAt)
+  const endsAtDate = endsAt instanceof Date ? endsAt : new Date(endsAt)
+
+  const formatDateDisplay = (date: Date) => formatDate(date, "yyyy-MM-dd")
+  const formatTimeDisplay = (date: Date) => formatDate(date, "HH:mm")
+
+  const [startsAtDateStr, setStartsAtDateStr] = useState(formatDateDisplay(startsAtDate))
+  const [startsAtTimeStr, setStartsAtTimeStr] = useState(formatTimeDisplay(startsAtDate))
+  const [endsAtDateStr, setEndsAtDateStr] = useState(formatDateDisplay(endsAtDate))
+  const [endsAtTimeStr, setEndsAtTimeStr] = useState(formatTimeDisplay(endsAtDate))
+
+  const updateStartsAt = (dateStr: string, timeStr: string) => {
+    const newDate = new Date(`${dateStr}T${timeStr}`)
+    if (!Number.isNaN(newDate.getTime())) {
+      form.setValue("startsAt", newDate)
+    }
+  }
+
+  const updateEndsAt = (dateStr: string, timeStr: string) => {
+    const newDate = new Date(`${dateStr}T${timeStr}`)
+    if (!Number.isNaN(newDate.getTime())) {
+      form.setValue("endsAt", newDate)
+    }
+  }
+
+  return (
+    <Form {...form}>
+      <Stack className="justify-between">
+        <H3 className="flex-1 truncate">{title}</H3>
+
+        <Stack size="sm" className="-my-0.5">
+          {ad && <AdActions ad={ad} size="md" />}
+        </Stack>
+      </Stack>
+
+      <form
+        onSubmit={handleSubmitWithAction}
+        className={cx("grid gap-4 @lg:grid-cols-2", className)}
+        noValidate
+        {...props}
+      >
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel isRequired>Name</FormLabel>
+              <FormControl>
+                <Input data-1p-ignore {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel isRequired>Email</FormLabel>
+              <FormControl>
+                <Input type="email" data-1p-ignore {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="websiteUrl"
+          render={({ field }) => (
+            <FormItem className="col-span-full">
+              <FormLabel isRequired>Website URL</FormLabel>
+              <FormControl>
+                <Input type="url" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem className="col-span-full">
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <TextArea {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="faviconUrl"
+          render={({ field }) => (
+            <FormMedia
+              form={form}
+              field={field}
+              path={`${path}/favicon`}
+              fetchType="favicon"
+              websiteUrl={websiteUrl}
+            >
+              {field.value && (
+                <Image
+                  src={field.value}
+                  alt="Favicon"
+                  width={32}
+                  height={32}
+                  className="size-8 border box-content rounded-md object-contain"
+                  unoptimized
+                />
+              )}
+            </FormMedia>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="bannerUrl"
+          render={({ field }) => (
+            <FormMedia form={form} field={field} path={`${path}/banner`}>
+              {field.value && (
+                <Image
+                  src={field.value}
+                  alt="Banner"
+                  height={72}
+                  width={128}
+                  unoptimized
+                  className="h-8 w-auto border box-content rounded-md aspect-video object-cover"
+                />
+              )}
+            </FormMedia>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="buttonLabel"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Button Label</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Type</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select ad type" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Object.values(AdType).map(type => (
+                    <SelectItem key={type} value={type}>
+                      {type}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="startsAt"
+          render={() => (
+            <FormItem>
+              <FormLabel isRequired>Starts At</FormLabel>
+              <Stack size="sm" wrap={false} className="items-stretch w-full">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => setIsStartsAtOpen(true)}
+                  suffix={<CalendarIcon />}
+                  className="w-full tabular-nums justify-between"
+                >
+                  {startsAtDateStr}
+                </Button>
+
+                <Input
+                  type="time"
+                  value={startsAtTimeStr}
+                  onChange={e => {
+                    setStartsAtTimeStr(e.target.value)
+                    updateStartsAt(startsAtDateStr, e.target.value)
+                  }}
+                  className="w-full tabular-nums"
+                />
+
+                <Dialog open={isStartsAtOpen} onOpenChange={setIsStartsAtOpen}>
+                  <DialogContent className="max-w-sm">
+                    <DialogHeader>
+                      <DialogTitle>Pick start date</DialogTitle>
+                    </DialogHeader>
+
+                    <Calendar
+                      mode="single"
+                      selected={startsAtDate}
+                      onSelect={date => {
+                        if (date) {
+                          const newDateStr = formatDateDisplay(date)
+                          setStartsAtDateStr(newDateStr)
+                          updateStartsAt(newDateStr, startsAtTimeStr)
+                        }
+                        setIsStartsAtOpen(false)
+                      }}
+                    />
+                  </DialogContent>
+                </Dialog>
+              </Stack>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="endsAt"
+          render={() => (
+            <FormItem>
+              <FormLabel isRequired>Ends At</FormLabel>
+              <Stack size="sm" wrap={false} className="items-stretch w-full">
+                <Button
+                  type="button"
+                  variant="secondary"
+                  onClick={() => setIsEndsAtOpen(true)}
+                  suffix={<CalendarIcon />}
+                  className="w-full tabular-nums justify-between"
+                >
+                  {endsAtDateStr}
+                </Button>
+
+                <Input
+                  type="time"
+                  value={endsAtTimeStr}
+                  onChange={e => {
+                    setEndsAtTimeStr(e.target.value)
+                    updateEndsAt(endsAtDateStr, e.target.value)
+                  }}
+                  className="w-full tabular-nums"
+                />
+
+                <Dialog open={isEndsAtOpen} onOpenChange={setIsEndsAtOpen}>
+                  <DialogContent className="max-w-sm">
+                    <DialogHeader>
+                      <DialogTitle>Pick end date</DialogTitle>
+                    </DialogHeader>
+
+                    <Calendar
+                      mode="single"
+                      selected={endsAtDate}
+                      disabled={{ before: startsAtDate }}
+                      onSelect={date => {
+                        if (date) {
+                          const newDateStr = formatDateDisplay(date)
+                          setEndsAtDateStr(newDateStr)
+                          updateEndsAt(newDateStr, endsAtTimeStr)
+                        }
+                        setIsEndsAtOpen(false)
+                      }}
+                    />
+                  </DialogContent>
+                </Dialog>
+              </Stack>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="flex justify-between gap-4 col-span-full">
+          <Button size="md" variant="secondary" asChild>
+            <Link href="/admin/ads">Cancel</Link>
+          </Button>
+
+          <Button size="md" isPending={action.isPending}>
+            {ad ? "Update ad" : "Create ad"}
+          </Button>
+        </div>
+      </form>
+    </Form>
+  )
+}

@@ -9,6 +9,7 @@ import {
   GalleryHorizontalEndIcon,
   GemIcon,
   LogOutIcon,
+  MegaphoneIcon,
   TagIcon,
   TriangleAlertIcon,
   UsersIcon,
@@ -93,6 +94,11 @@ export const Sidebar = () => {
           title: "Reports",
           href: "/admin/reports",
           prefix: <TriangleAlertIcon />,
+        },
+        {
+          title: "Ads",
+          href: "/admin/ads",
+          prefix: <MegaphoneIcon />,
         },
 
         undefined, // Separator
