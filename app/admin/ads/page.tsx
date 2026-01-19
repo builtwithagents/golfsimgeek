@@ -4,7 +4,7 @@ import { DataTableSkeleton } from "~/components/data-table/data-table-skeleton"
 import { findAds } from "~/server/admin/ads/queries"
 import { adTableParamsCache } from "~/server/admin/ads/schema"
 
-export default async function AdsPage({ searchParams }: PageProps<"/admin/ads">) {
+export default async function ({ searchParams }: PageProps<"/admin/ads">) {
   const search = adTableParamsCache.parse(await searchParams)
   const adsPromise = findAds(search)
 

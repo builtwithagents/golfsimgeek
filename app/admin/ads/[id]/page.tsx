@@ -3,7 +3,7 @@ import { AdForm } from "~/app/admin/ads/_components/ad-form"
 import { Wrapper } from "~/components/common/wrapper"
 import { findAdById } from "~/server/admin/ads/queries"
 
-export default async function EditAdPage({ params }: PageProps<"/admin/ads/[id]">) {
+export default async function ({ params }: PageProps<"/admin/ads/[id]">) {
   const { id } = await params
   const ad = await findAdById(id)
 
