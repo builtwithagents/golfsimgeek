@@ -1,11 +1,11 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useHotkeys, useLocalStorage } from "@mantine/hooks"
+import { useDebouncedCallback, useHotkeys, useLocalStorage } from "@mantine/hooks"
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks"
 import { getRandomDigits } from "@primoui/utils"
 import { millisecondsInSecond } from "date-fns/constants"
-import debounce from "debounce"
+
 import { useTranslations } from "next-intl"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
@@ -160,15 +160,11 @@ export const FeedbackWidget = () => {
   }, [])
 
   // Debounced scroll handler
-  const handleScroll = useMemo(
-    () =>
-      debounce(() => {
-        const scrollHeight = document.documentElement.scrollHeight - window.innerHeight
-        const scrolled = (window.scrollY / scrollHeight) * 100
-        maxScrollRef.current = Math.max(maxScrollRef.current, scrolled)
-      }, 150),
-    [],
-  )
+  const handleScroll = useDebouncedCallback(() => {
+    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight
+    const scrolled = (window.scrollY / scrollHeight) * 100
+    maxScrollRef.current = Math.max(maxScrollRef.current, scrolled)
+  }, 150)
 
   // Check engagement criteria
   const checkEngagement = useCallback(() => {
@@ -201,7 +197,6 @@ export const FeedbackWidget = () => {
 
     return () => {
       window.removeEventListener("scroll", handleScroll)
-      handleScroll.clear() // Using clear() instead of cancel() for debounce
       clearInterval(interval)
     }
   }, [dismissed, handleScroll, checkEngagement])
