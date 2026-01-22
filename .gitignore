@@ -49,6 +49,7 @@ next-env.d.ts
 .cursor
 .claude
 .sisyphus
+.conductor
 CLAUDE.md
 AGENTS.md
 

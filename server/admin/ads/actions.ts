@@ -1,6 +1,5 @@
 "use server"
 
-import { checkUrlAvailability } from "~/lib/http"
 import { adminActionClient } from "~/lib/safe-actions"
 import { adSchema } from "~/server/admin/ads/schema"
 import { idSchema, idsSchema } from "~/server/admin/shared/schema"
@@ -8,12 +7,6 @@ import { idSchema, idsSchema } from "~/server/admin/shared/schema"
 export const upsertAd = adminActionClient
   .inputSchema(adSchema)
   .action(async ({ parsedInput: { id, ...input }, ctx: { db, revalidate } }) => {
-    const isUrlAvailable = await checkUrlAvailability(input.websiteUrl)
-
-    if (!isUrlAvailable) {
-      throw new Error("Website URL is not accessible. Please check the URL and try again.")
-    }
-
     const ad = id
       ? await db.ad.update({
           where: { id },

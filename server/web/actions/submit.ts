@@ -1,17 +1,17 @@
 "use server"
 
-import { getDomain, tryCatch } from "@primoui/utils"
+import { getDomain, tryCatch, checkUrlAvailability } from "@primoui/utils"
 import { after } from "next/server"
 import { getTranslations } from "next-intl/server"
 import { ToolStatus } from "~/.generated/prisma/client"
 import { isDev } from "~/env"
-import { checkUrlAvailability } from "~/lib/http"
 import { notifySubmitterOfToolSubmitted } from "~/lib/notifications"
 import { isRateLimited } from "~/lib/rate-limiter"
 import { userActionClient } from "~/lib/safe-actions"
 import { createSubmitToolSchema } from "~/server/web/shared/schema"
 import { db } from "~/services/db"
 import { createResendContact } from "~/services/resend"
+import { siteConfig } from "~/config/site"
 
 /**
  * Submit a tool to the database
@@ -26,6 +26,7 @@ export const submitTool = userActionClient
   .action(async ({ parsedInput: { newsletterOptIn, ...data }, ctx: { user } }) => {
     const t = await getTranslations("forms.submit")
     const domain = getDomain(data.websiteUrl)
+    const userAgent = `Mozilla/5.0 (compatible; ${siteConfig.name}/1.0; +${siteConfig.url})`
 
     // Rate limiting check
     if (user.role !== "admin" && (await isRateLimited("submission"))) {
@@ -33,7 +34,7 @@ export const submitTool = userActionClient
     }
 
     // Check if the website URL is accessible
-    if (!(await checkUrlAvailability(data.websiteUrl))) {
+    if (!(await checkUrlAvailability(data.websiteUrl, { userAgent }))) {
       throw new Error(t("errors.url_not_accessible"))
     }
 
