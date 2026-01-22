@@ -1,6 +1,6 @@
 import { isTruthy } from "@primoui/utils"
 import { endOfDay, startOfDay } from "date-fns"
-import { ToolStatus, type Prisma } from "~/.generated/prisma/client"
+import { type Prisma, ToolStatus } from "~/.generated/prisma/client"
 import type { ToolTableSchema } from "~/server/admin/tools/schema"
 import { db } from "~/services/db"
 

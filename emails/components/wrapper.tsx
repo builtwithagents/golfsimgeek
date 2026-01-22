@@ -40,7 +40,7 @@ export const EmailWrapper = ({ to, preview, children, ...props }: EmailWrapperPr
 
             {children}
 
-            <Hr />
+            <Hr className="my-4" />
 
             <Text className="text-xs/normal text-gray-500">
               This email was intended for <span className="text-black">{to}</span>. If you were not

@@ -1,5 +1,5 @@
 import { tryCatch } from "@primoui/utils"
-import { env } from "~/env";
+import { env } from "~/env"
 import { getPlausibleApi } from "~/services/plausible"
 
 /**
