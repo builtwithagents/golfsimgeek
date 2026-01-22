@@ -1,6 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useHotkeys } from "@mantine/hooks"
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks"
 import { slugify } from "@primoui/utils"
 import { useRouter } from "next/navigation"
@@ -71,6 +72,8 @@ export function CategoryForm({
       },
     },
   })
+
+  useHotkeys([["mod+enter", () => handleSubmitWithAction()]], [], true)
 
   const name = form.watch("name")
 

@@ -1,6 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useHotkeys } from "@mantine/hooks"
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks"
 import { formatDateTime, getRandomString, slugify } from "@primoui/utils"
 import { EyeIcon, InfoIcon, PencilIcon } from "lucide-react"
@@ -133,6 +134,8 @@ export function ToolForm({
       },
     },
   })
+
+  useHotkeys([["mod+enter", () => form.handleSubmit(data => action.execute(data))()]], [], true)
 
   // Set the slug based on the name
   useComputedField({

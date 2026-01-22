@@ -1,9 +1,10 @@
 "use server"
 
-import { getDomain, tryCatch, checkUrlAvailability } from "@primoui/utils"
+import { checkUrlAvailability, getDomain, tryCatch } from "@primoui/utils"
 import { after } from "next/server"
 import { getTranslations } from "next-intl/server"
 import { ToolStatus } from "~/.generated/prisma/client"
+import { siteConfig } from "~/config/site"
 import { isDev } from "~/env"
 import { notifySubmitterOfToolSubmitted } from "~/lib/notifications"
 import { isRateLimited } from "~/lib/rate-limiter"
@@ -11,7 +12,6 @@ import { userActionClient } from "~/lib/safe-actions"
 import { createSubmitToolSchema } from "~/server/web/shared/schema"
 import { db } from "~/services/db"
 import { createResendContact } from "~/services/resend"
-import { siteConfig } from "~/config/site"
 
 /**
  * Submit a tool to the database

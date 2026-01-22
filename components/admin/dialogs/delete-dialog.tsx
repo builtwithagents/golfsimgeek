@@ -1,8 +1,9 @@
 "use client"
 
+import { getHotkeyHandler } from "@mantine/hooks"
 import { type HookCallbacks, type HookSafeActionFn, useAction } from "next-safe-action/hooks"
 import plur from "plur"
-import { type ComponentProps, useMemo } from "react"
+import { type ComponentProps, type KeyboardEvent, useMemo } from "react"
 import { Button } from "~/components/common/button"
 import {
   Dialog,
@@ -34,11 +35,13 @@ export const DeleteDialog = <ServerError, CVE, Data>({
   const { execute, isPending } = useAction(action, callbacks)
   const pluralizedLabel = useMemo(() => plur(label, ids.length), [label, ids])
 
+  const handleKeyDown = getHotkeyHandler([["mod+Enter", () => execute({ ids })]])
+
   return (
     <Dialog {...props}>
       {children && <DialogTrigger asChild>{children}</DialogTrigger>}
 
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md" onKeyDown={handleKeyDown}>
         <DialogHeader>
           <DialogTitle>Are you sure?</DialogTitle>
           <DialogDescription>

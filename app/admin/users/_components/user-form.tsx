@@ -1,6 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useHotkeys } from "@mantine/hooks"
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks"
 import type { ComponentProps } from "react"
 import { toast } from "sonner"
@@ -53,6 +54,8 @@ export function UserForm({ children, className, title, user, ...props }: UserFor
       },
     },
   })
+
+  useHotkeys([["mod+enter", () => handleSubmitWithAction()]], [], true)
 
   return (
     <Form {...form}>

@@ -1,6 +1,7 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import { useHotkeys } from "@mantine/hooks"
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks"
 import { getRandomString, slugify } from "@primoui/utils"
 import { addMonths, formatDate } from "date-fns"
@@ -78,6 +79,8 @@ export function AdForm({ children, className, title, ad, ...props }: AdFormProps
       },
     },
   })
+
+  useHotkeys([["mod+enter", () => handleSubmitWithAction()]], [], true)
 
   const [name, websiteUrl, startsAt, endsAt] = form.watch([
     "name",

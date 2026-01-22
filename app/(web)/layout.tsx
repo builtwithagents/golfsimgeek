@@ -8,7 +8,6 @@ import { Footer } from "~/components/web/footer"
 import { Header } from "~/components/web/header"
 import { Backdrop } from "~/components/web/ui/backdrop"
 import { Container } from "~/components/web/ui/container"
-import { siteConfig } from "~/config/site"
 import { env } from "~/env"
 
 export default function ({ children }: PropsWithChildren) {
