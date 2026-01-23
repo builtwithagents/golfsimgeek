@@ -30,7 +30,7 @@
     "@mantine/hooks": "^8.3.13",
     "@next-safe-action/adapter-react-hook-form": "^2.0.0",
     "@number-flow/react": "^0.5.11",
-    "@primoui/utils": "^1.4.0",
+    "@primoui/utils": "^1.4.1",
     "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "^7.3.0",
     "@react-email/components": "^1.0.6",
