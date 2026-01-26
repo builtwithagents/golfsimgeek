@@ -1,0 +1,27 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "jsx-a11y", "nextjs", "react-hooks"],
+  "rules": {
+    "typescript/no-explicit-any": "off",
+    "react/no-array-index-key": "off",
+    "no-labels": "off",
+    "no-shadow-restricted-names": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "react/no-danger": "off",
+    "react/jsx-no-target-blank": "off",
+    "nextjs/no-img-element": "off",
+    "typescript/no-non-null-assertion": "off",
+    "jsx-a11y/anchor-has-content": "off",
+    "jsx-a11y/anchor-is-valid": "off",
+    "jsx-a11y/alt-text": "off",
+
+    "typescript/no-unused-vars": "error",
+    "no-param-reassign": "error",
+    "typescript/prefer-as-const": "error",
+    "default-param-last": "error",
+    "react/self-closing-comp": "error",
+    "no-else-return": "error",
+    "typescript/no-inferrable-types": "error"
+  },
+  "ignorePatterns": ["node_modules", ".next", ".content-collections", "dist", ".git"]
+}

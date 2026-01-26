@@ -116,7 +116,6 @@ export function DateRangePicker({
 
       <PopoverContent className={cx("w-auto", className)} {...props}>
         <Calendar
-          autoFocus
           mode="range"
           numberOfMonths={2}
           defaultMonth={date?.from}

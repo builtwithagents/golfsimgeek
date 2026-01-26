@@ -30,9 +30,9 @@ DirStarter uses MDX (Markdown + JSX) for blog posts, which means you can embed R
 
 ```mdx
 <ToolEntry tool="github">
-  GitHub is the world's leading platform for version control and collaboration.
-  It's essential for any development team looking to manage code efficiently
-  and collaborate seamlessly across distributed teams.
+  GitHub is the world's leading platform for version control and collaboration. It's essential for
+  any development team looking to manage code efficiently and collaborate seamlessly across
+  distributed teams.
 </ToolEntry>
 ```
 

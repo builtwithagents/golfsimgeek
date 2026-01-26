@@ -215,7 +215,9 @@ export function ToolForm({
             {isToolApproved(tool) && tool.publishedAt && (
               <>
                 <br />
-                {tool.status === ToolStatus.Scheduled ? "Scheduled to be published" : "Published"}{" "}
+                {tool.status === ToolStatus.Scheduled
+                  ? "Scheduled to be published"
+                  : "Published"}{" "}
                 on <strong className="text-foreground">{formatDateTime(tool.publishedAt)}</strong>
               </>
             )}

@@ -109,6 +109,7 @@ Dirstarter includes thoughtful features that make a difference:
 ### Email System
 
 Multiple email provider support (Resend, Postmark) with:
+
 - Transactional emails for user actions
 - Marketing capabilities for newsletters
 - Beautiful React Email templates
@@ -117,6 +118,7 @@ Multiple email provider support (Resend, Postmark) with:
 ### AI-Powered Content
 
 Speed up content creation with built-in AI features:
+
 - Generate tool descriptions automatically
 - Create SEO-optimized content
 - Improve existing copy with AI suggestions
@@ -124,6 +126,7 @@ Speed up content creation with built-in AI features:
 ### Advanced SEO
 
 Rank higher with built-in SEO tools:
+
 - JSON-LD structured data generation
 - Automatic sitemap creation
 - OpenGraph and Twitter card support
