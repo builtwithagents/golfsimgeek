@@ -312,6 +312,7 @@ export const ToolPublishActions = ({
                                       <Calendar
                                         mode="single"
                                         selected={new Date(selectedDate)}
+                                        defaultMonth={new Date(selectedDate)}
                                         disabled={{ before: new Date() }}
                                         onSelect={date => {
                                           if (date) {

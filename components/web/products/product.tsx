@@ -2,10 +2,10 @@
 
 import { useLocalStorage } from "@mantine/hooks"
 import { ArrowUpRightIcon, TicketPercentIcon } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 import type { InferSafeActionFnInput } from "next-safe-action"
 import { useAction } from "next-safe-action/hooks"
+import { useRouter } from "next/navigation"
 import type { ComponentProps, ReactNode } from "react"
 import { toast } from "sonner"
 import type Stripe from "stripe"
@@ -85,7 +85,7 @@ const Product = ({
   }
 
   const priceCalculations = useProductPrices(prices, coupon, interval)
-  const { isSubscription, currentPrice, price, fullPrice, discount } = priceCalculations
+  const { isSubscription, currentPrice, price, fullPrice, discount, currency } = priceCalculations
 
   return (
     <Card
@@ -139,6 +139,7 @@ const Product = ({
         interval={t(`price_period.${isSubscription ? "month" : "one_time"}`)}
         discount={discount}
         coupon={coupon}
+        currency={currency}
         format={{ style: "decimal", notation: "compact", maximumFractionDigits: 0 }}
         className="w-full"
         priceClassName="text-[3em]"

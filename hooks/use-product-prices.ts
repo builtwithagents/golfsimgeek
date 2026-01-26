@@ -18,7 +18,7 @@ const calculateCouponDiscount = (initialPrice: number, coupon?: Stripe.Coupon | 
 }
 
 const calculateDiscountPercentage = (basePrice: number, discountedPrice: number) => {
-  return basePrice > 0 ? Math.round(((basePrice - discountedPrice) / basePrice) * 100) : 0
+  return basePrice > 0 ? Math.floor(((basePrice - discountedPrice) / basePrice) * 100) : 0
 }
 
 export const useProductPrices = (
@@ -38,7 +38,7 @@ export const useProductPrices = (
 
   const couponDiscountAmount = calculateCouponDiscount(initialPrice, coupon)
 
-  const finalPrice = Math.max(0, initialPrice - couponDiscountAmount)
+  const finalPrice = Math.floor(Math.max(0, initialPrice - couponDiscountAmount))
   const originalPrice = monthlyPriceValue > finalPrice ? monthlyPriceValue : null
 
   const basePriceForDiscount = interval === "year" ? monthlyPriceValue : currentPriceValue
@@ -50,5 +50,6 @@ export const useProductPrices = (
     price: finalPrice,
     fullPrice: originalPrice,
     discount: discountPercentage,
+    currency: (currentPrice?.currency ?? "usd").toUpperCase(),
   }
 }

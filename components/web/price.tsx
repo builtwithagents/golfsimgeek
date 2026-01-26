@@ -1,7 +1,7 @@
 "use client"
 
 import NumberFlow, { continuous, type Format } from "@number-flow/react"
-import { formatNumber } from "@primoui/utils"
+import { formatCurrency, formatNumber } from "@primoui/utils"
 import { AnimatePresence, motion, type Variants } from "motion/react"
 import { useLocale, useTranslations } from "next-intl"
 import type { ComponentProps } from "react"
@@ -9,13 +9,13 @@ import type Stripe from "stripe"
 import { Badge } from "~/components/common/badge"
 import { cx } from "~/lib/utils"
 
-const defaultFormat: Format = {
+const getDefaultFormat = (currency: string): Format => ({
   style: "currency",
-  currency: "USD",
+  currency: currency.toUpperCase(),
   notation: "standard",
   maximumFractionDigits: 2,
   trailingZeroDisplay: "stripIfInteger",
-}
+})
 
 type PriceProps = ComponentProps<"div"> & {
   price: number
@@ -24,6 +24,7 @@ type PriceProps = ComponentProps<"div"> & {
   discount?: number | null
   coupon?: Stripe.Coupon
   format?: Format
+  currency?: string
   priceClassName?: string
 }
 
@@ -35,6 +36,7 @@ export const Price = ({
   discount,
   coupon,
   format,
+  currency = "USD",
   priceClassName,
   ...props
 }: PriceProps) => {
@@ -49,9 +51,16 @@ export const Price = ({
     visible: { opacity: 1, x: 0 },
   }
 
+  const formattedPrice = formatCurrency(price, currency, locale)
+  const defaultFormat = getDefaultFormat(currency)
+
   return (
     <div className={cx("relative flex items-center", className)} {...props}>
-      {format?.notation === "compact" && <span className="self-start mr-1 text-[0.9em]">$</span>}
+      {format?.notation === "compact" && (
+        <span className="self-start mr-1 text-[0.9em]">
+          {formattedPrice.replace(/\d/g, "").trim()}
+        </span>
+      )}
 
       <div className="relative tabular-nums font-display">
         <NumberFlow
