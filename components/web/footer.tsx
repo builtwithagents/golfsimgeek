@@ -19,11 +19,7 @@ import { linksConfig } from "~/config/links"
 import { siteConfig } from "~/config/site"
 import { cx } from "~/lib/utils"
 
-type FooterProps = ComponentProps<"div"> & {
-  hideCTA?: boolean
-}
-
-export const Footer = ({ children, className, hideCTA, ...props }: FooterProps) => {
+export const Footer = ({ children, className, ...props }: ComponentProps<"div">) => {
   const t = useTranslations()
 
   return (

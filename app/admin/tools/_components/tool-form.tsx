@@ -74,7 +74,6 @@ type ToolFormProps = ComponentProps<"form"> & {
 }
 
 export function ToolForm({
-  children,
   className,
   title,
   tool,

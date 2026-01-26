@@ -8,6 +8,7 @@ import type { ComponentProps } from "react"
 import { Card, CardDescription, CardFooter, CardHeader } from "~/components/common/card"
 import { H4 } from "~/components/common/heading"
 import { Link } from "~/components/common/link"
+import { cx } from "~/lib/utils"
 
 type PostCardProps = ComponentProps<typeof Card> & {
   post: Post
@@ -18,7 +19,7 @@ export const PostCard = ({ className, post, ...props }: PostCardProps) => {
   const format = useFormatter()
 
   return (
-    <Card className="overflow-clip" asChild {...props}>
+    <Card className={cx("overflow-clip", className)} asChild {...props}>
       <Link href={`/blog/${post._meta.path}`}>
         {post.image && (
           <Image

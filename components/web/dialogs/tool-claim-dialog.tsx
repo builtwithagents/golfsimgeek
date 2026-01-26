@@ -104,7 +104,7 @@ export const ToolClaimDialog = ({ tool, isOpen, setIsOpen }: ToolClaimDialogProp
       setVerificationEmail("")
       setCooldownRemaining(0)
     }
-  }, [isOpen])
+  }, [isOpen, sendOtpAction.form, verifyOtpAction.form])
 
   // Cooldown timer effect
   useEffect(() => {

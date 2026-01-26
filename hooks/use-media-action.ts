@@ -34,7 +34,9 @@ export const useMediaAction = <T extends FieldValues>({
     },
 
     onError: ({ error: { serverError } }) => {
-      serverError && toast.error(serverError)
+      if (serverError) {
+        toast.error(serverError)
+      }
     },
   })
 

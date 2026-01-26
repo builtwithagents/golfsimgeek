@@ -34,7 +34,7 @@ type TagFormProps = ComponentProps<"form"> & {
   toolsPromise: ReturnType<typeof findToolList>
 }
 
-export function TagForm({ children, className, title, tag, toolsPromise, ...props }: TagFormProps) {
+export function TagForm({ className, title, tag, toolsPromise, ...props }: TagFormProps) {
   const router = useRouter()
   const tools = use(toolsPromise)
   const resolver = zodResolver(tagSchema)

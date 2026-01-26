@@ -34,7 +34,9 @@ export const CategoryActions = ({ category, className, ...props }: CategoryActio
 
   const { executeAsync } = useAction(duplicateCategory, {
     onSuccess: ({ data }) => {
-      isSinglePage && router.push(`${indexPath}/${data.id}`)
+      if (isSinglePage) {
+        router.push(`${indexPath}/${data.id}`)
+      }
     },
   })
 

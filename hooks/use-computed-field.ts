@@ -26,5 +26,5 @@ export const useComputedField = <T extends FieldValues>({
         shouldDirty: form.formState.isDirty,
       })
     }
-  }, [source, enabled])
+  }, [source, enabled, state.isTouched, form, callback, computedField])
 }

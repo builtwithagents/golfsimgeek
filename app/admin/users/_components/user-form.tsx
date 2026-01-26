@@ -30,7 +30,7 @@ type UserFormProps = ComponentProps<"form"> & {
   user: NonNullable<Awaited<ReturnType<typeof findUserById>>>
 }
 
-export function UserForm({ children, className, title, user, ...props }: UserFormProps) {
+export function UserForm({ className, title, user, ...props }: UserFormProps) {
   const resolver = zodResolver(userSchema)
 
   // Update user

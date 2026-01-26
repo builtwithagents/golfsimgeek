@@ -91,7 +91,7 @@ export const AdsCalendar = ({
 
       updateSelection(adSpot.type, { dateRange, duration })
     },
-    [adSpot.type],
+    [adSpot.type, updateSelection, calculateDuration],
   )
 
   const discountedPrice = price?.discountPercentage

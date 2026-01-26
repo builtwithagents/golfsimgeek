@@ -16,7 +16,7 @@ import { ToolReportDialog } from "~/components/web/dialogs/tool-report-dialog"
 import { ToolButton } from "~/components/web/tools/tool-button"
 import { reportsConfig } from "~/config/reports"
 import { useSession } from "~/lib/auth-client"
-import { isToolPremiumTier, isToolApproved, isToolPublished } from "~/lib/tools"
+import { isToolApproved, isToolPremiumTier, isToolPublished } from "~/lib/tools"
 import { cx } from "~/lib/utils"
 import type { ToolOne } from "~/server/web/tools/payloads"
 
@@ -41,10 +41,12 @@ export const ToolActions = ({ tool, children, className, ...props }: ToolActions
     if (isToolPublished(tool)) {
       setIsStickyButtonVisible(scroll.y > 250)
     }
-  }, [scroll])
+  }, [scroll, tool])
 
   const handleClose = (isOpen: SetStateAction<boolean>) => {
-    !isOpen && setDialog(null)
+    if (!isOpen) {
+      setDialog(null)
+    }
   }
 
   return (

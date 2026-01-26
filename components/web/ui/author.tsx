@@ -10,7 +10,7 @@ export type AuthorProps = ComponentProps<typeof Stack> & {
   note?: ReactNode
 }
 
-export const Author = ({ name, image, title, prefix, url, note, ...props }: AuthorProps) => {
+export const Author = ({ name, image, prefix, url, note, ...props }: AuthorProps) => {
   return (
     <Stack size="sm" wrap={false} {...props}>
       <Image

@@ -71,17 +71,20 @@ export const ToolEmbedDialog = ({ tool, isOpen, setIsOpen }: ToolEmbedDialogProp
     return `${toolLink}/badge.svg?${params.toString()}`
   }, [theme, width, height, toolLink])
 
-  const utm = new URLSearchParams({
-    utm_source: siteConfig.slug,
-    utm_medium: "badge",
-    utm_campaign: "embed",
-    utm_content: `tool-${tool.slug}`,
-  })
+  const utmString = useMemo(() => {
+    const utm = new URLSearchParams({
+      utm_source: siteConfig.slug,
+      utm_medium: "badge",
+      utm_campaign: "embed",
+      utm_content: `tool-${tool.slug}`,
+    })
+    return utm.toString()
+  }, [tool.slug])
 
   const embedCode = useMemo(
     () =>
-      `<a href="${toolLink}?${utm.toString()}" target="_blank"><img src="${badgeUrl}" width="${width}" height="${height}" alt="${tool.name} badge" loading="lazy" /></a>`,
-    [badgeUrl, width, height, tool.name, toolLink, utm],
+      `<a href="${toolLink}?${utmString}" target="_blank"><img src="${badgeUrl}" width="${width}" height="${height}" alt="${tool.name} badge" loading="lazy" /></a>`,
+    [badgeUrl, width, height, tool.name, toolLink, utmString],
   )
 
   const previewBg = theme === "dark" ? "bg-black" : "bg-white"

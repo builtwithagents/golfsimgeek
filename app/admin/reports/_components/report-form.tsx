@@ -37,7 +37,7 @@ type ReportFormProps = ComponentProps<"form"> & {
   report: NonNullable<Awaited<ReturnType<typeof findReportById>>>
 }
 
-export function ReportForm({ children, className, title, report, ...props }: ReportFormProps) {
+export function ReportForm({ className, title, report, ...props }: ReportFormProps) {
   const resolver = zodResolver(reportSchema)
 
   const { form, action, handleSubmitWithAction } = useHookFormAction(updateReport, resolver, {

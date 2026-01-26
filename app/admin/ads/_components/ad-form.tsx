@@ -45,7 +45,7 @@ type AdFormProps = ComponentProps<"form"> & {
   ad?: NonNullable<Awaited<ReturnType<typeof findAdById>>>
 }
 
-export function AdForm({ children, className, title, ad, ...props }: AdFormProps) {
+export function AdForm({ className, title, ad, ...props }: AdFormProps) {
   const router = useRouter()
   const resolver = zodResolver(adSchema)
   const [isStartsAtOpen, setIsStartsAtOpen] = useState(false)

@@ -36,7 +36,9 @@ export const ToolActions = ({ className, tool, ...props }: ToolActionsProps) => 
 
   const { executeAsync } = useAction(duplicateTool, {
     onSuccess: ({ data }) => {
-      isSinglePage && router.push(`${indexPath}/${data.id}`)
+      if (isSinglePage) {
+        router.push(`${indexPath}/${data.id}`)
+      }
     },
   })
 

@@ -291,7 +291,7 @@ export function useDataTable<TData>({
         return next
       })
     },
-    [debouncedSetFilterValues, enableAdvancedFilter, filterableColumns, searchableColumns, setPage],
+    [debouncedSetFilterValues, enableAdvancedFilter, filterableColumns, searchableColumns],
   )
 
   const table = useReactTable({

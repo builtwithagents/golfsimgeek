@@ -86,11 +86,9 @@ const navItemVariants = cva({
 
 type NavProps = ComponentProps<"div"> & {
   title: string
-  previous?: string
-  next?: string
 }
 
-export const Nav = ({ className, title, previous, next, ...props }: NavProps) => {
+export const Nav = ({ className, title, ...props }: NavProps) => {
   const t = useTranslations("tools.nav")
   const pathname = usePathname()
   const clipboard = useClipboard({ timeout: 2000 })

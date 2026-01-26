@@ -36,7 +36,9 @@ export const AdActions = ({ ad, className, ...props }: AdActionsProps) => {
 
   const { executeAsync } = useAction(duplicateAd, {
     onSuccess: ({ data }) => {
-      isSinglePage && router.push(`${indexPath}/${data?.id}`)
+      if (isSinglePage) {
+        router.push(`${indexPath}/${data?.id}`)
+      }
     },
   })
 

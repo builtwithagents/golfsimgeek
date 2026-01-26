@@ -156,7 +156,7 @@ export const FeedbackWidget = () => {
     const storedViews = Number.parseInt(sessionStorage.getItem(pageViewsKey) || "1", 10)
     sessionStorage.setItem(pageViewsKey, (storedViews + 1).toString())
     return storedViews + 1
-  }, [])
+  }, [pageViewsKey])
 
   // Debounced scroll handler
   const handleScroll = useDebouncedCallback(() => {
@@ -185,7 +185,16 @@ export const FeedbackWidget = () => {
         onDismiss: () => setDismissed(true),
       })
     }
-  }, [dismissed, shouldShow, pageViews, toastId, setDismissed])
+  }, [
+    dismissed,
+    shouldShow,
+    pageViews,
+    toastId,
+    setDismissed,
+    minTimeSpent,
+    minPageView,
+    minScroll,
+  ])
 
   // Setup scroll listener and engagement checker
   useEffect(() => {
@@ -198,7 +207,7 @@ export const FeedbackWidget = () => {
       window.removeEventListener("scroll", handleScroll)
       clearInterval(interval)
     }
-  }, [dismissed, handleScroll, checkEngagement])
+  }, [dismissed, handleScroll, checkEngagement, timeCheckInterval])
 
   return null
 }

@@ -34,7 +34,9 @@ export const TagActions = ({ tag, className, ...props }: TagActionsProps) => {
 
   const { executeAsync } = useAction(duplicateTag, {
     onSuccess: ({ data }) => {
-      isSinglePage && router.push(`${indexPath}/${data.id}`)
+      if (isSinglePage) {
+        router.push(`${indexPath}/${data.id}`)
+      }
     },
   })
 

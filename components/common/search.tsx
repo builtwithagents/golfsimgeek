@@ -83,7 +83,11 @@ export const Search = () => {
   const hasQuery = !!q.length
 
   const handleOpenChange = (open: boolean) => {
-    open ? search.open() : search.close()
+    if (open) {
+      search.open()
+    } else {
+      search.close()
+    }
 
     if (!open) {
       setResults(undefined)
@@ -191,7 +195,7 @@ export const Search = () => {
     }
 
     performSearch()
-  }, [q, execute])
+  }, [q, execute, hasQuery])
 
   return (
     <CommandDialog open={search.isOpen} onOpenChange={handleOpenChange} shouldFilter={false}>

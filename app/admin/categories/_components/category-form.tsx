@@ -38,7 +38,6 @@ type CategoryFormProps = ComponentProps<"form"> & {
 }
 
 export function CategoryForm({
-  children,
   className,
   title,
   category,

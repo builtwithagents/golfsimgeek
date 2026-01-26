@@ -314,7 +314,9 @@ export const ToolPublishActions = ({
                                         selected={new Date(selectedDate)}
                                         disabled={{ before: new Date() }}
                                         onSelect={date => {
-                                          date && setSelectedDate(formatDate(date, "yyyy-MM-dd"))
+                                          if (date) {
+                                            setSelectedDate(formatDate(date, "yyyy-MM-dd"))
+                                          }
                                           setIsScheduleOpen(false)
                                         }}
                                       />

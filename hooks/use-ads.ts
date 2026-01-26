@@ -27,9 +27,12 @@ export type AdsSelection = {
 export const useAds = (spots: AdSpot[]) => {
   const [selections, setSelections] = useState<AdsSelection[]>([])
 
-  const findAdSpot = useCallback((type: AdType) => {
-    return spots.find(s => s.type === type) ?? spots[0]
-  }, [])
+  const findAdSpot = useCallback(
+    (type: AdType) => {
+      return spots.find(s => s.type === type) ?? spots[0]
+    },
+    [spots],
+  )
 
   const clearSelection = useCallback((type: AdType) => {
     setSelections(prev => prev.filter(s => s.type !== type))
@@ -65,7 +68,7 @@ export const useAds = (spots: AdSpot[]) => {
 
     const basePrice = Math.min(...spots.map(s => s.price))
     return calculateAdsPrice(selectedItems, basePrice)
-  }, [selections, spots])
+  }, [selections, spots, findAdSpot])
 
   return {
     price,
