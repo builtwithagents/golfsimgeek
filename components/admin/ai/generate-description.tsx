@@ -52,8 +52,8 @@ export const AIGenerateDescription = <T extends z.ZodSchema>({
     },
   })
 
-  // Handle streaming updates from AI SDK
-  useEffect(() => object && onStream(object), [object, onStream])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => object && onStream(object), [object])
 
   const handleGenerate = () => {
     onGenerate?.()
