@@ -29,7 +29,7 @@ export const adSchema = z
     name: z.string().min(1, "Name is required"),
     email: z.email("Valid email is required"),
     description: z.string().optional(),
-    websiteUrl: z.url("Valid URL is required"),
+    websiteUrl: z.url({ protocol: /^https?$/, normalize: true }).min(1, "Website URL is required"),
     faviconUrl: z.string().optional(),
     bannerUrl: z.string().optional(),
     buttonLabel: z.string().optional(),

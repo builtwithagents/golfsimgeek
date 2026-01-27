@@ -1,4 +1,4 @@
-import { isMimeTypeMatch, normalizeUrl } from "@primoui/utils"
+import { isMimeTypeMatch } from "@primoui/utils"
 import type { useTranslations } from "next-intl"
 import { z } from "zod"
 
@@ -30,11 +30,8 @@ export const createSubmitToolSchema = (t: TFunction) => {
   return z.object({
     name: z.string().min(1, { error: t("required") }),
     websiteUrl: z
-      .url(t("invalidUrl"))
-      .min(1, { error: t("required") })
-      .trim()
-      .toLowerCase()
-      .transform(url => normalizeUrl(url)),
+      .url({ protocol: /^https?$/, normalize: true, error: t("invalidUrl") })
+      .min(1, { error: t("required") }),
     submitterNote: z
       .string()
       .max(256, { error: issue => t("maxLength", { length: Number(issue.maximum) }) }),
@@ -92,9 +89,8 @@ export const createAdDetailsSchema = (t: TFunction) => {
       .min(1, { error: t("required") })
       .max(160, { error: issue => t("maxLength", { length: Number(issue.maximum) }) }),
     websiteUrl: z
-      .url({ error: t("invalidUrl") })
-      .min(1, { error: t("required") })
-      .trim(),
+      .url({ protocol: /^https?$/, normalize: true, error: t("invalidUrl") })
+      .min(1, { error: t("required") }),
     buttonLabel: z.string().optional(),
   })
 }
@@ -102,9 +98,8 @@ export const createAdDetailsSchema = (t: TFunction) => {
 export const createFetchMediaSchema = (t: TFunction) => {
   return createPathSchema(t).extend({
     url: z
-      .url({ error: t("invalidUrl") })
-      .min(1, { error: t("required") })
-      .trim(),
+      .url({ protocol: /^https?$/, normalize: true, error: t("invalidUrl") })
+      .min(1, { error: t("required") }),
     type: z.enum(["favicon", "screenshot"]).default("favicon"),
   })
 }
