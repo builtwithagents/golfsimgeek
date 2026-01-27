@@ -52,7 +52,7 @@ export const AIGenerateContent = <T extends z.ZodSchema>({
   })
 
   // Handle streaming updates from AI SDK
-  useEffect(() => object && onStream(object), [object, onStream])
+  useEffect(() => object && onStream(object), [object])
 
   const handleGenerate = () => {
     onGenerate?.()

@@ -1,8 +1,8 @@
 import { useCompletion } from "@ai-sdk/react"
 import { useDebouncedValue } from "@mantine/hooks"
 import { isTruthy } from "@primoui/utils"
-import { LoaderIcon, PlusIcon, SparklesIcon } from "lucide-react"
-import { useCallback, useEffect, useState } from "react"
+import { LoaderIcon, PlusIcon } from "lucide-react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { AnimatedContainer } from "~/components/common/animated-container"
 import { Badge } from "~/components/common/badge"
 import {
@@ -42,6 +42,7 @@ export const AIRelationSuggestions = <T extends Relation>({
   const { isAIEnabled } = useAI()
   const [suggestions, setSuggestions] = useState<T[]>([])
   const [debouncedPrompt] = useDebouncedValue(prompt, 500)
+  const requestedPromptRef = useRef<string | null>(null)
 
   const { complete, isLoading } = useCompletion({
     api: "/admin/api/ai/completion",
@@ -61,11 +62,20 @@ export const AIRelationSuggestions = <T extends Relation>({
   })
 
   useEffect(() => {
-    if (isAIEnabled && debouncedPrompt && relations.length && !ids.length && !suggestions.length) {
-      const relationNames = relations.map(({ name }) => name).join(", ")
-      complete(buildSuggestionPrompt(debouncedPrompt, maxSuggestions, relationNames))
-    }
-  }, [isAIEnabled, debouncedPrompt, ids.length, suggestions.length])
+    // Skip: not enabled or missing required data
+    if (!isAIEnabled || !debouncedPrompt || !relations.length) return
+
+    // Skip: user already has selections or suggestions
+    if (ids.length || suggestions.length) return
+
+    // Skip: request in progress or already requested this prompt
+    if (isLoading || requestedPromptRef.current === debouncedPrompt) return
+
+    // Make the request
+    requestedPromptRef.current = debouncedPrompt
+    const relationNames = relations.map(({ name }) => name).join(", ")
+    complete(buildSuggestionPrompt(debouncedPrompt, maxSuggestions, relationNames))
+  }, [debouncedPrompt, isAIEnabled, relations])
 
   const handleSetIds = useCallback(
     (newIds: string[]) => {
@@ -100,10 +110,7 @@ export const AIRelationSuggestions = <T extends Relation>({
         <AnimatedContainer height transition={{ ease: "linear", duration: 0.1 }}>
           <Stack size="sm" direction="row" className="items-start">
             <Tooltip tooltip="AI-suggested relations. Click on them to add to the selection.">
-              <span className="mt-0.5 text-xs text-muted-foreground">
-                <SparklesIcon className="inline-block size-3 mr-1" />
-                Suggested:
-              </span>
+              <span className="mt-0.5 text-xs text-muted-foreground">Suggested:</span>
             </Tooltip>
 
             <Stack size="xs" className="flex-1">
