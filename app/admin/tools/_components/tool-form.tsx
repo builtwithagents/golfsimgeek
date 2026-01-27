@@ -9,7 +9,7 @@ import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { type ComponentProps, use, useMemo, useRef, useState } from "react"
 import { toast } from "sonner"
-import { type Tool, ToolTier, ToolStatus } from "~/.generated/prisma/browser"
+import { type Tool, ToolStatus, ToolTier } from "~/.generated/prisma/browser"
 import { ToolActions } from "~/app/admin/tools/_components/tool-actions"
 import { ToolPublishActions } from "~/app/admin/tools/_components/tool-publish-actions"
 import { AIGenerateContent } from "~/components/admin/ai/generate-content"
@@ -28,7 +28,6 @@ import { H3 } from "~/components/common/heading"
 import { Input, inputVariants } from "~/components/common/input"
 import { Link } from "~/components/common/link"
 import { Note } from "~/components/common/note"
-import { Stack } from "~/components/common/stack"
 import {
   Select,
   SelectContent,
@@ -36,6 +35,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/common/select"
+import { Stack } from "~/components/common/stack"
 import { TextArea } from "~/components/common/textarea"
 import { Tooltip } from "~/components/common/tooltip"
 import { Markdown } from "~/components/web/markdown"
@@ -140,7 +140,7 @@ export function ToolForm({
     },
   })
 
-  useHotkeys([["mod+enter", () => form.handleSubmit(data => action.execute(data))()]], [], true)
+  useHotkeys([["mod+enter", () => form.handleSubmit(action.execute)()]], [], true)
 
   // Set the slug based on the name
   useComputedField({

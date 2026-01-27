@@ -2,16 +2,8 @@ import { useLocalStorage } from "@mantine/hooks"
 import { LoaderIcon, SparklesIcon } from "lucide-react"
 import { type ComponentProps, useState } from "react"
 import { Button } from "~/components/common/button"
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "~/components/common/dialog"
 import { Tooltip } from "~/components/common/tooltip"
+import { ConsentDialog } from "~/components/admin/dialogs/consent-dialog"
 import { siteConfig } from "~/config/site"
 import { useAI } from "~/contexts/ai-context"
 
@@ -72,36 +64,24 @@ export const AIGenerate = ({
         </span>
       </Button>
 
-      <Dialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Before you continue</DialogTitle>
-
-            <DialogDescription>
-              <p>
-                This action will automatically generate content for you. The process will take some
-                time to complete.
-              </p>
-              <p>
-                Please note that this will <strong>overwrite any existing content</strong> you have
-                entered and may also incur an <strong>AI usage fee</strong>.
-              </p>
-            </DialogDescription>
-          </DialogHeader>
-
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button size="md" variant="secondary">
-                Cancel
-              </Button>
-            </DialogClose>
-
-            <Button size="md" onClick={() => handleGenerate(true)}>
-              Ok, I understand
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConsentDialog
+        open={isAlertOpen}
+        onOpenChange={setIsAlertOpen}
+        title="Before you continue"
+        description={
+          <>
+            <p>
+              This action will automatically generate content for you. The process will take some
+              time to complete.
+            </p>
+            <p>
+              Please note that this will <strong>overwrite any existing content</strong> you have
+              entered and may also incur an <strong>AI usage fee</strong>.
+            </p>
+          </>
+        }
+        onConfirm={() => handleGenerate(true)}
+      />
     </>
   )
 }

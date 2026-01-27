@@ -36,7 +36,15 @@ export const DeleteDialog = <ServerError, CVE, Data>({
   const { execute, isPending } = useAction(action, callbacks)
   const pluralizedLabel = useMemo(() => plur(label, ids.length), [label, ids])
 
-  const handleKeyDown = getHotkeyHandler([["mod+Enter", () => execute({ ids })]])
+  const handleKeyDown = getHotkeyHandler([
+    [
+      "mod+Enter",
+      e => {
+        e.stopPropagation()
+        execute({ ids })
+      },
+    ],
+  ])
 
   return (
     <Dialog {...props}>
