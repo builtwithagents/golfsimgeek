@@ -3,6 +3,7 @@ import { useHotkeys } from "@mantine/hooks"
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks"
 import { useTranslations } from "next-intl"
 import type { Dispatch, SetStateAction } from "react"
+import { Controller, FormProvider as Form } from "react-hook-form"
 import { toast } from "sonner"
 import { Button } from "~/components/common/button"
 import {
@@ -13,14 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/common/dialog"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/common/form"
+import { Field, FieldError, FieldLabel } from "~/components/common/field"
 import { Input } from "~/components/common/input"
 import { RadioGroup, RadioGroupItem } from "~/components/common/radio-group"
 import { Stack } from "~/components/common/stack"
@@ -91,73 +85,69 @@ export const ToolReportDialog = ({ tool, isOpen, setIsOpen }: ToolReportDialogPr
         <Form {...form}>
           <form onSubmit={handleSubmitWithAction} className="grid gap-4" noValidate>
             {!session?.user && (
-              <FormField
+              <Controller
                 control={form.control}
                 name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel isRequired>{t("email_label")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder={t("email_placeholder")}
-                        data-1p-ignore
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel data-required htmlFor={field.name}>
+                      {t("email_label")}
+                    </FieldLabel>
+                    <Input
+                      id={field.name}
+                      type="email"
+                      placeholder={t("email_placeholder")}
+                      data-1p-ignore
+                      {...field}
+                    />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
                 )}
               />
             )}
 
-            <FormField
+            <Controller
               control={form.control}
               name="type"
-              render={({ field: { value, onChange, ...field } }) => (
-                <FormItem>
-                  <FormLabel isRequired>{t("type_label")}</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      value={value}
-                      onValueChange={onChange}
-                      className="flex flex-col items-start gap-2.5"
-                      {...field}
-                    >
-                      {reportsConfig.reportTypes.map(type => (
-                        <Stack key={type} size="sm" wrap={false} asChild>
-                          <FormLabel
-                            htmlFor={undefined}
-                            className="font-normal text-secondary-foreground overflow-visible cursor-pointer"
-                          >
-                            <RadioGroupItem value={type} />
-                            {type}
-                          </FormLabel>
-                        </Stack>
-                      ))}
-                    </RadioGroup>
-                  </FormControl>
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel data-required>{t("type_label")}</FieldLabel>
+                  <RadioGroup
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    className="flex flex-col items-start gap-2.5"
+                  >
+                    {reportsConfig.reportTypes.map(type => (
+                      <Stack key={type} size="sm" wrap={false} asChild>
+                        <FieldLabel className="font-normal text-secondary-foreground overflow-visible cursor-pointer">
+                          <RadioGroupItem value={type} />
+                          {type}
+                        </FieldLabel>
+                      </Stack>
+                    ))}
+                  </RadioGroup>
 
-                  <FormMessage className="mt-1" />
-                </FormItem>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} className="mt-1" />
+                  )}
+                </Field>
               )}
             />
 
-            <FormField
+            <Controller
               control={form.control}
               name="message"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("message_label")}</FormLabel>
-                  <FormControl>
-                    <TextArea
-                      placeholder={t("message_placeholder")}
-                      className="min-h-20"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>{t("message_label")}</FieldLabel>
+                  <TextArea
+                    id={field.name}
+                    placeholder={t("message_placeholder")}
+                    className="min-h-20"
+                    {...field}
+                  />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
               )}
             />
 

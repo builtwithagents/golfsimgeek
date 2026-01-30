@@ -9,7 +9,8 @@ import { Button, type ButtonProps } from "~/components/common/button"
 import { Calendar } from "~/components/common/calendar"
 import { Checkbox } from "~/components/common/checkbox"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "~/components/common/dialog"
-import { FormControl, FormField, FormItem, FormLabel } from "~/components/common/form"
+import { Controller } from "react-hook-form"
+import { Field, FieldLabel } from "~/components/common/field"
 import { H5, H6 } from "~/components/common/heading"
 import { Input } from "~/components/common/input"
 import { Kbd } from "~/components/common/kbd"
@@ -336,24 +337,24 @@ export const ToolPublishActions = ({
                     status !== ToolStatus.Published &&
                     (currentOption.status === ToolStatus.Published ||
                       currentOption.status === ToolStatus.Scheduled) && (
-                      <FormField
+                      <Controller
                         control={control}
                         name="notifySubmitter"
                         render={({ field }) => (
-                          <FormItem size="sm" direction="row">
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value}
-                                onCheckedChange={() => field.onChange(!field.value)}
-                              />
-                            </FormControl>
+                          <Field orientation="horizontal" className="gap-1">
+                            <Checkbox
+                              id={field.name}
+                              checked={field.value}
+                              onCheckedChange={() => field.onChange(!field.value)}
+                            />
 
-                            <FormLabel
+                            <FieldLabel
+                              htmlFor={field.name}
                               className={cx(!field.value && "font-normal text-muted-foreground")}
                             >
                               Notify submitter via email
-                            </FormLabel>
-                          </FormItem>
+                            </FieldLabel>
+                          </Field>
                         )}
                       />
                     )}

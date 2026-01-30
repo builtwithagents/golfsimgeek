@@ -2,20 +2,14 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks"
-import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
+import { useRouter } from "next/navigation"
 import type { ComponentProps } from "react"
+import { Controller, FormProvider as Form } from "react-hook-form"
 import { toast } from "sonner"
 import { Button } from "~/components/common/button"
 import { Checkbox } from "~/components/common/checkbox"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/common/form"
+import { Field, FieldError, FieldLabel } from "~/components/common/field"
 import { Hint } from "~/components/common/hint"
 import { Input } from "~/components/common/input"
 import { TextArea } from "~/components/common/textarea"
@@ -81,59 +75,73 @@ export const SubmitForm = ({ className, ...props }: ComponentProps<"form">) => {
         noValidate
         {...props}
       >
-        <FormField
+        <Controller
           control={form.control}
           name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel isRequired>{t("name_label")}:</FormLabel>
-              <FormControl>
-                <Input size="lg" placeholder={t("name_placeholder")} data-1p-ignore {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel data-required htmlFor={field.name}>
+                {t("name_label")}:
+              </FieldLabel>
+              <Input
+                id={field.name}
+                size="lg"
+                placeholder={t("name_placeholder")}
+                data-1p-ignore
+                {...field}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="websiteUrl"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel isRequired>{t("website_label")}:</FormLabel>
-              <FormControl>
-                <Input type="url" size="lg" placeholder={t("website_placeholder")} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel data-required htmlFor={field.name}>
+                {t("website_label")}:
+              </FieldLabel>
+              <Input
+                id={field.name}
+                type="url"
+                size="lg"
+                placeholder={t("website_placeholder")}
+                {...field}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="submitterNote"
-          render={({ field }) => (
-            <FormItem className="col-span-full">
-              <FormLabel>{t("note_label")}:</FormLabel>
-              <FormControl>
-                <TextArea size="lg" placeholder={t("note_placeholder")} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
+              <FieldLabel htmlFor={field.name}>{t("note_label")}:</FieldLabel>
+              <TextArea id={field.name} size="lg" placeholder={t("note_placeholder")} {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="newsletterOptIn"
-          render={({ field }) => (
-            <FormItem className="flex-row items-center col-span-full gap-2">
-              <FormControl>
-                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-              </FormControl>
-              <FormLabel className="font-normal">{t("newsletter_label")}</FormLabel>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field
+              orientation="horizontal"
+              className="col-span-full items-center gap-2"
+              data-invalid={fieldState.invalid}
+            >
+              <Checkbox id={field.name} checked={field.value} onCheckedChange={field.onChange} />
+              <FieldLabel htmlFor={field.name} className="font-normal">
+                {t("newsletter_label")}
+              </FieldLabel>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 

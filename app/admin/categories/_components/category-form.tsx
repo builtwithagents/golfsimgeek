@@ -6,21 +6,15 @@ import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hoo
 import { slugify } from "@primoui/utils"
 import { useRouter } from "next/navigation"
 import { type ComponentProps, use } from "react"
+import { Controller, FormProvider as Form } from "react-hook-form"
 import { toast } from "sonner"
 import { CategoryActions } from "~/app/admin/categories/_components/category-actions"
 import { AIGenerateDescription } from "~/components/admin/ai/generate-description"
 import { Button } from "~/components/common/button"
-import { Kbd } from "~/components/common/kbd"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/common/form"
+import { Field, FieldError, FieldLabel } from "~/components/common/field"
 import { H3 } from "~/components/common/heading"
 import { Input } from "~/components/common/input"
+import { Kbd } from "~/components/common/kbd"
 import { Link } from "~/components/common/link"
 import { RelationSelector } from "~/components/common/relation-selector"
 import { Stack } from "~/components/common/stack"
@@ -105,6 +99,7 @@ export function CategoryForm({
             prompt={`Create a compelling description for the category named "${name}". Begin with a plural noun phrase (e.g., "Tools for..." or "Resources that..."). Craft a single, concise sentence that clearly conveys the purpose and value of this category. Ensure the description is specific enough to differentiate this category from others while remaining broad enough to encompass all relevant items within it.`}
             schema={descriptionSchema}
             onStream={object => form.setValue("description", object.description)}
+            disabled={!form.formState.isValid}
           />
 
           {category && <CategoryActions category={category} size="md" />}
@@ -118,71 +113,67 @@ export function CategoryForm({
         {...props}
       >
         <div className="grid gap-4 @lg:grid-cols-2">
-          <FormField
+          <Controller
             control={form.control}
             name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel isRequired>Name</FormLabel>
-                <FormControl>
-                  <Input data-1p-ignore {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel data-required htmlFor={field.name}>
+                  Name
+                </FieldLabel>
+                <Input id={field.name} data-1p-ignore {...field} />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
             )}
           />
 
-          <FormField
+          <Controller
             control={form.control}
             name="slug"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel isRequired>Slug</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel data-required htmlFor={field.name}>
+                  Slug
+                </FieldLabel>
+                <Input id={field.name} {...field} />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
             )}
           />
         </div>
 
-        <FormField
+        <Controller
           control={form.control}
           name="label"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Label</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Label</FieldLabel>
+              <Input id={field.name} {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="description"
-          render={({ field }) => (
-            <FormItem className="col-span-full">
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <TextArea {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
+              <FieldLabel htmlFor={field.name}>Description</FieldLabel>
+              <TextArea id={field.name} {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="tools"
           render={({ field }) => (
-            <FormItem className="col-span-full">
-              <FormLabel>Tools</FormLabel>
+            <Field className="col-span-full">
+              <FieldLabel>Tools</FieldLabel>
               <RelationSelector relations={tools} ids={field.value ?? []} setIds={field.onChange} />
-            </FormItem>
+            </Field>
           )}
         />
 

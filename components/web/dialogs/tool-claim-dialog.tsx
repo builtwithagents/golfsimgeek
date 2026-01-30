@@ -4,6 +4,7 @@ import { getDomain } from "@primoui/utils"
 import { useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import { Controller, FormProvider as Form } from "react-hook-form"
 import { toast } from "sonner"
 import type { z } from "zod"
 import { Button } from "~/components/common/button"
@@ -15,14 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/common/dialog"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/common/form"
+import { Field, FieldError, FieldLabel } from "~/components/common/field"
 import { Input } from "~/components/common/input"
 import { Stack } from "~/components/common/stack"
 import { LoginDialog } from "~/components/web/auth/login-dialog"
@@ -104,7 +98,7 @@ export const ToolClaimDialog = ({ tool, isOpen, setIsOpen }: ToolClaimDialogProp
       setVerificationEmail("")
       setCooldownRemaining(0)
     }
-  }, [isOpen])
+  }, [isOpen, sendOtpAction.form, verifyOtpAction.form])
 
   // Cooldown timer effect
   useEffect(() => {
@@ -175,22 +169,21 @@ export const ToolClaimDialog = ({ tool, isOpen, setIsOpen }: ToolClaimDialogProp
                 </ul>
               </DialogDescription>
 
-              <FormField
+              <Controller
                 control={sendOtpAction.form.control}
                 name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t("email_label")}</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        data-1p-ignore
-                        placeholder={t("email_placeholder", { domain: toolDomain })}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name}>{t("email_label")}</FieldLabel>
+                    <Input
+                      id={field.name}
+                      type="email"
+                      data-1p-ignore
+                      placeholder={t("email_placeholder", { domain: toolDomain })}
+                      {...field}
+                    />
+                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                  </Field>
                 )}
               />
 
@@ -221,22 +214,21 @@ export const ToolClaimDialog = ({ tool, isOpen, setIsOpen }: ToolClaimDialogProp
               </DialogDescription>
 
               <Stack direction="column">
-                <FormField
+                <Controller
                   control={verifyOtpAction.form.control}
                   name="otp"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel>{t("verification_label")}</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder={t("verification_placeholder", {
-                            length: claimsConfig.otpLength,
-                          })}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                  render={({ field, fieldState }) => (
+                    <Field className="w-full" data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor={field.name}>{t("verification_label")}</FieldLabel>
+                      <Input
+                        id={field.name}
+                        placeholder={t("verification_placeholder", {
+                          length: claimsConfig.otpLength,
+                        })}
+                        {...field}
+                      />
+                      {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                    </Field>
                   )}
                 />
 

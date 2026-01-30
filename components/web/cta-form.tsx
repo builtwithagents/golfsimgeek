@@ -4,9 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks"
 import { useTranslations } from "next-intl"
 import type { ComponentProps } from "react"
+import { Controller, FormProvider as Form } from "react-hook-form"
 import { Box } from "~/components/common/box"
 import { Button } from "~/components/common/button"
-import { Form, FormControl, FormField } from "~/components/common/form"
 import { Hint } from "~/components/common/hint"
 import { Input } from "~/components/common/input"
 import { useTrackEvent } from "~/hooks/use-track-event"
@@ -68,32 +68,26 @@ export const CTAForm = ({
         noValidate
         {...props}
       >
-        <FormField
+        <Controller
           control={form.control}
           name="captcha"
-          render={({ field }) => (
-            <FormControl>
-              <Input type="hidden" {...field} />
-            </FormControl>
-          )}
+          render={({ field }) => <input type="hidden" {...field} />}
         />
 
         <Box focusWithin>
           <div className="flex w-full bg-background rounded-lg">
-            <FormField
+            <Controller
               control={form.control}
               name="email"
               render={({ field }) => (
-                <FormControl>
-                  <Input
-                    type="email"
-                    placeholder={defaultPlaceholder}
-                    size={size}
-                    className="flex-1 min-w-0 border-0 focus-visible:outline-none"
-                    data-1p-ignore
-                    {...field}
-                  />
-                </FormControl>
+                <Input
+                  type="email"
+                  placeholder={defaultPlaceholder}
+                  size={size}
+                  className="flex-1 min-w-0 border-0 focus-visible:outline-none"
+                  data-1p-ignore
+                  {...field}
+                />
               )}
             />
 

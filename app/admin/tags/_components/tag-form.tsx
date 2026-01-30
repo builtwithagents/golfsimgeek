@@ -6,17 +6,11 @@ import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hoo
 import { slugify } from "@primoui/utils"
 import { useRouter } from "next/navigation"
 import { type ComponentProps, use } from "react"
+import { Controller, FormProvider as Form } from "react-hook-form"
 import { toast } from "sonner"
 import { TagActions } from "~/app/admin/tags/_components/tag-actions"
 import { Button } from "~/components/common/button"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/common/form"
+import { Field, FieldError, FieldLabel } from "~/components/common/field"
 import { H3 } from "~/components/common/heading"
 import { Input } from "~/components/common/input"
 import { Kbd } from "~/components/common/kbd"
@@ -89,42 +83,42 @@ export function TagForm({ className, title, tag, toolsPromise, ...props }: TagFo
         noValidate
         {...props}
       >
-        <FormField
+        <Controller
           control={form.control}
           name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel isRequired>Name</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel data-required htmlFor={field.name}>
+                Name
+              </FieldLabel>
+              <Input {...field} id={field.name} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="slug"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel isRequired>Slug</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel data-required htmlFor={field.name}>
+                Slug
+              </FieldLabel>
+              <Input {...field} id={field.name} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="tools"
           render={({ field }) => (
-            <FormItem className="col-span-full">
-              <FormLabel>Tools</FormLabel>
+            <Field className="col-span-full">
+              <FieldLabel>Tools</FieldLabel>
               <RelationSelector relations={tools} ids={field.value ?? []} setIds={field.onChange} />
-            </FormItem>
+            </Field>
           )}
         />
 

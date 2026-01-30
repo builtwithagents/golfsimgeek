@@ -9,24 +9,18 @@ import { CalendarIcon, ClockIcon } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { type ComponentProps, useMemo, useState } from "react"
+import { Controller, FormProvider as Form } from "react-hook-form"
 import { toast } from "sonner"
 import { AdType } from "~/.generated/prisma/browser"
 import { AdActions } from "~/app/admin/ads/_components/ad-actions"
 import { Button } from "~/components/common/button"
-import { Kbd } from "~/components/common/kbd"
 import { Calendar } from "~/components/common/calendar"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "~/components/common/dialog"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/common/form"
+import { Field, FieldError, FieldLabel } from "~/components/common/field"
 import { FormMedia } from "~/components/common/form-media"
 import { H3 } from "~/components/common/heading"
 import { Input } from "~/components/common/input"
+import { Kbd } from "~/components/common/kbd"
 import { Link } from "~/components/common/link"
 import {
   Select,
@@ -144,63 +138,61 @@ export function AdForm({ className, title, ad, ...props }: AdFormProps) {
         noValidate
         {...props}
       >
-        <FormField
+        <Controller
           control={form.control}
           name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel isRequired>Name</FormLabel>
-              <FormControl>
-                <Input data-1p-ignore {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel data-required htmlFor={field.name}>
+                Name
+              </FieldLabel>
+              <Input id={field.name} data-1p-ignore {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel isRequired>Email</FormLabel>
-              <FormControl>
-                <Input type="email" data-1p-ignore {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel data-required htmlFor={field.name}>
+                Email
+              </FieldLabel>
+              <Input id={field.name} type="email" data-1p-ignore {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="websiteUrl"
-          render={({ field }) => (
-            <FormItem className="col-span-full">
-              <FormLabel isRequired>Website URL</FormLabel>
-              <FormControl>
-                <Input type="url" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field className="col-span-full" data-invalid={fieldState.invalid}>
+              <FieldLabel data-required htmlFor={field.name}>
+                Website URL
+              </FieldLabel>
+              <Input id={field.name} type="url" {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="description"
-          render={({ field }) => (
-            <FormItem className="col-span-full">
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <TextArea {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field className="col-span-full" data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Description</FieldLabel>
+              <TextArea id={field.name} {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="faviconUrl"
           render={({ field }) => (
@@ -225,7 +217,7 @@ export function AdForm({ className, title, ad, ...props }: AdFormProps) {
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="bannerUrl"
           render={({ field }) => (
@@ -244,32 +236,28 @@ export function AdForm({ className, title, ad, ...props }: AdFormProps) {
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="buttonLabel"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Button Label</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Button Label</FieldLabel>
+              <Input id={field.name} {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="type"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Type</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select ad type" />
-                  </SelectTrigger>
-                </FormControl>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Type</FieldLabel>
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger id={field.name}>
+                  <SelectValue placeholder="Select ad type" />
+                </SelectTrigger>
                 <SelectContent>
                   {Object.values(AdType).map(type => (
                     <SelectItem key={type} value={type}>
@@ -278,18 +266,18 @@ export function AdForm({ className, title, ad, ...props }: AdFormProps) {
                   ))}
                 </SelectContent>
               </Select>
-              <FormMessage />
-            </FormItem>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="startsAt"
-          render={() => (
-            <FormItem className="items-stretch">
+          render={({ fieldState }) => (
+            <Field className="items-stretch" data-invalid={fieldState.invalid}>
               <Stack className="justify-between">
-                <FormLabel isRequired>Starts At</FormLabel>
+                <FieldLabel data-required>Starts At</FieldLabel>
 
                 <Button
                   type="button"
@@ -315,6 +303,7 @@ export function AdForm({ className, title, ad, ...props }: AdFormProps) {
                 </Button>
 
                 <Input
+                  id="startsAt"
                   type="time"
                   value={startsAtTime}
                   onChange={e => {
@@ -346,18 +335,18 @@ export function AdForm({ className, title, ad, ...props }: AdFormProps) {
                   </DialogContent>
                 </Dialog>
               </Stack>
-              <FormMessage />
-            </FormItem>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="endsAt"
-          render={() => (
-            <FormItem className="items-stretch">
+          render={({ fieldState }) => (
+            <Field className="items-stretch" data-invalid={fieldState.invalid}>
               <Stack className="justify-between">
-                <FormLabel isRequired>Ends At</FormLabel>
+                <FieldLabel data-required>Ends At</FieldLabel>
 
                 <Button
                   type="button"
@@ -383,6 +372,7 @@ export function AdForm({ className, title, ad, ...props }: AdFormProps) {
                 </Button>
 
                 <Input
+                  id="endsAt"
                   type="time"
                   value={endsAtTime}
                   onChange={e => {
@@ -415,8 +405,8 @@ export function AdForm({ className, title, ad, ...props }: AdFormProps) {
                   </DialogContent>
                 </Dialog>
               </Stack>
-              <FormMessage />
-            </FormItem>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 

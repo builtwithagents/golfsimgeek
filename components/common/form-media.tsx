@@ -4,14 +4,14 @@ import { DownloadCloudIcon, UploadIcon } from "lucide-react"
 import { type ComponentProps, useRef } from "react"
 import type { ControllerRenderProps, FieldPath, FieldValues, UseFormReturn } from "react-hook-form"
 import { Button } from "~/components/common/button"
-import { FormControl, FormItem, FormLabel, FormMessage } from "~/components/common/form"
+import { Field, FieldError, FieldLabel } from "~/components/common/field"
 import { Input } from "~/components/common/input"
 import { Stack } from "~/components/common/stack"
 import { useMediaAction } from "~/hooks/use-media-action"
 import { cx } from "~/lib/utils"
 import { ALLOWED_MIMETYPES } from "~/server/web/shared/schema"
 
-type FormMediaProps<T extends FieldValues> = ComponentProps<typeof FormItem> & {
+type FormMediaProps<T extends FieldValues> = ComponentProps<typeof Field> & {
   form: UseFormReturn<T>
   field: ControllerRenderProps<T, FieldPath<T>>
   path: string
@@ -32,10 +32,12 @@ export const FormMedia = <T extends FieldValues>({
   const inputRef = useRef<HTMLInputElement>(null)
   const action = useMediaAction({ form, path, fieldName: field.name, fetchType })
 
+  const error = form.formState.errors[field.name]
+
   return (
-    <FormItem className={cx("items-stretch", className)} {...props}>
+    <Field className={cx("items-stretch", className)} {...props}>
       <Stack className="justify-between">
-        <FormLabel className="flex-1">{capitalCase(field.name)}</FormLabel>
+        <FieldLabel className="flex-1">{capitalCase(field.name)}</FieldLabel>
 
         <Stack size="xs" className="-my-1">
           <Button
@@ -69,12 +71,10 @@ export const FormMedia = <T extends FieldValues>({
       <Stack size="sm">
         {children}
 
-        <FormControl>
-          <Input type="url" className="flex-1" {...field} />
-        </FormControl>
+        <Input type="url" className="flex-1" {...field} />
       </Stack>
 
-      <FormMessage />
+      {error && <FieldError errors={[error as { message?: string }]} />}
 
       <input
         ref={inputRef}
@@ -83,6 +83,6 @@ export const FormMedia = <T extends FieldValues>({
         onChange={action.handleUpload}
         className="hidden"
       />
-    </FormItem>
+    </Field>
   )
 }

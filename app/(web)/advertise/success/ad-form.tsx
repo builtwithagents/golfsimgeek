@@ -4,16 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks"
 import { useTranslations } from "next-intl"
 import type { ComponentProps } from "react"
+import { Controller, FormProvider as Form } from "react-hook-form"
 import { toast } from "sonner"
 import { Button } from "~/components/common/button"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/common/form"
+import { Field, FieldError, FieldLabel } from "~/components/common/field"
 import { Input } from "~/components/common/input"
 import { Note } from "~/components/common/note"
 import { Stack } from "~/components/common/stack"
@@ -66,62 +60,71 @@ export const AdForm = ({ className, sessionId, ad, ...props }: AdFormProps) => {
         noValidate
         {...props}
       >
-        <FormField
+        <Controller
           control={form.control}
           name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel isRequired>{t("name_label")}</FormLabel>
-              <FormControl>
-                <Input type="text" size="lg" placeholder={t("name_placeholder")} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel data-required htmlFor={field.name}>
+                {t("name_label")}
+              </FieldLabel>
+              <Input id={field.name} size="lg" placeholder={t("name_placeholder")} {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="websiteUrl"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel isRequired>{t("website_url_label")}</FormLabel>
-              <FormControl>
-                <Input type="url" size="lg" placeholder={t("website_url_placeholder")} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel data-required htmlFor={field.name}>
+                {t("website_url_label")}
+              </FieldLabel>
+              <Input
+                id={field.name}
+                type="url"
+                size="lg"
+                placeholder={t("website_url_placeholder")}
+                {...field}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="description"
-          render={({ field }) => (
-            <FormItem>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
               <Stack className="w-full justify-between">
-                <FormLabel isRequired>{t("description_label")}</FormLabel>
+                <FieldLabel data-required htmlFor={field.name}>
+                  {t("description_label")}
+                </FieldLabel>
                 <Note className="text-xs">{t("description_note")}</Note>
               </Stack>
-              <FormControl>
-                <TextArea size="lg" placeholder={t("description_placeholder")} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+              <TextArea
+                id={field.name}
+                size="lg"
+                placeholder={t("description_placeholder")}
+                {...field}
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="buttonLabel"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t("button_label")}</FormLabel>
-              <FormControl>
-                <Input type="text" size="lg" placeholder={t("button_placeholder")} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>{t("button_label")}</FieldLabel>
+              <Input id={field.name} size="lg" placeholder={t("button_placeholder")} {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 

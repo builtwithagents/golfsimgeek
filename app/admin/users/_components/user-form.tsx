@@ -4,22 +4,16 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useHotkeys } from "@mantine/hooks"
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks"
 import type { ComponentProps } from "react"
+import { Controller, FormProvider as Form } from "react-hook-form"
 import { toast } from "sonner"
 import { UserActions } from "~/app/admin/users/_components/user-actions"
 import { Avatar, AvatarImage } from "~/components/common/avatar"
 import { Button } from "~/components/common/button"
-import { Kbd } from "~/components/common/kbd"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/common/form"
+import { Field, FieldError, FieldLabel } from "~/components/common/field"
 import { FormMedia } from "~/components/common/form-media"
 import { H3 } from "~/components/common/heading"
 import { Input } from "~/components/common/input"
+import { Kbd } from "~/components/common/kbd"
 import { Link } from "~/components/common/link"
 import { Stack } from "~/components/common/stack"
 import { cx } from "~/lib/utils"
@@ -75,46 +69,45 @@ export function UserForm({ className, title, user, ...props }: UserFormProps) {
         {...props}
       >
         <div className="grid gap-4 @lg:grid-cols-2">
-          <FormField
+          <Controller
             control={form.control}
             name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Name</FormLabel>
-                <FormControl>
-                  <Input data-1p-ignore {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Name</FieldLabel>
+                <Input id={field.name} data-1p-ignore {...field} />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
             )}
           />
 
-          <FormField
+          <Controller
             control={form.control}
             name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor={field.name}>Email</FieldLabel>
+                <Input id={field.name} {...field} />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
             )}
           />
         </div>
 
-        <FormField
+        <Controller
           control={form.control}
           name="image"
-          render={({ field }) => (
-            <FormMedia form={form} field={field} path={`users/${user.id}/avatar`}>
-              {field.value && (
-                <Avatar className="size-8 border box-content">
-                  <AvatarImage src={field.value} />
-                </Avatar>
-              )}
-            </FormMedia>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FormMedia form={form} field={field} path={`users/${user.id}/avatar`}>
+                {field.value && (
+                  <Avatar className="size-8 border box-content">
+                    <AvatarImage src={field.value} />
+                  </Avatar>
+                )}
+              </FormMedia>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 

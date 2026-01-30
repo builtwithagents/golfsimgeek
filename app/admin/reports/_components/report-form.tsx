@@ -4,20 +4,14 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useHotkeys } from "@mantine/hooks"
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks"
 import type { ComponentProps } from "react"
+import { Controller, FormProvider as Form } from "react-hook-form"
 import { toast } from "sonner"
 import { ReportActions } from "~/app/admin/reports/_components/report-actions"
 import { Button } from "~/components/common/button"
-import { Kbd } from "~/components/common/kbd"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/common/form"
+import { Field, FieldError, FieldLabel } from "~/components/common/field"
 import { H3 } from "~/components/common/heading"
 import { Input } from "~/components/common/input"
+import { Kbd } from "~/components/common/kbd"
 import { Link } from "~/components/common/link"
 import {
   Select,
@@ -80,18 +74,18 @@ export function ReportForm({ className, title, report, ...props }: ReportFormPro
         noValidate
         {...props}
       >
-        <FormField
+        <Controller
           control={form.control}
           name="type"
-          render={({ field: { value, onChange, ...field } }) => (
-            <FormItem>
-              <FormLabel isRequired>Type</FormLabel>
-              <Select value={value} onValueChange={onChange} {...field}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a report type" />
-                  </SelectTrigger>
-                </FormControl>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel data-required htmlFor={field.name}>
+                Type
+              </FieldLabel>
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger id={field.name}>
+                  <SelectValue placeholder="Select a report type" />
+                </SelectTrigger>
                 <SelectContent>
                   {reportsConfig.reportTypes.map(type => (
                     <SelectItem key={type} value={type}>
@@ -100,36 +94,34 @@ export function ReportForm({ className, title, report, ...props }: ReportFormPro
                   ))}
                 </SelectContent>
               </Select>
-              <FormMessage />
-            </FormItem>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel isRequired>Email</FormLabel>
-              <FormControl>
-                <Input type="email" data-1p-ignore {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel data-required htmlFor={field.name}>
+                Email
+              </FieldLabel>
+              <Input type="email" data-1p-ignore id={field.name} {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="message"
-          render={({ field }) => (
-            <FormItem className="col-span-full">
-              <FormLabel>Message</FormLabel>
-              <FormControl>
-                <TextArea {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field className="col-span-full" data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Message</FieldLabel>
+              <TextArea id={field.name} {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 

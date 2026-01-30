@@ -7,9 +7,10 @@ import { getRandomDigits } from "@primoui/utils"
 import { millisecondsInSecond } from "date-fns/constants"
 import { useTranslations } from "next-intl"
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { Controller, FormProvider as Form } from "react-hook-form"
 import { toast } from "sonner"
 import { Button } from "~/components/common/button"
-import { Form, FormControl, FormField, FormItem } from "~/components/common/form"
+import { Field } from "~/components/common/field"
 import { Input } from "~/components/common/input"
 import { Stack } from "~/components/common/stack"
 import { TextArea } from "~/components/common/textarea"
@@ -65,46 +66,42 @@ const FeedbackWidgetForm = ({ toastId, setDismissed }: FeedbackWidgetFormProps) 
   useHotkeys([["mod+enter", () => handleSubmitWithAction()]], [], true)
 
   return (
-    <Form {...form}>
-      <Stack direction="column" className="items-stretch w-full" asChild>
+    <Stack direction="column" className="items-stretch w-full" asChild>
+      <Form {...form}>
         <form onSubmit={handleSubmitWithAction} noValidate>
           <p className="mb-1 text-xs">{t("question", { siteName: siteConfig.name })}</p>
 
           {!session?.user && (
-            <FormField
+            <Controller
               control={form.control}
               name="email"
               render={({ field, fieldState }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      size="sm"
-                      placeholder={t("email_placeholder")}
-                      className={cx("text-xs", fieldState.error ? "bg-destructive/5!" : "")}
-                      data-1p-ignore
-                      {...field}
-                    />
-                  </FormControl>
-                </FormItem>
+                <Field>
+                  <Input
+                    type="email"
+                    size="sm"
+                    placeholder={t("email_placeholder")}
+                    className={cx("text-xs", fieldState.error ? "bg-destructive/5!" : "")}
+                    data-1p-ignore
+                    {...field}
+                  />
+                </Field>
               )}
             />
           )}
 
-          <FormField
+          <Controller
             control={form.control}
             name="message"
             render={({ field, fieldState }) => (
-              <FormItem>
-                <FormControl>
-                  <TextArea
-                    size="sm"
-                    placeholder={t("feedback_placeholder")}
-                    className={cx("h-20 text-xs", fieldState.error ? "bg-destructive/5!" : "")}
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
+              <Field>
+                <TextArea
+                  size="sm"
+                  placeholder={t("feedback_placeholder")}
+                  className={cx("h-20 text-xs", fieldState.error ? "bg-destructive/5!" : "")}
+                  {...field}
+                />
+              </Field>
             )}
           />
 
@@ -127,8 +124,8 @@ const FeedbackWidgetForm = ({ toastId, setDismissed }: FeedbackWidgetFormProps) 
             </Button>
           </Stack>
         </form>
-      </Stack>
-    </Form>
+      </Form>
+    </Stack>
   )
 }
 
@@ -185,7 +182,16 @@ export const FeedbackWidget = () => {
         onDismiss: () => setDismissed(true),
       })
     }
-  }, [dismissed, shouldShow, pageViews, toastId, minTimeSpent, minPageView, minScroll])
+  }, [
+    dismissed,
+    shouldShow,
+    pageViews,
+    toastId,
+    minTimeSpent,
+    minPageView,
+    minScroll,
+    setDismissed,
+  ])
 
   // Setup scroll listener and engagement checker
   useEffect(() => {

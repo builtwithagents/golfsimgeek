@@ -15,14 +15,8 @@ import { ToolPublishActions } from "~/app/admin/tools/_components/tool-publish-a
 import { AIGenerateContent } from "~/components/admin/ai/generate-content"
 import { AIRelationSuggestions } from "~/components/admin/ai/relation-suggestions"
 import { Button } from "~/components/common/button"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/common/form"
+import { Controller, FormProvider as Form } from "react-hook-form"
+import { Field, FieldError, FieldLabel } from "~/components/common/field"
 import { FormMedia } from "~/components/common/form-media"
 import { H3 } from "~/components/common/heading"
 import { Input, inputVariants } from "~/components/common/input"
@@ -230,111 +224,105 @@ export function ToolForm({
         noValidate
         {...props}
       >
-        <FormField
+        <Controller
           control={form.control}
           name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel isRequired>Name</FormLabel>
-              <FormControl>
-                <Input data-1p-ignore {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel data-required htmlFor={field.name}>
+                Name
+              </FieldLabel>
+              <Input id={field.name} data-1p-ignore {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="slug"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel isRequired>Slug</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel data-required htmlFor={field.name}>
+                Slug
+              </FieldLabel>
+              <Input id={field.name} {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="websiteUrl"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel isRequired>Website URL</FormLabel>
-              <FormControl>
-                <Input type="url" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel data-required htmlFor={field.name}>
+                Website URL
+              </FieldLabel>
+              <Input id={field.name} type="url" {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="affiliateUrl"
-          render={({ field }) => (
-            <FormItem>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
               <Stack className="w-full justify-between">
-                <FormLabel>Affiliate URL</FormLabel>
+                <FieldLabel htmlFor={field.name}>Affiliate URL</FieldLabel>
 
                 <Tooltip tooltip="If you have an affiliate link, you can enter it here. This will be displayed on the tool page.">
                   <InfoIcon className="cursor-help opacity-50" />
                 </Tooltip>
               </Stack>
 
-              <FormControl>
-                <Input type="url" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+              <Input id={field.name} type="url" {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="tagline"
-          render={({ field }) => (
-            <FormItem className="col-span-full">
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
               <Stack className="w-full justify-between">
-                <FormLabel>Tagline</FormLabel>
+                <FieldLabel htmlFor={field.name}>Tagline</FieldLabel>
                 <Note className="text-xs">Max. 60 chars</Note>
               </Stack>
 
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+              <Input id={field.name} {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="description"
-          render={({ field }) => (
-            <FormItem className="col-span-full">
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
               <Stack className="w-full justify-between">
-                <FormLabel>Description</FormLabel>
+                <FieldLabel htmlFor={field.name}>Description</FieldLabel>
                 <Note className="text-xs">Max. 160 chars</Note>
               </Stack>
-              <FormControl>
-                <TextArea {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+              <TextArea id={field.name} {...field} />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="content"
-          render={({ field }) => (
-            <FormItem className="col-span-full items-stretch">
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full items-stretch">
               <Stack className="justify-between">
-                <FormLabel>Content</FormLabel>
+                <FieldLabel htmlFor={field.name}>Content</FieldLabel>
 
                 {field.value && (
                   <Button
@@ -350,71 +338,63 @@ export function ToolForm({
                 )}
               </Stack>
 
-              <FormControl>
-                {field.value && isPreviewing ? (
-                  <Markdown
-                    code={field.value}
-                    className={cx(
-                      inputVariants(),
-                      "max-w-none min-h-18 bg-card border leading-normal",
-                    )}
-                  />
-                ) : (
-                  <TextArea className="min-h-18" {...field} />
-                )}
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+              {field.value && isPreviewing ? (
+                <Markdown
+                  code={field.value}
+                  className={cx(
+                    inputVariants(),
+                    "max-w-none min-h-18 bg-card border leading-normal",
+                  )}
+                />
+              ) : (
+                <TextArea id={field.name} className="min-h-18" {...field} />
+              )}
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
         {tool?.submitterEmail && (
           <>
-            <FormField
+            <Controller
               control={form.control}
               name="submitterName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Submitter Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>Submitter Name</FieldLabel>
+                  <Input id={field.name} {...field} />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
               )}
             />
 
-            <FormField
+            <Controller
               control={form.control}
               name="submitterEmail"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Submitter Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" data-1p-ignore {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>Submitter Email</FieldLabel>
+                  <Input id={field.name} type="email" data-1p-ignore {...field} />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
               )}
             />
 
-            <FormField
+            <Controller
               control={form.control}
               name="submitterNote"
-              render={({ field }) => (
-                <FormItem className="col-span-full">
-                  <FormLabel>Submitter Note</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid} className="col-span-full">
+                  <FieldLabel htmlFor={field.name}>Submitter Note</FieldLabel>
+                  <Input id={field.name} {...field} />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
               )}
             />
           </>
         )}
 
-        <FormField
+        <Controller
           control={form.control}
           name="faviconUrl"
           render={({ field }) => (
@@ -439,7 +419,7 @@ export function ToolForm({
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="screenshotUrl"
           render={({ field }) => (
@@ -464,12 +444,12 @@ export function ToolForm({
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="categories"
-          render={({ field }) => (
-            <FormItem className="col-span-full">
-              <FormLabel>Categories</FormLabel>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
+              <FieldLabel>Categories</FieldLabel>
               <AIRelationSuggestions
                 relations={categories}
                 ids={field.value ?? []}
@@ -484,16 +464,17 @@ export function ToolForm({
                     : undefined
                 }
               />
-            </FormItem>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="tags"
-          render={({ field }) => (
-            <FormItem className="col-span-full">
-              <FormLabel>Tags</FormLabel>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
+              <FieldLabel>Tags</FieldLabel>
               <AIRelationSuggestions
                 relations={tags}
                 ids={field.value ?? []}
@@ -509,30 +490,29 @@ export function ToolForm({
                     : undefined
                 }
               />
-            </FormItem>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 
-        <FormField
+        <Controller
           control={form.control}
           name="tier"
-          render={({ field }) => (
-            <FormItem className="col-span-full">
-              <FormLabel>Tier</FormLabel>
-              <FormControl>
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select tier" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={ToolTier.Free}>Free</SelectItem>
-                    <SelectItem value={ToolTier.Standard}>Standard</SelectItem>
-                    <SelectItem value={ToolTier.Premium}>Premium</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="col-span-full">
+              <FieldLabel htmlFor={field.name}>Tier</FieldLabel>
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger id={field.name}>
+                  <SelectValue placeholder="Select tier" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={ToolTier.Free}>Free</SelectItem>
+                  <SelectItem value={ToolTier.Standard}>Standard</SelectItem>
+                  <SelectItem value={ToolTier.Premium}>Premium</SelectItem>
+                </SelectContent>
+              </Select>
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
           )}
         />
 

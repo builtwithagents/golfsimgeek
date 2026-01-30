@@ -44,8 +44,8 @@ const buttonAffixVariants = cva({
   base: "shrink-0 [svg]:my-[0.077em] [svg]:size-[1.1em] [svg]:opacity-75",
   variants: {
     position: {
-      left: "-ml-[0.21425em]",
-      right: "-mr-[0.21425em]",
+      left: "not-only:-ml-[0.21425em]",
+      right: "not-only:-mr-[0.21425em]",
     },
   },
 })

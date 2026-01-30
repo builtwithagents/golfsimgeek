@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl"
 import { useTheme } from "next-themes"
 import type { Dispatch, SetStateAction } from "react"
 import { useMemo } from "react"
-import { useForm } from "react-hook-form"
+import { Controller, FormProvider as Form, useForm } from "react-hook-form"
 import { Button } from "~/components/common/button"
 import { Card } from "~/components/common/card"
 import {
@@ -14,14 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/common/dialog"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "~/components/common/form"
+import { Field, FieldError, FieldLabel } from "~/components/common/field"
 import { Input } from "~/components/common/input"
 import {
   Select,
@@ -103,55 +96,50 @@ export const ToolEmbedDialog = ({ tool, isOpen, setIsOpen }: ToolEmbedDialogProp
             autoComplete="off"
             onSubmit={e => e.preventDefault()}
           >
-            <FormField
+            <Controller
               control={form.control}
               name="theme"
-              render={({ field: { onChange, value, ...field } }) => (
-                <FormItem>
-                  <FormLabel>{t("theme_label")}</FormLabel>
-                  <FormControl>
-                    <Select value={value} onValueChange={onChange} {...field}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {THEMES.map(theme => (
-                          <SelectItem key={theme} value={theme}>
-                            {tCommon(`themes.${theme}`)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                </FormItem>
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>{t("theme_label")}</FieldLabel>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger id={field.name}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {THEMES.map(theme => (
+                        <SelectItem key={theme} value={theme}>
+                          {tCommon(`themes.${theme}`)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
               )}
             />
 
-            <FormField
+            <Controller
               control={form.control}
               name="width"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("width_label")}</FormLabel>
-                  <FormControl>
-                    <Input type="number" min={100} max={600} step={10} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>{t("width_label")}</FieldLabel>
+                  <Input id={field.name} type="number" min={100} max={600} step={10} {...field} />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
               )}
             />
 
-            <FormField
+            <Controller
               control={form.control}
               name="height"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("height_label")}</FormLabel>
-                  <FormControl>
-                    <Input type="number" min={30} max={200} step={5} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>{t("height_label")}</FieldLabel>
+                  <Input id={field.name} type="number" min={30} max={200} step={5} {...field} />
+                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                </Field>
               )}
             />
 

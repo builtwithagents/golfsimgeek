@@ -2,25 +2,18 @@
 
 import { Label as LabelPrimitive } from "radix-ui"
 import type { ComponentProps } from "react"
-import { cva, cx, type VariantProps } from "~/lib/utils"
+import { cx } from "~/lib/utils"
 
-const labelVariants = cva({
-  base: "self-start text-sm font-medium text-foreground [&[for]]:cursor-pointer",
+type LabelProps = ComponentProps<typeof LabelPrimitive.Root>
 
-  variants: {
-    isRequired: {
-      true: "after:ml-0.5 after:text-red-600 after:content-['*']",
-    },
-  },
-})
-
-type LabelProps = ComponentProps<typeof LabelPrimitive.Root> & VariantProps<typeof labelVariants>
-
-const Label = ({ className, isRequired, ...props }: LabelProps) => {
+const Label = ({ className, ...props }: LabelProps) => {
   return (
     <LabelPrimitive.Root
-      className={cx(labelVariants({ isRequired, className }))}
-      aria-label="Label"
+      className={cx(
+        "self-start text-sm font-medium text-foreground [[for]]:cursor-pointer",
+        "data-required:after:-ml-1 data-required:after:text-red-600 data-required:after:content-['*']",
+        className,
+      )}
       {...props}
     />
   )

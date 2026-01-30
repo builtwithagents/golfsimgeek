@@ -4,9 +4,10 @@ import { InboxIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
 import type { ComponentProps } from "react"
+import { Controller, FormProvider as Form } from "react-hook-form"
 import { toast } from "sonner"
 import { Button } from "~/components/common/button"
-import { Form, FormControl, FormField, FormItem, FormMessage } from "~/components/common/form"
+import { Field, FieldError } from "~/components/common/field"
 import { Input } from "~/components/common/input"
 import { Stack } from "~/components/common/stack"
 import { useMagicLink } from "~/hooks/use-magic-link"
@@ -26,26 +27,25 @@ export const LoginForm = ({ ...props }: ComponentProps<"form">) => {
   })
 
   return (
-    <Form {...form}>
-      <Stack direction="column" className="items-stretch" asChild>
+    <Stack direction="column" className="items-stretch" asChild>
+      <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSignIn)} noValidate {...props}>
-          <FormField
+          <Controller
             control={form.control}
             name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    type="email"
-                    size="lg"
-                    placeholder={t("forms.sign_in.email_placeholder")}
-                    data-1p-ignore
-                    {...field}
-                  />
-                </FormControl>
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <Input
+                  id={field.name}
+                  type="email"
+                  size="lg"
+                  placeholder={t("forms.sign_in.email_placeholder")}
+                  data-1p-ignore
+                  {...field}
+                />
 
-                <FormMessage />
-              </FormItem>
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
             )}
           />
 
@@ -53,7 +53,7 @@ export const LoginForm = ({ ...props }: ComponentProps<"form">) => {
             {t("forms.sign_in.magic_link_button")}
           </Button>
         </form>
-      </Stack>
-    </Form>
+      </Form>
+    </Stack>
   )
 }
