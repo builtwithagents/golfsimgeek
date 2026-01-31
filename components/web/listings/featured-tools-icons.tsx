@@ -39,12 +39,12 @@ export const FeaturedToolsIcons = async ({ ...props }: ComponentProps<typeof Car
                 tier: tool.tier,
                 source: "supporter",
               }}
-              className="hover:*:bg-muted"
+              className="w-full aspect-square hover:*:bg-muted"
             >
               <Favicon
                 src={tool.faviconUrl || "/favicon.png"}
                 title={tool.name}
-                className="size-10 p-1.5 rounded-lg"
+                className="size-full p-1.5 rounded-lg"
                 contained
               />
             </ExternalLink>
@@ -55,7 +55,7 @@ export const FeaturedToolsIcons = async ({ ...props }: ComponentProps<typeof Car
           <Tooltip tooltip={t("add_tooltip")}>
             <Link
               href="/submit"
-              className="grid place-items-center size-10 p-1 rounded-lg border hover:bg-muted"
+              className="grid place-items-center size-full aspect-square p-1 rounded-lg border hover:bg-muted"
             >
               <PlusIcon className="size-6" />
             </Link>
