@@ -20,7 +20,7 @@
     "postinstall": "bun run db:generate"
   },
   "dependencies": {
-    "@ai-sdk/react": "^3.0.70",
+    "@ai-sdk/react": "^3.0.71",
     "@aws-sdk/client-s3": "^3.981.0",
     "@aws-sdk/lib-storage": "^3.981.0",
     "@content-collections/core": "^0.13.1",
@@ -36,7 +36,7 @@
     "@react-email/components": "^1.0.6",
     "@t3-oss/env-nextjs": "^0.13.10",
     "@tanstack/react-table": "^8.21.3",
-    "ai": "^6.0.68",
+    "ai": "^6.0.69",
     "better-auth": "^1.4.18",
     "change-case": "^5.4.4",
     "cmdk": "^1.1.1",
@@ -46,7 +46,7 @@
     "github-slugger": "^2.0.0",
     "ioredis": "^5.9.2",
     "lucide-react": "^0.562.0",
-    "motion": "^12.30.1",
+    "motion": "^12.31.0",
     "next": "^16.1.6",
     "next-intl": "^4.8.2",
     "next-plausible": "^3.12.5",
