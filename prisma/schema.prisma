@@ -131,7 +131,8 @@ model Tool {
   content        String?
   faviconUrl     String?
   screenshotUrl  String?
-  tier           ToolTier    @default(Free)
+  tier           ToolTier   @default(Free)
+  tierPriority   Int        @default(dbgenerated())
   submitterName  String?
   submitterEmail String?
   submitterNote  String?
