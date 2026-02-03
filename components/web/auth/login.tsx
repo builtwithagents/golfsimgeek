@@ -19,7 +19,7 @@ export const Login = () => {
 
       <LoginButton
         provider="google"
-        suffix={<Image src={googleIcon} alt="Google" className="size-4" />}
+        suffix={<Image src={googleIcon} alt="Google" className="size-4" unoptimized />}
       />
     </Stack>
   )

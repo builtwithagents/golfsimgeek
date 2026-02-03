@@ -1,3 +1,4 @@
+import Image from "next/image"
 import type { ComponentProps } from "react"
 import { Link } from "~/components/common/link"
 import { Stack } from "~/components/common/stack"
@@ -30,7 +31,7 @@ export const DataTableLink = ({
         {isOverlay && <span className="absolute inset-0" />}
 
         {image && (
-          <img
+          <Image
             src={image}
             alt=""
             width={32}

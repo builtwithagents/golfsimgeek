@@ -1,3 +1,4 @@
+import Image from "next/image"
 import type { ComponentProps } from "react"
 import { Box } from "~/components/common/box"
 import { ExternalLink } from "~/components/web/external-link"
@@ -17,7 +18,7 @@ export const OverlayImage = ({ className, src, alt, loading, ...props }: Overlay
         doTrack
         {...props}
       >
-        <img
+        <Image
           src={src}
           alt={alt ?? ""}
           width={1280}

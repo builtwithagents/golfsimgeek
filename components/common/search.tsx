@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl"
 import type { InferSafeActionFnResult } from "next-safe-action"
 import { useAction } from "next-safe-action/hooks"
 import { useTheme } from "next-themes"
+import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import { type ComponentProps, type ReactNode, useEffect, useRef, useState } from "react"
 import {
@@ -235,7 +236,7 @@ export const Search = () => {
           getHref={({ id, slug }) => (isAdminPath ? `/admin/tools/${id}` : `/${slug}`)}
           renderItemDisplay={({ name, faviconUrl, websiteUrl }) => (
             <>
-              {faviconUrl && <img src={faviconUrl} alt="" width={16} height={16} />}
+              {faviconUrl && <Image src={faviconUrl} alt="" width={16} height={16} />}
               <span className="flex-1 truncate">{name}</span>
               <span className="opacity-50">{getDomain(websiteUrl)}</span>
             </>
