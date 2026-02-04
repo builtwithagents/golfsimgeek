@@ -1,6 +1,6 @@
+import { getRequestConfig } from "next-intl/server"
 import { glob, readFile } from "node:fs/promises"
 import { basename, join } from "node:path"
-import { getRequestConfig } from "next-intl/server"
 
 export const locales = ["en"] as const
 export const defaultLocale = "en" as const

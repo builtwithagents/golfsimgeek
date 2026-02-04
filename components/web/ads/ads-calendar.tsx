@@ -11,6 +11,7 @@ import { Stack } from "~/components/common/stack"
 import { Tooltip } from "~/components/common/tooltip"
 import { ExternalLink } from "~/components/web/external-link"
 import { Price } from "~/components/web/price"
+import { siteConfig } from "~/config/site"
 import type { AdSpot, AdsSelection, useAds } from "~/hooks/use-ads"
 import { getFirstAvailableMonth } from "~/lib/ads"
 import { cx } from "~/lib/utils"
@@ -105,7 +106,12 @@ export const AdsCalendar = ({
           <H4 as="h3">{adSpot.label}</H4>
 
           {price && (
-            <Price price={discountedPrice} interval={t("day")} className="ml-auto text-sm" />
+            <Price
+              price={discountedPrice}
+              interval={t("day")}
+              currency={siteConfig.currency}
+              className="ml-auto text-sm"
+            />
           )}
         </Stack>
 

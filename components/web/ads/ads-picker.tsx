@@ -7,6 +7,7 @@ import { useFormatter, useTranslations } from "next-intl"
 import { useAction } from "next-safe-action/hooks"
 import type { ComponentProps } from "react"
 import { toast } from "sonner"
+import { z } from "zod"
 import { AdType } from "~/.generated/prisma/browser"
 import { AnimatedContainer } from "~/components/common/animated-container"
 import { Badge } from "~/components/common/badge"
@@ -17,9 +18,11 @@ import { Tooltip } from "~/components/common/tooltip"
 import { AdsCalendar } from "~/components/web/ads/ads-calendar"
 import { Price } from "~/components/web/price"
 import { adsConfig } from "~/config/ads"
+import { siteConfig } from "~/config/site"
 import { type AdSpot, useAds } from "~/hooks/use-ads"
 import type { AdMany } from "~/server/web/ads/payloads"
 import { createStripeCheckout } from "~/server/web/products/actions"
+import { checkoutSchema } from "~/server/web/products/schema"
 
 type AdsCalendarProps = ComponentProps<"div"> & {
   ads: AdMany[]
@@ -65,11 +68,13 @@ export const AdsPicker = ({ className, ads, type, ...props }: AdsCalendarProps) 
   })
 
   const handleCheckout = () => {
-    const validSelections = selections.filter(
-      ({ dateRange, duration }) => dateRange?.from && dateRange?.to && duration,
-    )
+    type LineItem = z.infer<typeof checkoutSchema>["lineItems"][number]
 
-    const lineItems = validSelections.map(selection => {
+    const validSelections = selections.filter(({ dateRange, duration }) => {
+      return dateRange?.from && dateRange?.to && duration
+    })
+
+    const lineItems = validSelections.map((selection): LineItem => {
       const adSpot = findAdSpot(selection.type)
 
       const discountedPrice = price?.discountPercentage
@@ -78,6 +83,7 @@ export const AdsPicker = ({ className, ads, type, ...props }: AdsCalendarProps) 
 
       return {
         price_data: {
+          currency: siteConfig.currency,
           product_data: { name: `${selection.type} Ad` },
           unit_amount: Math.round(discountedPrice * 100),
         },
@@ -162,7 +168,11 @@ export const AdsPicker = ({ className, ads, type, ...props }: AdsCalendarProps) 
           <>
             <Stack size="sm" className="mr-auto">
               <Note>{t("total")}</Note>
-              <Price price={price.discountedPrice} fullPrice={price.totalPrice} />
+              <Price
+                price={price.discountedPrice}
+                fullPrice={price.totalPrice}
+                currency={siteConfig.currency}
+              />
             </Stack>
 
             {price.discountPercentage > 0 && (

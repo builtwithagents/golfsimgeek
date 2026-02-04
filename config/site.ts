@@ -7,4 +7,5 @@ export const siteConfig = {
   email: env.NEXT_PUBLIC_SITE_EMAIL,
   url: env.NEXT_PUBLIC_SITE_URL,
   domain: getDomain(env.NEXT_PUBLIC_SITE_URL),
+  currency: "usd",
 }

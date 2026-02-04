@@ -1,4 +1,5 @@
 import type { Stripe } from "stripe"
+import { siteConfig } from "~/config/site"
 import { stripe } from "~/services/stripe"
 
 const products: (Stripe.ProductCreateParams & { price_data?: Stripe.PriceCreateParams[] })[] = [
@@ -16,7 +17,7 @@ const products: (Stripe.ProductCreateParams & { price_data?: Stripe.PriceCreateP
     ],
     default_price_data: {
       unit_amount: 0,
-      currency: "usd",
+      currency: siteConfig.currency,
     },
   },
   {
@@ -33,7 +34,7 @@ const products: (Stripe.ProductCreateParams & { price_data?: Stripe.PriceCreateP
     ],
     default_price_data: {
       unit_amount: 9700,
-      currency: "usd",
+      currency: siteConfig.currency,
     },
   },
   {
@@ -50,7 +51,7 @@ const products: (Stripe.ProductCreateParams & { price_data?: Stripe.PriceCreateP
     ],
     default_price_data: {
       unit_amount: 19700,
-      currency: "usd",
+      currency: siteConfig.currency,
       recurring: {
         interval: "month",
         interval_count: 1,
@@ -59,7 +60,7 @@ const products: (Stripe.ProductCreateParams & { price_data?: Stripe.PriceCreateP
     price_data: [
       {
         unit_amount: 197000,
-        currency: "usd",
+        currency: siteConfig.currency,
         recurring: {
           interval: "year",
           interval_count: 1,

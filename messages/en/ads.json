@@ -17,7 +17,7 @@
     },
     "tool_page": {
       "label": "Tool Page Ad",
-      "description": "Visible on the sidebar of every tool page"
+      "description": "Visible on every tool page"
     }
   },
   "default_ad": {
