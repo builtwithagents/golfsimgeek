@@ -29,7 +29,7 @@ const buttonVariants = cva({
       lg: "px-4 py-2.5 gap-[1ch] rounded-lg sm:text-sm/tight",
     },
     isPending: {
-      true: "relative [&>*]:opacity-0! select-none after:absolute after:size-[1.1em] after:rounded-full after:border-[1.5px] after:border-current after:border-t-transparent after:animate-spin",
+      true: "relative [&>*]:opacity-0! select-none after:absolute after:size-[1.1em] after:rounded-full after:border-[1.5px] after:border-foreground after:border-t-transparent after:animate-spin",
     },
   },
 
@@ -40,7 +40,7 @@ const buttonVariants = cva({
 })
 
 const buttonAffixVariants = cva({
-  base: "shrink-0 first:not-last:-ml-[0.21425em] last:not-first:-mr-[0.21425em] only:-mx-[0.21425em] [svg]:my-[0.077em] [svg]:size-[1.1em] [svg]:opacity-75",
+  base: "shrink-0 first:not-last:-ml-[0.21425em] last:not-first:-mr-[0.21425em] only:-mx-[0.21425em] [svg]:my-[0.077em] [svg]:size-[1.1em] [svg]:text-inherit [svg]:fill-foreground/10 [svg]:opacity-75",
 })
 
 export type ButtonProps = Omit<ComponentProps<"button">, "size" | "prefix"> &

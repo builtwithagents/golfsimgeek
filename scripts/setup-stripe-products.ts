@@ -22,7 +22,7 @@ const products: (Stripe.ProductCreateParams & { price_data?: Stripe.PriceCreateP
   },
   {
     name: "Standard Listing",
-    description: "Skip the queue and get your site published on the site within 24 hours.",
+    description: "Upgrade your listing to skip the queue and get published within 24 hours.",
     active: true,
     metadata: { tier: "Standard" },
     marketing_features: [

@@ -24,13 +24,13 @@
     "message": "Join {count}+ directory enthusiasts"
   },
   "feature_nudge": {
-    "message": "{name} has already been published on {siteName}. You can feature it for extra exposure.",
-    "feature_button": "Feature {toolName}",
+    "message": "{name} has already been published on {siteName}. Upgrade its listing for extra exposure.",
+    "feature_button": "Upgrade listing",
     "dismiss_button": "Dismiss"
   },
   "featured_tools": {
     "title": "Featured tools",
-    "add_tooltip": "Get your tool featured"
+    "add_tooltip": "Upgrade your tool's listing"
   },
   "listings": {
     "featured_tools": "Featured Tools",

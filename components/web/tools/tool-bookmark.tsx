@@ -71,7 +71,8 @@ export const ToolBookmark = ({ toolId }: ToolBookmarkProps) => {
         <Button
           size="md"
           variant="secondary"
-          prefix={<BookmarkIcon className={cx(isBookmarked && "text-primary fill-primary")} />}
+          prefix={<BookmarkIcon />}
+          className={cx(isBookmarked && "text-primary")}
           onClick={handleClick}
           isPending={isPending}
         >

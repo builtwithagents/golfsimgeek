@@ -73,15 +73,15 @@ export const ToolActions = ({ tool, children, className, ...props }: ToolActions
       </AnimatePresence>
 
       {!isToolPremiumTier(tool) && tool.ownerId && tool.ownerId === session?.user.id && (
-        <Tooltip tooltip={t("promote_tooltip")}>
+        <Tooltip tooltip={t("upgrade_tooltip")}>
           <Button
             size="md"
             variant="secondary"
-            prefix={<SparklesIcon className="text-inherit" />}
+            prefix={<SparklesIcon />}
             className="text-primary"
             asChild
           >
-            <Link href={`/submit/${tool.slug}`}>{t("promote_button")}</Link>
+            <Link href={`/submit/${tool.slug}`}>{t("upgrade_button")}</Link>
           </Button>
         </Tooltip>
       )}
@@ -91,7 +91,7 @@ export const ToolActions = ({ tool, children, className, ...props }: ToolActions
           <Button
             size="md"
             variant="secondary"
-            prefix={<BadgeCheckIcon className="text-inherit" />}
+            prefix={<BadgeCheckIcon />}
             onClick={() => setDialog(Dialog.claim)}
             className="text-primary"
           >

@@ -29,8 +29,8 @@ export const EmailFeatureNudge = ({ tool, showButton }: EmailFeatureNudgeProps) 
       {showButton && <Hr />}
 
       <Text>
-        Want to maximize {tool.name}'s visibility? Consider upgrading to{" "}
-        <Link href={link}>our Featured plan</Link>. We offer a wide range of featuring options:
+        Want to get more exposure for {tool.name}?{" "}
+        <Link href={link}>Upgrade your listing</Link> to unlock extra features:
       </Text>
 
       <ul>
@@ -41,7 +41,7 @@ export const EmailFeatureNudge = ({ tool, showButton }: EmailFeatureNudgeProps) 
         ))}
       </ul>
 
-      {showButton && <EmailButton href={link}>Boost {tool.name}'s visibility</EmailButton>}
+      {showButton && <EmailButton href={link}>Upgrade {tool.name}'s listing</EmailButton>}
     </>
   )
 }

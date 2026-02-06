@@ -2,8 +2,8 @@
   "count_tools": "{count, plural, =0 {tools} =1 {tool} other {tools}}",
   "no_tools": "No tools found for the given filters.",
   "actions": {
-    "promote_tooltip": "Promote this tool to get more visibility",
-    "promote_button": "Promote",
+    "upgrade_tooltip": "Upgrade this listing for extra exposure",
+    "upgrade_button": "Upgrade",
     "claim_tooltip": "Claim this tool to get a verified badge",
     "claim_button": "Claim",
     "report_tooltip": "Send a report/suggestion",
@@ -35,7 +35,7 @@
   "preview_alert": {
     "title": "This is a preview only.",
     "scheduled": "{toolName} will be published on {date}.",
-    "description": "{toolName} is not yet published and is only visible on this page. If you want to speed up the process, you can expedite publication below.",
-    "publish_button": "Publish within 24h"
+    "description": "{toolName} is not yet published and is only visible on this page. Upgrade your listing to skip the queue and get published within 24 hours.",
+    "publish_button": "Upgrade listing"
   }
 }

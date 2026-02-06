@@ -3,12 +3,12 @@
 import { formatDate } from "@primoui/utils"
 import type { ColumnDef } from "@tanstack/react-table"
 import {
-  ArrowUpRightIcon,
   CircleCheckIcon,
   CircleDashedIcon,
   CircleDotDashedIcon,
   CircleDotIcon,
   PlusIcon,
+  SparklesIcon,
 } from "lucide-react"
 import { useFormatter, useTranslations } from "next-intl"
 import { useQueryStates } from "nuqs"
@@ -23,7 +23,6 @@ import { DataTable } from "~/components/data-table/data-table"
 import { DataTableColumnHeader } from "~/components/data-table/data-table-column-header"
 import { DataTableLink } from "~/components/data-table/data-table-link"
 import { DataTableToolbar } from "~/components/data-table/data-table-toolbar"
-import { LogoSymbol } from "~/components/web/ui/logo-symbol"
 import { useDataTable } from "~/hooks/use-data-table"
 import { isToolPremiumTier } from "~/lib/tools"
 import type { findTools } from "~/server/admin/tools/queries"
@@ -104,8 +103,7 @@ export const DashboardTable = ({ tools, pageCount }: Awaited<ReturnType<typeof f
             <Button
               size="sm"
               variant="secondary"
-              prefix={<LogoSymbol className="text-primary" />}
-              suffix={<ArrowUpRightIcon />}
+              prefix={<SparklesIcon className="text-primary!" />}
               className="float-right -my-1"
               asChild
             >

@@ -165,7 +165,7 @@ export const ToolClaimDialog = ({ tool, isOpen, setIsOpen }: ToolClaimDialogProp
                 <ul className="mt-2 list-disc pl-4">
                   <li>{t("benefit_update")}</li>
                   <li>{t("benefit_manage")}</li>
-                  <li>{t("benefit_promote", { siteName: siteConfig.name })}</li>
+                  <li>{t("benefit_upgrade", { siteName: siteConfig.name })}</li>
                 </ul>
               </DialogDescription>
 
