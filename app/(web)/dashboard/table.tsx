@@ -109,7 +109,7 @@ export const DashboardTable = ({ tools, pageCount }: Awaited<ReturnType<typeof f
               className="float-right -my-1"
               asChild
             >
-              <Link href={`/submit/${row.original.slug}`}>{t("upgrade_button")}</Link>
+              <Link href={`/submit/${row.original.slug}`}>{t("tools.upgrade_button")}</Link>
             </Button>
           )
         },
@@ -143,10 +143,10 @@ export const DashboardTable = ({ tools, pageCount }: Awaited<ReturnType<typeof f
   })
 
   return (
-    <DataTable table={table} emptyState={t("empty_state")}>
+    <DataTable table={table} emptyState={t("tools.empty_state")}>
       <DataTableToolbar table={table} filterFields={filterFields}>
         <Button size="md" variant="primary" prefix={<PlusIcon />} asChild>
-          <Link href="/submit">{t("submit_button")}</Link>
+          <Link href="/submit">{t("tools.submit_button")}</Link>
         </Button>
       </DataTableToolbar>
     </DataTable>

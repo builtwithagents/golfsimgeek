@@ -1,8 +1,8 @@
 import { removeQueryParams } from "@primoui/utils"
 import { HashIcon } from "lucide-react"
 import type { Metadata } from "next"
-import { notFound } from "next/navigation"
 import { getTranslations } from "next-intl/server"
+import { notFound } from "next/navigation"
 import { cache, Suspense } from "react"
 import { Badge } from "~/components/common/badge"
 import { H2, H5 } from "~/components/common/heading"
@@ -28,7 +28,7 @@ import { VerifiedBadge } from "~/components/web/verified-badge"
 import type { OpenGraphParams } from "~/lib/opengraph"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateCollectionPage } from "~/lib/structured-data"
-import { isToolStandardTier, isToolPublished } from "~/lib/tools"
+import { isToolPublished, isToolStandardTier } from "~/lib/tools"
 import { findTool, findToolSlugs } from "~/server/web/tools/queries"
 
 type Props = PageProps<"/[slug]">

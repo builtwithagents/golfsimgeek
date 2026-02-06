@@ -1,4 +1,3 @@
-import { LoaderIcon } from "lucide-react"
 import { Slot } from "radix-ui"
 import type { ComponentProps, ReactNode } from "react"
 import { Children, isValidElement } from "react"
@@ -30,7 +29,7 @@ const buttonVariants = cva({
       lg: "px-4 py-2.5 gap-[1ch] rounded-lg sm:text-sm/tight",
     },
     isPending: {
-      true: "[&>*:not(.animate-spin)]:opacity-0 select-none",
+      true: "relative [&>*]:opacity-0! select-none after:absolute after:size-[1.1em] after:rounded-full after:border-[1.5px] after:border-current after:border-t-transparent after:animate-spin",
     },
   },
 
@@ -41,13 +40,7 @@ const buttonVariants = cva({
 })
 
 const buttonAffixVariants = cva({
-  base: "shrink-0 [svg]:my-[0.077em] [svg]:size-[1.1em] [svg]:opacity-75",
-  variants: {
-    position: {
-      left: "not-only:-ml-[0.21425em]",
-      right: "not-only:-mr-[0.21425em]",
-    },
-  },
+  base: "shrink-0 first:not-last:-ml-[0.21425em] last:not-first:-mr-[0.21425em] only:-mx-[0.21425em] [svg]:my-[0.077em] [svg]:size-[1.1em] [svg]:opacity-75",
 })
 
 export type ButtonProps = Omit<ComponentProps<"button">, "size" | "prefix"> &
@@ -104,7 +97,7 @@ const Button = ({
       <Slottable child={children} asChild={asChild}>
         {child => (
           <>
-            <Slot.Root className={buttonAffixVariants({ position: "left" })}>{prefix}</Slot.Root>
+            <Slot.Root className={buttonAffixVariants()}>{prefix}</Slot.Root>
 
             {Children.count(child) > 0 && (
               <Slot.Root className="flex-1 truncate only:text-center has-[div]:contents">
@@ -112,9 +105,7 @@ const Button = ({
               </Slot.Root>
             )}
 
-            <Slot.Root className={buttonAffixVariants({ position: "right" })}>{suffix}</Slot.Root>
-
-            {!!isPending && <LoaderIcon className="absolute size-[1.25em] animate-spin" />}
+            <Slot.Root className={buttonAffixVariants()}>{suffix}</Slot.Root>
           </>
         )}
       </Slottable>

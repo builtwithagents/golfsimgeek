@@ -46,9 +46,10 @@ model User {
   updatedAt     DateTime  @updatedAt
 
   // Relations
-  accounts Account[]
-  sessions Session[]
-  tools    Tool[]
+  accounts  Account[]
+  sessions  Session[]
+  tools     Tool[]
+  bookmarks Bookmark[]
 
   // Indexes
   @@index([id])
@@ -145,6 +146,7 @@ model Tool {
   categories Category[]
   tags       Tag[]
   reports    Report[]
+  bookmarks  Bookmark[]
   owner      User?      @relation(fields: [ownerId], references: [id])
   ownerId    String?
 
@@ -152,6 +154,7 @@ model Tool {
   @@index([name])
   @@index([status])
   @@index([ownerId])
+  @@index([tierPriority, createdAt])
   @@index([createdAt])
 }
 
@@ -198,5 +201,22 @@ model Report {
   toolId String?
 
   // Indexes
+  @@index([toolId])
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  tool   Tool   @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  toolId String
+
+  // Indexes
+  @@unique([userId, toolId])
+  @@index([userId])
   @@index([toolId])
 }

@@ -13,6 +13,7 @@ import { Tooltip } from "~/components/common/tooltip"
 import { ToolClaimDialog } from "~/components/web/dialogs/tool-claim-dialog"
 import { ToolEmbedDialog } from "~/components/web/dialogs/tool-embed-dialog"
 import { ToolReportDialog } from "~/components/web/dialogs/tool-report-dialog"
+import { ToolBookmark } from "~/components/web/tools/tool-bookmark"
 import { ToolButton } from "~/components/web/tools/tool-button"
 import { reportsConfig } from "~/config/reports"
 import { useSession } from "~/lib/auth-client"
@@ -77,7 +78,7 @@ export const ToolActions = ({ tool, children, className, ...props }: ToolActions
             size="md"
             variant="secondary"
             prefix={<SparklesIcon className="text-inherit" />}
-            className="text-blue-600 dark:text-blue-400"
+            className="text-primary"
             asChild
           >
             <Link href={`/submit/${tool.slug}`}>{t("promote_button")}</Link>
@@ -92,12 +93,14 @@ export const ToolActions = ({ tool, children, className, ...props }: ToolActions
             variant="secondary"
             prefix={<BadgeCheckIcon className="text-inherit" />}
             onClick={() => setDialog(Dialog.claim)}
-            className="text-blue-600 dark:text-blue-400"
+            className="text-primary"
           >
             {t("claim_button")}
           </Button>
         </Tooltip>
       )}
+
+      <ToolBookmark toolId={tool.id} />
 
       {reportsConfig.enabled && (
         <Tooltip tooltip={t("report_tooltip")}>

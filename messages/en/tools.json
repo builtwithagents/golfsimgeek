@@ -10,7 +10,14 @@
     "report_button": "Report",
     "embed_tooltip": "Embed this tool on your website",
     "embed_button": "Embed",
-    "visit_button": "Visit"
+    "visit_button": "Visit",
+    "bookmark_add": "Bookmark this tool for later",
+    "bookmark_remove": "Remove from bookmarks",
+    "bookmark_save": "Save",
+    "bookmark_saved": "Saved",
+    "bookmark_added": "Bookmark added",
+    "bookmark_removed": "Bookmark removed",
+    "bookmark_view": "View bookmarks"
   },
   "filters": {
     "search_placeholder": "Search tools...",
