@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
-import { notFound } from "next/navigation"
 import { getTranslations } from "next-intl/server"
+import { notFound } from "next/navigation"
 import { cache } from "react"
 import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
 import { siteConfig } from "~/config/site"

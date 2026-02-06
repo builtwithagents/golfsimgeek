@@ -1,5 +1,4 @@
 import "dotenv/config"
-
 import { Preview, Section, Text } from "@react-email/components"
 import { claimsConfig } from "~/config/claims"
 import { siteConfig } from "~/config/site"

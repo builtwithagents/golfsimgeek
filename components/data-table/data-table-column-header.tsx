@@ -4,7 +4,6 @@ import type { Column } from "@tanstack/react-table"
 import { ArrowDownIcon, ArrowUpIcon, ChevronsUpDownIcon, EyeOffIcon } from "lucide-react"
 import { useTranslations } from "next-intl"
 import type { ComponentProps } from "react"
-
 import {
   DropdownMenu,
   DropdownMenuContent,

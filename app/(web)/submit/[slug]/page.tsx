@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
-import { notFound } from "next/navigation"
 import { getTranslations } from "next-intl/server"
+import { notFound } from "next/navigation"
 import { cache, Suspense } from "react"
 import { ToolTier } from "~/.generated/prisma/browser"
 import { ProductListSkeleton } from "~/components/web/products/product-list"

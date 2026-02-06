@@ -1,6 +1,6 @@
+import { getTranslations } from "next-intl/server"
 import { notFound } from "next/navigation"
 import type { NextRequest } from "next/server"
-import { getTranslations } from "next-intl/server"
 import { createLoader, parseAsInteger, parseAsStringEnum } from "nuqs/server"
 import satori from "satori"
 import { ToolStatus } from "~/.generated/prisma/client"

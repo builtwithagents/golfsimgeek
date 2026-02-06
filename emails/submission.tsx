@@ -1,5 +1,4 @@
 import "dotenv/config"
-
 import { Text } from "@react-email/components"
 import type { Tool } from "~/.generated/prisma/client"
 import { EmailExpediteNudge } from "~/emails/components/expedite-nudge"

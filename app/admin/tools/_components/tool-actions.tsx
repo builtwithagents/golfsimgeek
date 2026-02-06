@@ -2,8 +2,8 @@
 
 import { isValidUrl } from "@primoui/utils"
 import { CopyIcon, EllipsisIcon, GlobeIcon, TrashIcon } from "lucide-react"
-import { usePathname, useRouter } from "next/navigation"
 import { useAction } from "next-safe-action/hooks"
+import { usePathname, useRouter } from "next/navigation"
 import type { ComponentProps } from "react"
 import { toast } from "sonner"
 import type { Tool } from "~/.generated/prisma/browser"

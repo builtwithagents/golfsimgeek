@@ -7,5 +7,15 @@
   "singleQuote": false,
   "trailingComma": "all",
   "bracketSpacing": true,
-  "arrowParens": "avoid"
+  "arrowParens": "avoid",
+  "experimentalSortImports": {
+    "enabled": true,
+    "groups": [
+      ["side-effect"],
+      ["value-builtin", "type-builtin"],
+      ["value-external", "type-external"],
+      ["value-internal", "type-internal"]
+    ],
+    "newlinesBetween": false
+  }
 }

@@ -1,8 +1,8 @@
 "use client"
 
 import { RotateCwIcon } from "lucide-react"
-import { useRouter } from "next/navigation"
 import { useTranslations } from "next-intl"
+import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { Button } from "~/components/common/button"
 import { Link } from "~/components/common/link"

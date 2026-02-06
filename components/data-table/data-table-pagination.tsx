@@ -8,7 +8,6 @@ import {
   ChevronsRightIcon,
 } from "lucide-react"
 import { useTranslations } from "next-intl"
-
 import { Button } from "~/components/common/button"
 import { Note } from "~/components/common/note"
 import {

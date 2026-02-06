@@ -2,7 +2,6 @@ import { Slot } from "radix-ui"
 import type * as React from "react"
 import type { ComponentProps } from "react"
 import { H3 } from "~/components/common/heading"
-
 import { cx } from "~/lib/utils"
 
 type DataTableHeaderProps = ComponentProps<"div"> & {

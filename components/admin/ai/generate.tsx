@@ -1,9 +1,9 @@
 import { useLocalStorage } from "@mantine/hooks"
 import { LoaderIcon, SparklesIcon } from "lucide-react"
 import { type ComponentProps, useState } from "react"
+import { ConsentDialog } from "~/components/admin/dialogs/consent-dialog"
 import { Button } from "~/components/common/button"
 import { Tooltip } from "~/components/common/tooltip"
-import { ConsentDialog } from "~/components/admin/dialogs/consent-dialog"
 import { siteConfig } from "~/config/site"
 import { useAI } from "~/contexts/ai-context"
 

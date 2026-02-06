@@ -1,7 +1,7 @@
 import { tryCatch } from "@primoui/utils"
 import type { Metadata } from "next"
-import { notFound } from "next/navigation"
 import { getTranslations } from "next-intl/server"
+import { notFound } from "next/navigation"
 import { createLoader, parseAsString } from "nuqs/server"
 import { cache } from "react"
 import { AdForm } from "~/app/(web)/advertise/success/ad-form"

@@ -1,5 +1,4 @@
 import "dotenv/config"
-
 import { Text } from "@react-email/components"
 import { addHours, differenceInDays, format, formatDistanceToNowStrict } from "date-fns"
 import type { Tool } from "~/.generated/prisma/client"

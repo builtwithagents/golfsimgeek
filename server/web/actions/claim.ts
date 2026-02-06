@@ -1,10 +1,10 @@
 "use server"
 
 import { getDomain } from "@primoui/utils"
+import { getTranslations } from "next-intl/server"
 import { updateTag } from "next/cache"
 import { headers } from "next/headers"
 import { after } from "next/server"
-import { getTranslations } from "next-intl/server"
 import { siteConfig } from "~/config/site"
 import { EmailVerifyDomain } from "~/emails/verify-domain"
 import { auth } from "~/lib/auth"

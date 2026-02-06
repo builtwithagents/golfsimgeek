@@ -1,5 +1,4 @@
 import "./styles.css"
-
 import { MotionConfig } from "motion/react"
 import type { Metadata } from "next"
 import { NextIntlClientProvider } from "next-intl"

@@ -1,7 +1,7 @@
 import { capitalCase } from "change-case"
 import type { Metadata } from "next"
-import { notFound } from "next/navigation"
 import { getTranslations } from "next-intl/server"
+import { notFound } from "next/navigation"
 import { cache, Suspense } from "react"
 import { StructuredData } from "~/components/web/structured-data"
 import { ToolListingSkeleton } from "~/components/web/tools/tool-listing"

@@ -1,6 +1,6 @@
 import { formatNumber } from "@primoui/utils"
-import Image from "next/image"
 import { useTranslations } from "next-intl"
+import Image from "next/image"
 import type { ComponentProps } from "react"
 import { Note } from "~/components/common/note"
 import { Stack } from "~/components/common/stack"

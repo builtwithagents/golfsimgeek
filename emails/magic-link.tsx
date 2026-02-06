@@ -1,5 +1,4 @@
 import "dotenv/config"
-
 import { Text } from "@react-email/components"
 import { siteConfig } from "~/config/site"
 import { EmailButton } from "~/emails/components/button"

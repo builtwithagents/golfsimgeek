@@ -1,6 +1,6 @@
+import { getTranslations } from "next-intl/server"
 import { ImageResponse } from "next/og"
 import type { NextRequest } from "next/server"
-import { getTranslations } from "next-intl/server"
 import { createLoader } from "nuqs/server"
 import type { ComponentProps } from "react"
 import { OgBase } from "~/components/web/og/og-base"
