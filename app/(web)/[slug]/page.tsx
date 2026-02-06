@@ -84,7 +84,7 @@ export default async function (props: Props) {
       <Section>
         <Section.Content className="max-md:contents">
           <Sticky isOverlay>
-            <Stack className="self-stretch">
+            <Stack className="@container self-stretch">
               <Favicon src={tool.faviconUrl} title={tool.name} className="size-8" />
 
               <Stack className="flex-1 min-w-0">
@@ -96,7 +96,7 @@ export default async function (props: Props) {
               </Stack>
 
               <Suspense>
-                <ToolActions tool={tool} className="max-sm:hidden" />
+                <ToolActions tool={tool} />
               </Suspense>
 
               <Backdrop />
@@ -168,10 +168,6 @@ export default async function (props: Props) {
             <div className="absolute -inset-x-1 -bottom-3 -top-8 -z-1 pointer-events-none bg-background mask-t-from-66% max-md:hidden" />
 
             <Nav className="mr-auto" title={metadata.title} />
-
-            <Suspense>
-              <ToolActions tool={tool} className="sm:hidden" />
-            </Suspense>
           </Stack>
         </Section.Content>
 
