@@ -17,17 +17,22 @@ import type { DataTableFilterField } from "~/types"
 type DataTableToolbarProps<TData> = ComponentProps<"div"> & {
   table: Table<TData>
   filterFields?: DataTableFilterField<TData>[]
+  isFiltered?: boolean
+  onReset?: () => void
 }
 
 export function DataTableToolbar<TData>({
   table,
   filterFields = [],
+  isFiltered: isFilteredProp,
+  onReset,
   children,
   className,
   ...props
 }: DataTableToolbarProps<TData>) {
   const t = useTranslations("components.data_table.toolbar")
-  const isFiltered = table.getState().columnFilters.length > 0
+  const hasColumnFilters = table.getState().columnFilters.length > 0
+  const isFiltered = isFilteredProp ?? hasColumnFilters
   const inputRef = useRef<HTMLInputElement>(null)
 
   // Add hotkey to focus search input
@@ -86,7 +91,7 @@ export function DataTableToolbar<TData>({
             aria-label={t("reset_filters")}
             variant="ghost"
             size="md"
-            onClick={() => table.resetColumnFilters()}
+            onClick={() => onReset?.() ?? table.resetColumnFilters()}
             suffix={<XIcon />}
           >
             {t("reset")}

@@ -23,6 +23,7 @@ import { DataTableToolbar } from "~/components/data-table/data-table-toolbar"
 import { DataTableViewOptions } from "~/components/data-table/data-table-view-options"
 import { useDataTable } from "~/hooks/use-data-table"
 import { orpc } from "~/lib/orpc-query"
+import { isDefaultState } from "~/lib/parsers"
 import { adTableParamsSchema } from "~/server/admin/ads/schema"
 import type { DataTableFilterField } from "~/types"
 
@@ -118,7 +119,7 @@ const columns: ColumnDef<Ad>[] = [
 ]
 
 export function AdTable() {
-  const [params] = useQueryStates(adTableParamsSchema)
+  const [params, setParams] = useQueryStates(adTableParamsSchema)
 
   const { data, isLoading, isFetching } = useQuery(
     orpc.ads.list.queryOptions({
@@ -172,7 +173,15 @@ export function AdTable() {
           </Button>
         }
       >
-        <DataTableToolbar table={table} filterFields={filterFields}>
+        <DataTableToolbar
+          table={table}
+          filterFields={filterFields}
+          isFiltered={!isDefaultState(adTableParamsSchema, params, ["perPage", "page"])}
+          onReset={() => {
+            table.resetColumnFilters()
+            void setParams(null)
+          }}
+        >
           <AdTableToolbarActions table={table} />
           <DateRangePicker align="end" />
           <DataTableViewOptions table={table} />

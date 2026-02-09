@@ -9,6 +9,7 @@ import {
 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { Button } from "~/components/common/button"
+import { ButtonGroup } from "~/components/common/button-group"
 import { Note } from "~/components/common/note"
 import {
   Select,
@@ -17,7 +18,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/common/select"
-import { ButtonGroup } from "~/components/common/button-group"
 import { Stack } from "~/components/common/stack"
 
 type DataTablePaginationProps<TData> = {

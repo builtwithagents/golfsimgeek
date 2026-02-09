@@ -20,6 +20,7 @@ import { DataTableToolbar } from "~/components/data-table/data-table-toolbar"
 import { DataTableViewOptions } from "~/components/data-table/data-table-view-options"
 import { useDataTable } from "~/hooks/use-data-table"
 import { orpc } from "~/lib/orpc-query"
+import { isDefaultState } from "~/lib/parsers"
 import { userTableParamsSchema } from "~/server/admin/users/schema"
 import type { DataTableFilterField } from "~/types"
 
@@ -111,7 +112,7 @@ const columns: ColumnDef<User>[] = [
 ]
 
 export function UserTable() {
-  const [params] = useQueryStates(userTableParamsSchema)
+  const [params, setParams] = useQueryStates(userTableParamsSchema)
 
   const { data, isLoading, isFetching } = useQuery(
     orpc.users.list.queryOptions({
@@ -147,7 +148,15 @@ export function UserTable() {
   return (
     <DataTable table={table} isLoading={isLoading} isFetching={isFetching && !isLoading}>
       <DataTableHeader title="Users" total={data?.usersTotal}>
-        <DataTableToolbar table={table} filterFields={filterFields}>
+        <DataTableToolbar
+          table={table}
+          filterFields={filterFields}
+          isFiltered={!isDefaultState(userTableParamsSchema, params, ["perPage", "page"])}
+          onReset={() => {
+            table.resetColumnFilters()
+            void setParams(null)
+          }}
+        >
           <UserTableToolbarActions table={table} />
           <DateRangePicker align="end" />
           <DataTableViewOptions table={table} />

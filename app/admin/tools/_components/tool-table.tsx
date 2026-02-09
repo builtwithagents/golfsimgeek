@@ -30,6 +30,7 @@ import { DataTableViewOptions } from "~/components/data-table/data-table-view-op
 import { VerifiedBadge } from "~/components/web/verified-badge"
 import { useDataTable } from "~/hooks/use-data-table"
 import { orpc } from "~/lib/orpc-query"
+import { isDefaultState } from "~/lib/parsers"
 import { toolTableParamsSchema } from "~/server/admin/tools/schema"
 import type { DataTableFilterField } from "~/types"
 
@@ -133,7 +134,7 @@ const columns: ColumnDef<Tool>[] = [
 ]
 
 export function ToolTable() {
-  const [params] = useQueryStates(toolTableParamsSchema)
+  const [params, setParams] = useQueryStates(toolTableParamsSchema)
 
   const { data, isLoading, isFetching } = useQuery(
     orpc.tools.list.queryOptions({
@@ -205,7 +206,15 @@ export function ToolTable() {
           </Button>
         }
       >
-        <DataTableToolbar table={table} filterFields={filterFields}>
+        <DataTableToolbar
+          table={table}
+          filterFields={filterFields}
+          isFiltered={!isDefaultState(toolTableParamsSchema, params, ["perPage", "page"])}
+          onReset={() => {
+            table.resetColumnFilters()
+            void setParams(null)
+          }}
+        >
           <ToolTableToolbarActions table={table} />
           <DateRangePicker align="end" />
           <DataTableViewOptions table={table} />

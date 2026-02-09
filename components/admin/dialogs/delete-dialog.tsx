@@ -22,10 +22,7 @@ import { Kbd } from "~/components/common/kbd"
 type DeleteDialogProps = PropsWithChildren<{
   ids: string[]
   label: string
-  mutationOptions: (opts: {
-    onSuccess: () => void
-    onError: (error: Error) => void
-  }) => any
+  mutationOptions: (opts: { onSuccess: () => void; onError: (error: Error) => void }) => any
   queryKey: unknown[]
   onExecute?: () => void
 }>

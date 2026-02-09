@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
-import type { PropsWithChildren } from "react"
 import { getTranslations } from "next-intl/server"
+import type { PropsWithChildren } from "react"
 import { cache } from "react"
 import { DashboardTabs } from "~/app/(web)/dashboard/tabs"
 import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"

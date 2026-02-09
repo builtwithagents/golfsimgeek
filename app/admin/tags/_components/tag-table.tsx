@@ -22,6 +22,7 @@ import { DataTableToolbar } from "~/components/data-table/data-table-toolbar"
 import { DataTableViewOptions } from "~/components/data-table/data-table-view-options"
 import { useDataTable } from "~/hooks/use-data-table"
 import { orpc } from "~/lib/orpc-query"
+import { isDefaultState } from "~/lib/parsers"
 import { tagTableParamsSchema } from "~/server/admin/tags/schema"
 import type { DataTableFilterField } from "~/types"
 
@@ -84,7 +85,7 @@ const columns: ColumnDef<Tag & { _count?: { tools: number } }>[] = [
 ]
 
 export function TagTable() {
-  const [params] = useQueryStates(tagTableParamsSchema)
+  const [params, setParams] = useQueryStates(tagTableParamsSchema)
 
   const { data, isLoading, isFetching } = useQuery(
     orpc.tags.list.queryOptions({
@@ -129,7 +130,15 @@ export function TagTable() {
           </Button>
         }
       >
-        <DataTableToolbar table={table} filterFields={filterFields}>
+        <DataTableToolbar
+          table={table}
+          filterFields={filterFields}
+          isFiltered={!isDefaultState(tagTableParamsSchema, params, ["perPage", "page"])}
+          onReset={() => {
+            table.resetColumnFilters()
+            void setParams(null)
+          }}
+        >
           <TagTableToolbarActions table={table} />
           <DateRangePicker align="end" />
           <DataTableViewOptions table={table} />

@@ -3,8 +3,8 @@
 import type { Table } from "@tanstack/react-table"
 import { TrashIcon } from "lucide-react"
 import type { User } from "~/.generated/prisma/browser"
-import { Button } from "~/components/common/button"
 import { DeleteDialog } from "~/components/admin/dialogs/delete-dialog"
+import { Button } from "~/components/common/button"
 import { orpc } from "~/lib/orpc-query"
 
 interface UserTableToolbarActionsProps {

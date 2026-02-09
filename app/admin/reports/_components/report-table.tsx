@@ -19,6 +19,7 @@ import { DataTableViewOptions } from "~/components/data-table/data-table-view-op
 import { reportsConfig } from "~/config/reports"
 import { useDataTable } from "~/hooks/use-data-table"
 import { orpc } from "~/lib/orpc-query"
+import { isDefaultState } from "~/lib/parsers"
 import type { ReportTableSchema } from "~/server/admin/reports/schema"
 import { reportTableParamsSchema } from "~/server/admin/reports/schema"
 import type { DataTableFilterField } from "~/types"
@@ -105,7 +106,7 @@ const columns: ColumnDef<Report>[] = [
 ]
 
 export function ReportTable() {
-  const [params] = useQueryStates(reportTableParamsSchema)
+  const [params, setParams] = useQueryStates(reportTableParamsSchema)
 
   const { data, isLoading, isFetching } = useQuery(
     orpc.reports.list.queryOptions({
@@ -152,7 +153,15 @@ export function ReportTable() {
   return (
     <DataTable table={table} isLoading={isLoading} isFetching={isFetching && !isLoading}>
       <DataTableHeader title="Reports" total={reportsTotal}>
-        <DataTableToolbar table={table} filterFields={filterFields}>
+        <DataTableToolbar
+          table={table}
+          filterFields={filterFields}
+          isFiltered={!isDefaultState(reportTableParamsSchema, params, ["perPage", "page"])}
+          onReset={() => {
+            table.resetColumnFilters()
+            void setParams(null)
+          }}
+        >
           <ReportTableToolbarActions table={table} />
           <DateRangePicker align="end" />
           <DataTableViewOptions table={table} />

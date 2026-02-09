@@ -22,6 +22,7 @@ import { DataTableToolbar } from "~/components/data-table/data-table-toolbar"
 import { DataTableViewOptions } from "~/components/data-table/data-table-view-options"
 import { useDataTable } from "~/hooks/use-data-table"
 import { orpc } from "~/lib/orpc-query"
+import { isDefaultState } from "~/lib/parsers"
 import { categoryTableParamsSchema } from "~/server/admin/categories/schema"
 import type { DataTableFilterField } from "~/types"
 
@@ -89,7 +90,7 @@ const columns: ColumnDef<Category & { _count?: { tools: number } }>[] = [
 ]
 
 export function CategoryTable() {
-  const [params] = useQueryStates(categoryTableParamsSchema)
+  const [params, setParams] = useQueryStates(categoryTableParamsSchema)
 
   const { data, isLoading, isFetching } = useQuery(
     orpc.categories.list.queryOptions({
@@ -134,7 +135,15 @@ export function CategoryTable() {
           </Button>
         }
       >
-        <DataTableToolbar table={table} filterFields={filterFields}>
+        <DataTableToolbar
+          table={table}
+          filterFields={filterFields}
+          isFiltered={!isDefaultState(categoryTableParamsSchema, params, ["perPage", "page"])}
+          onReset={() => {
+            table.resetColumnFilters()
+            void setParams(null)
+          }}
+        >
           <CategoryTableToolbarActions table={table} />
           <DateRangePicker align="end" />
           <DataTableViewOptions table={table} />
