@@ -7,9 +7,7 @@ import { orpc } from "~/lib/orpc-query"
 const staleTime = 60 * 60 * 1000 // 1 hour
 
 export function DashboardStats() {
-  const { data: stats } = useQuery(
-    orpc.metrics.stats.queryOptions({ input: { limit: 3 }, staleTime }),
-  )
+  const { data: stats } = useQuery(orpc.metrics.stats.queryOptions({ staleTime }))
 
   if (!stats) {
     return (
@@ -22,24 +20,9 @@ export function DashboardStats() {
   }
 
   const counters = [
-    {
-      label: "Tools",
-      href: "/admin/tools",
-      count: stats.toolCount,
-      items: stats.tools.map(t => ({ ...t, href: `/admin/tools/${t.id}` })),
-    },
-    {
-      label: "Categories",
-      href: "/admin/categories",
-      count: stats.categoryCount,
-      items: stats.categories.map(c => ({ ...c, href: `/admin/categories/${c.id}` })),
-    },
-    {
-      label: "Users",
-      href: "/admin/users",
-      count: stats.userCount,
-      items: stats.users.map(u => ({ ...u, href: `/admin/users/${u.id}` })),
-    },
+    { label: "Tools", href: "/admin/tools", count: stats.toolCount },
+    { label: "Categories", href: "/admin/categories", count: stats.categoryCount },
+    { label: "Users", href: "/admin/users", count: stats.userCount },
   ]
 
   return (

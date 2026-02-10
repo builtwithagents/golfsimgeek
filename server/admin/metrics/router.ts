@@ -1,44 +1,21 @@
 import { format } from "date-fns"
-import { z } from "zod"
 import { getPlausibleVisitors } from "~/lib/analytics"
 import { calculateMetricStats, fillMissingDates, getMetricDateRange } from "~/lib/metrics"
 import { adminProcedure } from "~/lib/orpc"
 import { stripe } from "~/services/stripe"
 
 // -----------------------------------------------------------------------------
-// Dashboard stats: counts + recent items
+// Dashboard stats: resource counts
 // -----------------------------------------------------------------------------
-const stats = adminProcedure
-  .input(z.object({ limit: z.number().int().positive().default(3) }))
-  .handler(async ({ input: { limit }, context: { db } }) => {
-    const [toolCount, tools, categoryCount, categories, userCount, users] = await db.$transaction([
-      // Tools
-      db.tool.count(),
-      db.tool.findMany({
-        select: { id: true, name: true, createdAt: true },
-        orderBy: { createdAt: "desc" },
-        take: limit,
-      }),
+const stats = adminProcedure.handler(async ({ context: { db } }) => {
+  const [toolCount, categoryCount, userCount] = await db.$transaction([
+    db.tool.count(),
+    db.category.count(),
+    db.user.count(),
+  ])
 
-      // Categories
-      db.category.count(),
-      db.category.findMany({
-        select: { id: true, name: true, createdAt: true },
-        orderBy: { createdAt: "desc" },
-        take: limit,
-      }),
-
-      // Users
-      db.user.count(),
-      db.user.findMany({
-        select: { id: true, name: true, createdAt: true },
-        orderBy: { createdAt: "desc" },
-        take: limit,
-      }),
-    ])
-
-    return { toolCount, tools, categoryCount, categories, userCount, users }
-  })
+  return { toolCount, categoryCount, userCount }
+})
 
 // -----------------------------------------------------------------------------
 // Revenue metric: Stripe payment intents for last 30 days

@@ -17,8 +17,10 @@ import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
 import { useQueryState } from "nuqs"
 import type { ComponentProps } from "react"
 import { ToolStatus } from "~/.generated/prisma/browser"
+import { MetricHeader } from "~/components/admin/metrics/metric-header"
 import { Button } from "~/components/common/button"
-import { H5 } from "~/components/common/heading"
+import { ButtonGroup } from "~/components/common/button-group"
+import { Card } from "~/components/common/card"
 import { Link } from "~/components/common/link"
 import { ShowMore } from "~/components/common/show-more"
 import { Stack } from "~/components/common/stack"
@@ -104,41 +106,45 @@ export const Calendar = ({ className, ...props }: ComponentProps<"div">) => {
   const isCurrentMonth = isSameMonth(currentMonth, today)
 
   return (
-    <div className={cx("space-y-2", className)} {...props}>
-      <Stack size="sm">
-        <H5 className="mr-auto">{format(currentMonth, "MMM yyyy")}</H5>
+    <Card hover={false} className={cx("gap-2", className)} {...props}>
+      <MetricHeader
+        title="Schedule Calendar"
+        value={format(currentMonth, "MMM yyyy")}
+        note={
+          <ButtonGroup>
+            {!isCurrentMonth && (
+              <Button
+                variant="secondary"
+                size="md"
+                prefix={<CalendarIcon />}
+                onClick={() => setMonth(null)}
+              >
+                Now
+              </Button>
+            )}
 
-        {!isCurrentMonth && (
-          <Button
-            variant="secondary"
-            size="md"
-            prefix={<CalendarIcon />}
-            onClick={() => setMonth(null)}
-          >
-            Today
-          </Button>
-        )}
+            <Button
+              variant="secondary"
+              size="md"
+              prefix={<ChevronLeftIcon />}
+              onClick={() => setMonth(format(subMonths(currentMonth, 1), defaultFormat))}
+            >
+              <span className="max-sm:sr-only">Previous</span>
+            </Button>
 
-        <Button
-          variant="secondary"
-          size="md"
-          prefix={<ChevronLeftIcon />}
-          onClick={() => setMonth(format(subMonths(currentMonth, 1), defaultFormat))}
-        >
-          <span className="max-sm:sr-only">Previous</span>
-        </Button>
+            <Button
+              variant="secondary"
+              size="md"
+              suffix={<ChevronRightIcon />}
+              onClick={() => setMonth(format(addMonths(currentMonth, 1), defaultFormat))}
+            >
+              <span className="max-sm:sr-only">Next</span>
+            </Button>
+          </ButtonGroup>
+        }
+      />
 
-        <Button
-          variant="secondary"
-          size="md"
-          suffix={<ChevronRightIcon />}
-          onClick={() => setMonth(format(addMonths(currentMonth, 1), defaultFormat))}
-        >
-          <span className="max-sm:sr-only">Next</span>
-        </Button>
-      </Stack>
-
-      <div className="overflow-x-auto">
+      <div className="w-[calc(100%+2.5rem)] -mx-5 px-5 overflow-x-auto mask-r-from-[calc(100%-1.5rem)] mask-l-from-[calc(100%-1.5rem)]">
         <table className="min-w-3xl w-full table-fixed border-collapse text-sm">
           <thead>
             <tr>
@@ -170,6 +176,6 @@ export const Calendar = ({ className, ...props }: ComponentProps<"div">) => {
           </tbody>
         </table>
       </div>
-    </div>
+    </Card>
   )
 }

@@ -20,9 +20,9 @@ const MetricChart = ({ header, chart, ...props }: MetricChartProps) => {
   )
 }
 
-const MetricChartSkeleton = () => {
+const MetricChartSkeleton = ({ ...props }: ComponentProps<typeof Card>) => {
   return (
-    <Card hover={false}>
+    <Card hover={false} {...props}>
       <MetricHeaderSkeleton />
       <Skeleton className="w-full h-24" />
     </Card>

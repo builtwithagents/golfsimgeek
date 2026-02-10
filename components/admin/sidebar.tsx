@@ -3,7 +3,6 @@
 import { useMediaQuery } from "@mantine/hooks"
 import { cx } from "cva"
 import {
-  CalendarIcon,
   DockIcon,
   ExternalLinkIcon,
   GalleryHorizontalEndIcon,
@@ -99,14 +98,6 @@ export const Sidebar = () => {
           title: "Ads",
           href: "/admin/ads",
           prefix: <MegaphoneIcon />,
-        },
-
-        undefined, // Separator
-
-        {
-          title: "Schedule",
-          href: "/admin/schedule",
-          prefix: <CalendarIcon />,
         },
 
         undefined, // Separator
