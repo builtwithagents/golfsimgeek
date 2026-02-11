@@ -24,7 +24,7 @@ export const EmailVerifyDomain = ({ otp, ...props }: EmailProps) => {
       </Text>
 
       <Section className="my-4">
-        <Text className="inline-block px-4 py-3 bg-gray-100 text-4xl font-bold leading-none tracking-widest tabular-nums rounded-md">
+        <Text className="inline-block px-4 py-3 bg-gray-100 text-4xl font-semibold leading-none tracking-widest tabular-nums rounded-md">
           {otp}
         </Text>
       </Section>

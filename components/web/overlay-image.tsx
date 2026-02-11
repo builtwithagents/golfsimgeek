@@ -24,7 +24,7 @@ export const OverlayImage = ({ className, src, alt, loading, ...props }: Overlay
           width={1280}
           height={1024}
           loading={loading}
-          className="aspect-video h-auto w-full object-cover object-top will-change-transform group-hover:scale-[101%]"
+          className="aspect-video h-auto w-full object-cover object-top will-change-transform group-hover:scale-[101%] dark:opacity-90"
         />
       </ExternalLink>
     </Box>
