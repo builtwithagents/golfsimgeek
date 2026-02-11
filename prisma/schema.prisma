@@ -154,7 +154,7 @@ model Tool {
   @@index([name])
   @@index([status])
   @@index([ownerId])
-  @@index([tierPriority, createdAt])
+  @@index([tierPriority, publishedAt])
   @@index([createdAt])
 }
 

@@ -2,22 +2,16 @@ import { createEnv } from "@t3-oss/env-nextjs"
 import { z } from "zod"
 
 export const env = createEnv({
-  shared: {
-    PORT: z.coerce.number().default(8000),
-    VERCEL_URL: z
-      .string()
-      .optional()
-      .transform(v => (v ? `https://${v}` : undefined)),
-  },
-
   /**
    * Specify your server-side environment variables schema here. This way you can ensure the app isn't
    * built with invalid env vars.
    */
   server: {
+    PORT: z.coerce.number().default(3000),
     NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
-    VERCEL_ENV: z.enum(["development", "preview", "production"]).default("development"),
+    NEXT_PHASE: z.string().optional(),
     DATABASE_URL: z.string().min(1),
+    DATABASE_PUBLIC_URL: z.string().optional(),
     CRON_SECRET: z.string().optional(),
     BETTER_AUTH_SECRET: z.string().min(1),
     BETTER_AUTH_URL: z.url().min(1),
@@ -57,8 +51,6 @@ export const env = createEnv({
    * Destructure all variables from `process.env` to make sure they aren't tree-shaken away.
    */
   experimental__runtimeEnv: {
-    PORT: process.env.PORT,
-    VERCEL_URL: process.env.VERCEL_URL,
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
     NEXT_PUBLIC_SITE_EMAIL: process.env.NEXT_PUBLIC_SITE_EMAIL,
     NEXT_PUBLIC_PLAUSIBLE_URL: process.env.NEXT_PUBLIC_PLAUSIBLE_URL,
@@ -78,6 +70,5 @@ export const env = createEnv({
   emptyStringAsUndefined: true,
 })
 
-export const isProd =
-  process.env.NODE_ENV === "production" || process.env.VERCEL_ENV === "production"
+export const isProd = process.env.NODE_ENV === "production"
 export const isDev = !isProd
