@@ -3,8 +3,10 @@
 import { formatDate } from "@primoui/utils"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import type { ColumnDef } from "@tanstack/react-table"
+import { capitalCase } from "change-case"
 import { useQueryStates } from "nuqs"
 import type { Report, Tool } from "~/.generated/prisma/browser"
+import { ReportType } from "~/.generated/prisma/browser"
 import { ReportActions } from "~/app/admin/reports/_components/report-actions"
 import { DateRangePicker } from "~/components/admin/date-range-picker"
 import { RowCheckbox } from "~/components/admin/row-checkbox"
@@ -16,7 +18,6 @@ import { DataTableHeader } from "~/components/data-table/data-table-header"
 import { DataTableLink } from "~/components/data-table/data-table-link"
 import { DataTableToolbar } from "~/components/data-table/data-table-toolbar"
 import { DataTableViewOptions } from "~/components/data-table/data-table-view-options"
-import { reportsConfig } from "~/config/reports"
 import { useDataTable } from "~/hooks/use-data-table"
 import { orpc } from "~/lib/orpc-query"
 import { isDefaultState } from "~/lib/parsers"
@@ -81,7 +82,7 @@ const columns: ColumnDef<Report>[] = [
   {
     accessorKey: "type",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Type" />,
-    cell: ({ row }) => <Badge variant="outline">{row.getValue("type")}</Badge>,
+    cell: ({ row }) => <Badge variant="outline">{capitalCase(row.getValue("type"))}</Badge>,
   },
   {
     accessorKey: "email",
@@ -129,8 +130,8 @@ export function ReportTable() {
     {
       id: "type",
       label: "Type",
-      options: reportsConfig.reportTypes.map(type => ({
-        label: type,
+      options: Object.values(ReportType).map(type => ({
+        label: capitalCase(type),
         value: type,
       })),
     },

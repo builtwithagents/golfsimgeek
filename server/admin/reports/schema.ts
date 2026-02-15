@@ -1,13 +1,13 @@
 import {
   createStandardSchemaV1,
-  type inferParserType,
   parseAsArrayOf,
   parseAsInteger,
   parseAsString,
   parseAsStringEnum,
+  type inferParserType,
 } from "nuqs/server"
 import { z } from "zod"
-import type { Report } from "~/.generated/prisma/browser"
+import { ReportType, type Report } from "~/.generated/prisma/browser"
 import { getSortingStateParser } from "~/lib/parsers"
 
 export const reportListParams = {
@@ -18,7 +18,7 @@ export const reportListParams = {
   from: parseAsString.withDefault(""),
   to: parseAsString.withDefault(""),
   operator: parseAsStringEnum(["and", "or"]).withDefault("and"),
-  type: parseAsArrayOf(parseAsString).withDefault([]),
+  type: parseAsArrayOf(parseAsStringEnum(Object.values(ReportType))).withDefault([]),
 }
 
 export const reportListSchema = createStandardSchemaV1(reportListParams)
@@ -27,7 +27,7 @@ export type ReportListParams = inferParserType<typeof reportListParams>
 export const reportSchema = z.object({
   id: z.string().optional(),
   email: z.email().optional(),
-  type: z.string(),
+  type: z.enum(ReportType),
   message: z.string().optional(),
   toolId: z.string().optional(),
 })

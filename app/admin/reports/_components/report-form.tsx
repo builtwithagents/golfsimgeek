@@ -3,9 +3,11 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useHotkeys } from "@mantine/hooks"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { capitalCase } from "change-case"
 import type { ComponentProps } from "react"
 import { Controller, FormProvider as Form, useForm } from "react-hook-form"
 import { toast } from "sonner"
+import { ReportType } from "~/.generated/prisma/browser"
 import { ReportActions } from "~/app/admin/reports/_components/report-actions"
 import { Button } from "~/components/common/button"
 import { Field, FieldError, FieldLabel } from "~/components/common/field"
@@ -22,7 +24,6 @@ import {
 } from "~/components/common/select"
 import { Stack } from "~/components/common/stack"
 import { TextArea } from "~/components/common/textarea"
-import { reportsConfig } from "~/config/reports"
 import { orpc } from "~/lib/orpc-query"
 import { cx } from "~/lib/utils"
 import type { findReportById } from "~/server/admin/reports/queries"
@@ -91,9 +92,9 @@ export function ReportForm({ className, title, report, ...props }: ReportFormPro
                   <SelectValue placeholder="Select a report type" />
                 </SelectTrigger>
                 <SelectContent>
-                  {reportsConfig.reportTypes.map(type => (
+                  {Object.values(ReportType).map(type => (
                     <SelectItem key={type} value={type}>
-                      {type}
+                      {capitalCase(type)}
                     </SelectItem>
                   ))}
                 </SelectContent>

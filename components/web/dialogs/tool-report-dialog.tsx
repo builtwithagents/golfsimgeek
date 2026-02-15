@@ -1,10 +1,12 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useHotkeys } from "@mantine/hooks"
 import { useHookFormAction } from "@next-safe-action/adapter-react-hook-form/hooks"
+import { capitalCase } from "change-case"
 import { useTranslations } from "next-intl"
 import type { Dispatch, SetStateAction } from "react"
 import { Controller, FormProvider as Form } from "react-hook-form"
 import { toast } from "sonner"
+import { ReportType } from "~/.generated/prisma/browser"
 import { Button } from "~/components/common/button"
 import {
   Dialog,
@@ -43,7 +45,7 @@ export const ToolReportDialog = ({ tool, isOpen, setIsOpen }: ToolReportDialogPr
   const { form, action, handleSubmitWithAction } = useHookFormAction(reportTool, resolver, {
     formProps: {
       values: {
-        type: "",
+        type: "" as unknown as ReportType,
         message: "",
         toolId: tool.id,
         email: session?.user.email || "",
@@ -117,11 +119,11 @@ export const ToolReportDialog = ({ tool, isOpen, setIsOpen }: ToolReportDialogPr
                     onValueChange={field.onChange}
                     className="flex flex-col items-start gap-2.5"
                   >
-                    {reportsConfig.reportTypes.map(type => (
+                    {Object.values(ReportType).map(type => (
                       <Stack key={type} size="sm" wrap={false} asChild>
                         <FieldLabel className="font-normal text-secondary-foreground overflow-visible cursor-pointer">
                           <RadioGroupItem value={type} />
-                          {type}
+                          {capitalCase(type)}
                         </FieldLabel>
                       </Stack>
                     ))}
@@ -139,7 +141,12 @@ export const ToolReportDialog = ({ tool, isOpen, setIsOpen }: ToolReportDialogPr
               name="message"
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>{t("message_label")}</FieldLabel>
+                  <FieldLabel
+                    data-required={form.watch("type") === ReportType.Other || undefined}
+                    htmlFor={field.name}
+                  >
+                    {t("message_label")}
+                  </FieldLabel>
                   <TextArea
                     id={field.name}
                     placeholder={t("message_placeholder")}
