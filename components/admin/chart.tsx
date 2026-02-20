@@ -1,6 +1,6 @@
 "use client"
 
-import { format } from "date-fns"
+import { format, parse } from "date-fns"
 import plur from "plur"
 import type { ComponentProps } from "react"
 import { Note } from "~/components/common/note"
@@ -60,7 +60,7 @@ export const Chart = ({
             tooltip={
               <Stack size="sm" direction="column">
                 <span className="opacity-60">
-                  {format(new Date(item.date), "EEE, MMM d, yyyy")}
+                  {format(parse(item.date, "yyyy-MM-dd", new Date()), "EEE, MMM d, yyyy")}
                 </span>
 
                 <span className="font-medium">

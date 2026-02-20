@@ -1,6 +1,6 @@
 "use client"
 
-import { formatDate } from "date-fns"
+import { formatDate, parse } from "date-fns"
 import { BadgeCheckIcon, CalendarIcon } from "lucide-react"
 import { type ComponentProps, type ReactNode, useState } from "react"
 import { useFormContext } from "react-hook-form"
@@ -67,7 +67,7 @@ export const ToolPublishActions = ({
   }
 
   const handleScheduled = () => {
-    const scheduledDate = new Date(`${selectedDate}T${selectedTime}`)
+    const scheduledDate = parse(`${selectedDate} ${selectedTime}`, "yyyy-MM-dd HH:mm", new Date())
     onStatusSubmit(ToolStatus.Scheduled, scheduledDate)
     setIsOpen(false)
   }
@@ -312,8 +312,8 @@ export const ToolPublishActions = ({
 
                                       <Calendar
                                         mode="single"
-                                        selected={new Date(selectedDate)}
-                                        defaultMonth={new Date(selectedDate)}
+                                        selected={parse(selectedDate, "yyyy-MM-dd", new Date())}
+                                        defaultMonth={parse(selectedDate, "yyyy-MM-dd", new Date())}
                                         disabled={{ before: new Date() }}
                                         onSelect={date => {
                                           if (date) {

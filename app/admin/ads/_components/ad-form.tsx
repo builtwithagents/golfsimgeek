@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useHotkeys } from "@mantine/hooks"
 import { createId } from "@paralleldrive/cuid2"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { addMonths, formatDate } from "date-fns"
+import { addMonths, formatDate, parse } from "date-fns"
 import { CalendarIcon, ClockIcon } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
@@ -47,6 +47,8 @@ export function AdForm({ className, title, ad, ...props }: AdFormProps) {
   const [isEndsAtOpen, setIsEndsAtOpen] = useState(false)
 
   const id = useMemo(() => ad?.id ?? createId(), [ad?.id])
+  const defaultStartsAt = useMemo(() => new Date(), [])
+  const defaultEndsAt = useMemo(() => addMonths(new Date(), 1), [])
 
   const form = useForm({
     resolver: zodResolver(adSchema),
@@ -60,8 +62,8 @@ export function AdForm({ className, title, ad, ...props }: AdFormProps) {
       bannerUrl: ad?.bannerUrl ?? "",
       buttonLabel: ad?.buttonLabel ?? "",
       type: ad?.type ?? AdType.All,
-      startsAt: ad?.startsAt ?? new Date(),
-      endsAt: ad?.endsAt ?? addMonths(new Date(), 1),
+      startsAt: ad?.startsAt ?? defaultStartsAt,
+      endsAt: ad?.endsAt ?? defaultEndsAt,
     },
   })
 
@@ -96,14 +98,14 @@ export function AdForm({ className, title, ad, ...props }: AdFormProps) {
   const [endsAtTime, setEndsAtTime] = useState(formatTimeDisplay(endsAt))
 
   const updateStartsAt = (date: string, time: string) => {
-    const newDate = new Date(`${date}T${time}`)
+    const newDate = parse(`${date} ${time}`, "yyyy-MM-dd HH:mm", new Date())
     if (!Number.isNaN(newDate.getTime())) {
       form.setValue("startsAt", newDate)
     }
   }
 
   const updateEndsAt = (date: string, time: string) => {
-    const newDate = new Date(`${date}T${time}`)
+    const newDate = parse(`${date} ${time}`, "yyyy-MM-dd HH:mm", new Date())
     if (!Number.isNaN(newDate.getTime())) {
       form.setValue("endsAt", newDate)
     }
