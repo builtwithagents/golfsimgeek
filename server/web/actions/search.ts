@@ -1,10 +1,12 @@
 "use server"
 
 import { z } from "zod"
-import { ToolStatus } from "~/.generated/prisma/client"
+import { ToolStatus, ToolTier } from "~/.generated/prisma/client"
 import { getServerSession } from "~/lib/auth"
 import { actionClient } from "~/lib/safe-actions"
-import { db } from "~/services/db"
+import { findCategories } from "~/server/web/categories/queries"
+import { findTags } from "~/server/web/tags/queries"
+import { findTools } from "~/server/web/tools/queries"
 
 export const searchItems = actionClient
   .inputSchema(z.object({ query: z.string() }))
@@ -12,7 +14,7 @@ export const searchItems = actionClient
     const session = await getServerSession()
 
     const [tools, categories, tags] = await Promise.all([
-      db.tool.findMany({
+      findTools({
         where: {
           status: session?.user.role === "admin" ? undefined : ToolStatus.Published,
           OR: [
@@ -21,22 +23,23 @@ export const searchItems = actionClient
             { description: { contains: query, mode: "insensitive" } },
           ],
         },
-        orderBy: { name: "asc" },
         take: 10,
       }),
 
-      db.category.findMany({
+      findCategories({
         where: { name: { contains: query, mode: "insensitive" } },
-        orderBy: { name: "asc" },
         take: 10,
       }),
 
-      db.tag.findMany({
+      findTags({
         where: { name: { contains: query, mode: "insensitive" } },
-        orderBy: { name: "asc" },
         take: 10,
       }),
     ])
 
     return { tools, categories, tags }
   })
+
+export const findFeaturedTools = actionClient.action(async () => {
+  return findTools({ where: { tier: ToolTier.Premium } })
+})

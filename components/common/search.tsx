@@ -21,7 +21,7 @@ import {
 } from "~/components/common/command"
 import { useSearch } from "~/contexts/search-context"
 import { useSession } from "~/lib/auth-client"
-import { searchItems } from "~/server/web/actions/search"
+import { findFeaturedTools, searchItems } from "~/server/web/actions/search"
 
 type SearchResultsProps<T> = {
   name: string
@@ -81,6 +81,10 @@ export const Search = () => {
   const isAdmin = session?.user.role === "admin"
   const isAdminPath = pathname.startsWith("/admin")
   const hasQuery = !!q.length
+
+  const { execute: executeFeaturedTools } = useAction(findFeaturedTools, {
+    onSuccess: ({ data }) => setResults({ tools: data, categories: [], tags: [] }),
+  })
 
   const handleOpenChange = (open: boolean) => {
     if (open) {
@@ -191,12 +195,16 @@ export const Search = () => {
         execute({ query })
         listRef.current?.scrollTo({ top: 0, behavior: "smooth" })
       } else {
-        setResults(undefined)
+        if (search.isOpen) {
+          executeFeaturedTools()
+        } else {
+          setResults(undefined)
+        }
       }
     }
 
     performSearch()
-  }, [q, execute, hasQuery])
+  }, [q, search.isOpen, execute, hasQuery])
 
   return (
     <CommandDialog open={search.isOpen} onOpenChange={handleOpenChange} shouldFilter={false}>
@@ -230,7 +238,7 @@ export const Search = () => {
           ))}
 
         <SearchResults
-          name={t("navigation.tools")}
+          name={hasQuery ? t("navigation.tools") : t("navigation.featured_tools")}
           items={results?.tools}
           onItemSelect={navigateTo}
           getHref={({ id, slug }) => (isAdminPath ? `/admin/tools/${id}` : `/${slug}`)}

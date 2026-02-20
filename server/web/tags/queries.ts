@@ -55,6 +55,20 @@ export const searchTags = async (search: TagsFilterParams, where?: Prisma.TagWhe
   return { tags, total, page, perPage }
 }
 
+export const findTags = async ({ where, orderBy, ...args }: Prisma.TagFindManyArgs) => {
+  "use cache"
+
+  cacheTag("tags")
+  cacheLife("infinite")
+
+  return db.tag.findMany({
+    ...args,
+    orderBy: orderBy ?? { name: "asc" },
+    where: { tools: { some: { status: ToolStatus.Published } }, ...where },
+    select: tagManyPayload,
+  })
+}
+
 export const findTagSlugs = async ({ where, orderBy, ...args }: Prisma.TagFindManyArgs) => {
   "use cache"
 

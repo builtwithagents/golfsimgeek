@@ -1,6 +1,7 @@
 import { type Prisma, ToolStatus } from "~/.generated/prisma/client"
 
 export const categoryOnePayload = {
+  id: true,
   name: true,
   slug: true,
   label: true,
@@ -9,6 +10,7 @@ export const categoryOnePayload = {
 } satisfies Prisma.CategorySelect
 
 export const categoryManyPayload = {
+  id: true,
   name: true,
   slug: true,
   label: true,
