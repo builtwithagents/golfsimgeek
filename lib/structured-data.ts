@@ -61,6 +61,11 @@ export const getWebSite = (): WebSite => ({
   "@id": `${siteConfig.url}/#/schema/website/1`,
   name: siteConfig.name,
   url: siteConfig.url,
+  potentialAction: {
+    "@type": "SearchAction",
+    target: `${siteConfig.url}/?q={q}`,
+    query: "required name=q",
+  },
 })
 
 /**
