@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
+import { tryCatch } from "@primoui/utils"
 import { useTranslations } from "next-intl"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
@@ -23,8 +24,8 @@ export const useMagicLink = ({ onSuccess, onError }: UseMagicLinkProps = {}) => 
   const form = useForm<z.infer<typeof schema>>({ resolver, defaultValues })
 
   const handleSignIn = async ({ email }: z.infer<typeof schema>) => {
-    try {
-      await signIn.magicLink({
+    const { error } = await tryCatch(
+      signIn.magicLink({
         email,
         callbackURL,
         fetchOptions: {
@@ -36,11 +37,12 @@ export const useMagicLink = ({ onSuccess, onError }: UseMagicLinkProps = {}) => 
           onSuccess: () => onSuccess?.(email),
           onError: ({ error }) => onError?.(error),
         },
-      })
-    } catch (e) {
+      }),
+    )
+
+    if (error) {
+      onError?.(error)
       setIsPending(false)
-      form.reset()
-      onError?.(e instanceof Error ? e : new Error("Something went wrong"))
     }
   }
 

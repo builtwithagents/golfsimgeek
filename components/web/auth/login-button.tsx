@@ -1,5 +1,6 @@
 "use client"
 
+import { tryCatch } from "@primoui/utils"
 import { capitalCase } from "change-case"
 import { useTranslations } from "next-intl"
 import { type ComponentProps, useState } from "react"
@@ -18,8 +19,8 @@ export const LoginButton = ({ provider, ...props }: LoginButtonProps) => {
   const callbackURL = useAuthCallbackUrl()
 
   const handleSignIn = async () => {
-    try {
-      await signIn.social({
+    const { error } = await tryCatch(
+      signIn.social({
         provider,
         callbackURL,
         fetchOptions: {
@@ -31,9 +32,11 @@ export const LoginButton = ({ provider, ...props }: LoginButtonProps) => {
             setIsPending(false)
           },
         },
-      })
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Something went wrong")
+      }),
+    )
+
+    if (error) {
+      toast.error(error.message)
       setIsPending(false)
     }
   }
