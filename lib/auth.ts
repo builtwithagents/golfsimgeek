@@ -1,7 +1,8 @@
 import { getRandomDigits } from "@primoui/utils"
 import { prismaAdapter } from "better-auth/adapters/prisma"
-import { betterAuth } from "better-auth/minimal"
 import { createAuthMiddleware } from "better-auth/api"
+import { betterAuth } from "better-auth/minimal"
+import { nextCookies } from "better-auth/next-js"
 import { admin, magicLink, oneTimeToken } from "better-auth/plugins"
 import { revalidatePath } from "next/cache"
 import { headers } from "next/headers"
@@ -13,11 +14,26 @@ import { EmailMagicLink } from "~/emails/magic-link"
 import { env } from "~/env"
 import { sendEmail } from "~/lib/email"
 import { db } from "~/services/db"
+import { redis } from "~/services/redis"
 
 export const auth = betterAuth({
   database: prismaAdapter(db, {
     provider: "postgresql",
   }),
+
+  secondaryStorage: redis
+    ? {
+        get: async key => {
+          return (await redis?.get(key)) ?? null
+        },
+        set: async (key, value, ttl) => {
+          await redis?.set(key, value, "EX", ttl ?? 60 * 60)
+        },
+        delete: async key => {
+          await redis?.del(key)
+        },
+      }
+    : undefined,
 
   socialProviders: {
     google: {
@@ -74,6 +90,9 @@ export const auth = betterAuth({
     }),
 
     admin(),
+
+    // must be the last plugin
+    nextCookies(),
   ],
 })
 
