@@ -2,7 +2,7 @@
  * Migration script: MDX blog posts → Database
  *
  * Reads markdown files from `content/posts/` directory, parses frontmatter,
- * and inserts them into the database as Post records.
+ * uploads local images to S3, and inserts them into the database as Post records.
  *
  * Usage:
  *   SKIP_ENV_VALIDATION=1 bun run scripts/migrate-posts.ts
@@ -14,8 +14,9 @@
  */
 
 import { readdir, readFile } from "node:fs/promises"
-import { basename, extname, join } from "node:path"
+import { basename, extname, join, resolve } from "node:path"
 import { PostStatus } from "~/.generated/prisma/client"
+import { uploadToS3Storage } from "~/lib/media"
 import { db } from "~/services/db"
 
 const POSTS_DIR = join(import.meta.dirname, "../content/posts")
@@ -118,6 +119,22 @@ function stripMarkdown(text: string): string {
     .trim()
 }
 
+/**
+ * Check if a path is a local file reference (not a URL).
+ */
+function isLocalPath(path: string): boolean {
+  return !path.startsWith("http://") && !path.startsWith("https://") && !path.startsWith("//")
+}
+
+/**
+ * Upload a local image file to S3 and return the URL.
+ */
+async function uploadLocalImage(imagePath: string, s3Key: string): Promise<string> {
+  const absolutePath = resolve(POSTS_DIR, imagePath)
+  const buffer = await readFile(absolutePath)
+  return uploadToS3Storage(Buffer.from(buffer), s3Key)
+}
+
 async function main() {
   console.log("Starting blog post migration...")
 
@@ -181,16 +198,52 @@ async function main() {
       continue
     }
 
-    const plainText = stripMarkdown(content)
+    // Generate a post ID upfront so we can use it for S3 paths
+    const postId = crypto.randomUUID()
+
+    // Upload frontmatter image to S3 if it's a local file
+    let imageUrl = data.image
+    if (imageUrl && isLocalPath(imageUrl)) {
+      try {
+        imageUrl = await uploadLocalImage(imageUrl, `posts/${postId}/image`)
+        console.log(`    Uploaded cover image: ${data.image}`)
+      } catch (e) {
+        console.warn(`    Warning: Failed to upload cover image "${data.image}":`, e)
+        imageUrl = undefined
+      }
+    }
+
+    // Upload inline markdown images to S3
+    let processedContent = content
+    const imageRegex = /!\[([^\]]*)\]\(([^)]+)\)/g
+    let match: RegExpExecArray | null
+
+    while ((match = imageRegex.exec(content)) !== null) {
+      const [fullMatch, , imgPath] = match
+
+      if (isLocalPath(imgPath)) {
+        try {
+          const uniqueId = crypto.randomUUID().slice(0, 8)
+          const s3Url = await uploadLocalImage(imgPath, `posts/${postId}/content/${uniqueId}`)
+          processedContent = processedContent.replace(fullMatch, fullMatch.replace(imgPath, s3Url))
+          console.log(`    Uploaded inline image: ${imgPath}`)
+        } catch (e) {
+          console.warn(`    Warning: Failed to upload inline image "${imgPath}":`, e)
+        }
+      }
+    }
+
+    const plainText = stripMarkdown(processedContent)
 
     await db.post.create({
       data: {
+        id: postId,
         title: data.title,
         slug,
         description: data.description,
-        content,
+        content: processedContent,
         plainText,
-        imageUrl: data.image,
+        imageUrl,
         status: PostStatus.Published,
         publishedAt: data.publishedAt ? new Date(data.publishedAt) : new Date(),
         authorId: admin.id,
