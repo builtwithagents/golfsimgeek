@@ -1,7 +1,6 @@
 "use client"
 
 import Image from "@tiptap/extension-image"
-import Link from "@tiptap/extension-link"
 import { TableKit } from "@tiptap/extension-table"
 import Typography from "@tiptap/extension-typography"
 import { Markdown } from "@tiptap/markdown"
@@ -29,62 +28,15 @@ export const TiptapEditor = ({
 }: TiptapEditorProps) => {
   const editor = useEditor({
     extensions: [
-      StarterKit.configure({ link: false }),
-      Image.configure({ inline: true }).extend({
-        group: () => "inline",
-        marks: "link",
-        renderMarkdown: node => {
-          const src = node.attrs?.src ?? ""
-          const alt = node.attrs?.alt ?? ""
-          const title = node.attrs?.title ?? ""
-          const imgMd = title ? `![${alt}](${src} "${title}")` : `![${alt}](${src})`
-
-          const linkMark = node.marks?.find((m: { type: string }) => m.type === "link")
-
-          if (linkMark) {
-            const href = linkMark.attrs?.href ?? ""
-            const linkTitle = linkMark.attrs?.title ?? ""
-            return linkTitle ? `[${imgMd}](${href} "${linkTitle}")` : `[${imgMd}](${href})`
-          }
-
-          return imgMd
+      StarterKit.configure({
+        link: {
+          openOnClick: false,
+          autolink: true,
+          linkOnPaste: true,
+          defaultProtocol: "https",
         },
       }),
-      Link.configure({
-        openOnClick: false,
-        autolink: true,
-        linkOnPaste: true,
-        defaultProtocol: "https",
-      }).extend({
-        parseMarkdown: (token, helpers) => {
-          const tokens = token.tokens || []
-
-          // When a link wraps a single image, add the link mark directly
-          // to the image node (bypasses applyMarkToContent which only handles text nodes)
-          if (tokens.length === 1 && tokens[0].type === "image") {
-            const imgToken = tokens[0]
-            const imgNode = helpers.createNode("image", {
-              src: imgToken.href,
-              title: imgToken.title,
-              alt: imgToken.text,
-            })
-
-            return {
-              ...imgNode,
-              marks: [
-                ...(imgNode.marks || []),
-                { type: "link", attrs: { href: token.href, title: token.title || null } },
-              ],
-            }
-          }
-
-          // Default behavior for text links
-          return helpers.applyMark("link", helpers.parseInline(tokens), {
-            href: token.href,
-            title: token.title || null,
-          })
-        },
-      }),
+      Image,
       TableKit.configure({
         table: { resizable: false },
       }),
