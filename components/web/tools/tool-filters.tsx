@@ -18,7 +18,7 @@ import type { ToolFilterSchema } from "~/server/web/tools/schema"
 export const ToolFilters = ({ ...props }: ComponentProps<typeof Select>) => {
   const t = useTranslations("tools.filters")
   const { filters, updateFilters } = useFilters<ToolFilterSchema>()
-  const { data } = useQuery(orpc.web.filters.findFilterOptions.queryOptions())
+  const { data } = useQuery(orpc.web.tools.findFilterOptions.queryOptions())
 
   return (
     <>

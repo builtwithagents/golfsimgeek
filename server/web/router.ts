@@ -1,7 +1,6 @@
 import { withBase } from "~/lib/orpc"
 import { webAdRouter } from "~/server/web/ads/router"
 import { bookmarkRouter } from "~/server/web/bookmarks/router"
-import { filterRouter } from "~/server/web/filters/router"
 import { mediaRouter } from "~/server/web/media/router"
 import { webProductRouter } from "~/server/web/products/router"
 import { reportRouter } from "~/server/web/reports/router"
@@ -22,7 +21,6 @@ const ping = withBase.handler(async () => {
 export const webRouter = {
   ping,
   search: searchRouter,
-  filters: filterRouter,
   bookmarks: bookmarkRouter,
   subscribe: subscribeRouter,
   reports: reportRouter,

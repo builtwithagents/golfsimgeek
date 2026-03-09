@@ -6,8 +6,9 @@ import { ToolStatus } from "~/.generated/prisma/client"
 import { isDev } from "~/env"
 import { auth } from "~/lib/auth"
 import { notifySubmitterOfToolSubmitted } from "~/lib/notifications"
-import { withAuthRateLimit } from "~/lib/orpc"
+import { withAuthRateLimit, withBase } from "~/lib/orpc"
 import { generateUniqueSlug } from "~/lib/slugs"
+import { findCategories } from "~/server/web/categories/queries"
 import { getClaimableTool, generateAndSendOtp, verifyEmailDomain } from "~/server/web/tools/utils"
 import { createResendContact } from "~/services/resend"
 
@@ -125,7 +126,26 @@ const verifyClaimOtp = withAuthRateLimit("claim", "claim-verify")
     return { success: true }
   })
 
+// -----------------------------------------------------------------------------
+// Find filter options for tool listing
+// -----------------------------------------------------------------------------
+const findFilterOptions = withBase.handler(async () => {
+  const categories = await findCategories({})
+
+  return [
+    {
+      type: "category" as const,
+      options: categories.map(({ slug, name, _count }) => ({
+        slug,
+        name,
+        count: _count.tools,
+      })),
+    },
+  ].filter(({ options }) => options.length)
+})
+
 export const webToolRouter = {
+  findFilterOptions,
   submit,
   sendClaimOtp,
   verifyClaimOtp,
