@@ -76,6 +76,6 @@ const createFromCheckout = withBase
     return { success: true }
   })
 
-export const webAdRouter = {
+export const adRouter = {
   createFromCheckout,
 }

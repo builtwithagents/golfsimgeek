@@ -39,6 +39,6 @@ const createCheckout = withOptionalAuth
     },
   )
 
-export const webProductRouter = {
+export const productRouter = {
   createCheckout,
 }

@@ -1,4 +1,3 @@
-import { withAdmin } from "~/lib/orpc"
 import { adRouter } from "~/server/admin/ads/router"
 import { categoryRouter } from "~/server/admin/categories/router"
 import { metricRouter } from "~/server/admin/metrics/router"
@@ -8,18 +7,7 @@ import { tagRouter } from "~/server/admin/tags/router"
 import { toolRouter } from "~/server/admin/tools/router"
 import { userRouter } from "~/server/admin/users/router"
 
-// -----------------------------------------------------------------------------
-// Health-check procedure to verify oRPC infrastructure
-// -----------------------------------------------------------------------------
-const ping = withAdmin.handler(async () => {
-  return { status: "ok" as const, timestamp: new Date().toISOString() }
-})
-
-// -----------------------------------------------------------------------------
-// Admin router
-// -----------------------------------------------------------------------------
 export const adminRouter = {
-  ping,
   metrics: metricRouter,
   tools: toolRouter,
   posts: postRouter,

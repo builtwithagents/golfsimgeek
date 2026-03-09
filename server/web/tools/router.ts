@@ -9,12 +9,9 @@ import { notifySubmitterOfToolSubmitted } from "~/lib/notifications"
 import { withAuthRateLimit, withBase } from "~/lib/orpc"
 import { generateUniqueSlug } from "~/lib/slugs"
 import { findCategories } from "~/server/web/categories/queries"
-import { getClaimableTool, generateAndSendOtp, verifyEmailDomain } from "~/server/web/tools/utils"
+import { generateAndSendOtp, getClaimableTool, verifyEmailDomain } from "~/server/web/tools/utils"
 import { createResendContact } from "~/services/resend"
 
-// -----------------------------------------------------------------------------
-// Submit tool
-// -----------------------------------------------------------------------------
 const submit = withAuthRateLimit("submission")
   .input(
     z.object({
@@ -82,9 +79,6 @@ const submit = withAuthRateLimit("submission")
     return tool
   })
 
-// -----------------------------------------------------------------------------
-// Send OTP to verify domain ownership
-// -----------------------------------------------------------------------------
 const sendClaimOtp = withAuthRateLimit("claim", "claim-otp")
   .input(
     z.object({
@@ -100,9 +94,6 @@ const sendClaimOtp = withAuthRateLimit("claim", "claim-otp")
     return { success: true }
   })
 
-// -----------------------------------------------------------------------------
-// Verify OTP and claim tool
-// -----------------------------------------------------------------------------
 const verifyClaimOtp = withAuthRateLimit("claim", "claim-verify")
   .input(
     z.object({
@@ -126,9 +117,6 @@ const verifyClaimOtp = withAuthRateLimit("claim", "claim-verify")
     return { success: true }
   })
 
-// -----------------------------------------------------------------------------
-// Find filter options for tool listing
-// -----------------------------------------------------------------------------
 const findFilterOptions = withBase.handler(async () => {
   const categories = await findCategories({})
 
@@ -144,7 +132,7 @@ const findFilterOptions = withBase.handler(async () => {
   ].filter(({ options }) => options.length)
 })
 
-export const webToolRouter = {
+export const toolRouter = {
   findFilterOptions,
   submit,
   sendClaimOtp,

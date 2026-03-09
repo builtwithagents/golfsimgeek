@@ -10,7 +10,7 @@ import { useTheme } from "next-themes"
 import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import { type ComponentProps, type ReactNode, useEffect, useRef, useState } from "react"
-import type { AppRouter } from "~/app/api/rpc/[[...rest]]/route"
+import type { AppRouter } from "~/server/router"
 import {
   CommandDialog,
   CommandEmpty,

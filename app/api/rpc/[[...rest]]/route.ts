@@ -1,14 +1,6 @@
 import { RPCHandler } from "@orpc/server/fetch"
 import { onError } from "@orpc/shared"
-import { adminRouter } from "~/server/admin/router"
-import { webRouter } from "~/server/web/router"
-
-const appRouter = {
-  admin: adminRouter,
-  web: webRouter,
-}
-
-export type AppRouter = typeof appRouter
+import { appRouter } from "~/server/router"
 
 const handler = new RPCHandler(appRouter, {
   interceptors: [

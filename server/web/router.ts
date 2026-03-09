@@ -1,33 +1,21 @@
-import { withBase } from "~/lib/orpc"
-import { webAdRouter } from "~/server/web/ads/router"
+import { adRouter } from "~/server/web/ads/router"
 import { bookmarkRouter } from "~/server/web/bookmarks/router"
 import { mediaRouter } from "~/server/web/media/router"
-import { webProductRouter } from "~/server/web/products/router"
+import { productRouter } from "~/server/web/products/router"
 import { reportRouter } from "~/server/web/reports/router"
 import { searchRouter } from "~/server/web/search/router"
 import { subscribeRouter } from "~/server/web/subscribe/router"
-import { webToolRouter } from "~/server/web/tools/router"
+import { toolRouter } from "~/server/web/tools/router"
 
-// -----------------------------------------------------------------------------
-// Health-check procedure to verify oRPC infrastructure
-// -----------------------------------------------------------------------------
-const ping = withBase.handler(async () => {
-  return { status: "ok" as const, timestamp: new Date().toISOString() }
-})
-
-// -----------------------------------------------------------------------------
-// Web router
-// -----------------------------------------------------------------------------
 export const webRouter = {
-  ping,
   search: searchRouter,
   bookmarks: bookmarkRouter,
   subscribe: subscribeRouter,
   reports: reportRouter,
-  tools: webToolRouter,
+  tools: toolRouter,
   media: mediaRouter,
-  ads: webAdRouter,
-  products: webProductRouter,
+  ads: adRouter,
+  products: productRouter,
 }
 
 export type WebRouter = typeof webRouter
