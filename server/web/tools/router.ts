@@ -43,14 +43,16 @@ const submit = withAuthRateLimit("submission")
     })
 
     if (existingTool) {
-      if (owner) {
-        await db.tool.update({
-          where: { id: existingTool.id },
-          data: { owner },
-        })
-      }
-
-      return existingTool
+      // Return the existing tool with updated data
+      return await db.tool.update({
+        where: { id: existingTool.id },
+        data: {
+          submitterEmail: user.email,
+          submitterName: user.name,
+          submitterNote: data.submitterNote,
+          ...(owner && { owner }),
+        },
+      })
     }
 
     const slug = await generateUniqueSlug(data.name, slug =>

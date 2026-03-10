@@ -29,53 +29,69 @@ export async function POST(req: Request) {
       case "checkout.session.completed": {
         const session = event.data.object
         const slug = session.metadata?.tool
-        const email = session.customer_email ?? session.customer_details?.email
+        const { email } = session.customer_details ?? {}
 
-        if (slug) {
-          // Retrieve the session with line items expanded to get product metadata
-          const checkoutSession = await stripe.checkout.sessions.retrieve(session.id, {
-            expand: ["line_items.data.price.product"],
-          })
+        // Ignore incorrect metadata
+        if (!slug) {
+          break
+        }
 
-          // Get the tier from the product metadata
-          const lineItem = checkoutSession.line_items?.data[0]?.price?.product as
-            | Stripe.Product
-            | undefined
-          const tier = lineItem?.metadata?.tier as ToolTier
+        // Retrieve the session with line items expanded to get product metadata
+        const checkoutSession = await stripe.checkout.sessions.retrieve(session.id, {
+          expand: ["line_items.data.price.product"],
+        })
 
-          if (tier && tier !== ToolTier.Free) {
-            const tool = await db.tool.update({
+        // Get the tier from the product metadata
+        const lineItem = checkoutSession.line_items?.data[0]?.price?.product as
+          | Stripe.Product
+          | undefined
+        const tier = lineItem?.metadata?.tier as ToolTier
+
+        // Ignore free tiers
+        if (!tier || tier === ToolTier.Free) {
+          break
+        }
+
+        // Fetch existing tool to preserve current submitter fields
+        const existingTool = await db.tool.findUnique({ where: { slug } })
+
+        if (!existingTool) {
+          break
+        }
+
+        // Update tier and populate submitter fields from Stripe customer
+        const tool = await db.tool.update({
+          where: { slug },
+          data: {
+            tier,
+            submitterEmail: email ?? existingTool.submitterEmail,
+            submitterName: session.customer_details?.name ?? existingTool.submitterName,
+          },
+        })
+
+        // If the tool doesn't have an owner, try to match by customer email
+        if (!tool.ownerId && email) {
+          const user = await db.user.findUnique({ where: { email } })
+
+          if (user) {
+            await db.tool.update({
               where: { slug },
-              data: { tier },
+              data: { ownerId: user.id },
             })
-
-            // If the tool doesn't have an owner, try to match by customer email
-            if (!tool.ownerId && email) {
-              const user = await db.user.findUnique({
-                where: { email },
-              })
-
-              if (user) {
-                await db.tool.update({
-                  where: { slug },
-                  data: { ownerId: user.id },
-                })
-              }
-            }
-
-            // Revalidate the cache
-            revalidateTag("tools", "infinite")
-
-            // Notify the submitter of the premium tool
-            after(async () => await notifySubmitterOfPremiumTool(tool))
-
-            // Notify the admin of the premium tool
-            after(async () => await notifyAdminOfPremiumTool(tool))
           }
         }
 
+        // Revalidate the tools cache
+        revalidateTag("tools", "infinite")
+
         // Revalidate coupon in case it was used
         revalidateTag("stripe-coupon", "infinite")
+
+        // Notify the submitter of the premium tool
+        after(async () => await notifySubmitterOfPremiumTool(tool))
+
+        // Notify the admin of the premium tool
+        after(async () => await notifyAdminOfPremiumTool(tool))
 
         break
       }
