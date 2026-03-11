@@ -84,6 +84,7 @@ export const Search = () => {
   const isAdmin = session?.user.role === "admin"
   const isAdminPath = pathname.startsWith("/admin")
   const hasQuery = !!q.length
+  const hasFeaturedTools = !isAdmin && !hasQuery && !results
 
   const { data: featuredTools } = useQuery(
     orpc.web.search.findFeaturedTools.queryOptions({
@@ -91,21 +92,11 @@ export const Search = () => {
     }),
   )
 
-  // Set featured tools as results when available and no query
-  useEffect(() => {
-    if (search.isOpen && !hasQuery && featuredTools) {
-      setResults({ tools: featuredTools, categories: [], tags: [] })
-    }
-  }, [search.isOpen, hasQuery, featuredTools])
-
   const handleOpenChange = (open: boolean) => {
     if (open) {
       search.open()
     } else {
       search.close()
-    }
-
-    if (!open) {
       setResults(undefined)
       setQuery("")
     }
@@ -212,9 +203,7 @@ export const Search = () => {
       mutate({ query })
       listRef.current?.scrollTo({ top: 0, behavior: "smooth" })
     } else {
-      if (!search.isOpen) {
-        setResults(undefined)
-      }
+      setResults(undefined)
     }
   }, [q, search.isOpen, mutate, hasQuery])
 
@@ -250,8 +239,8 @@ export const Search = () => {
           ))}
 
         <SearchResults
-          name={hasQuery ? t("navigation.tools") : t("navigation.featured_tools")}
-          items={results?.tools}
+          name={t(`navigation.${hasFeaturedTools ? "featured_tools" : "tools"}`)}
+          items={hasFeaturedTools ? featuredTools : results?.tools}
           onItemSelect={navigateTo}
           getHref={({ id, slug }) => (isAdminPath ? `/admin/tools/${id}` : `/${slug}`)}
           renderItemDisplay={({ name, faviconUrl, websiteUrl }) => (

@@ -84,7 +84,7 @@ const CardBadges = ({ className, size = "sm", ...props }: ComponentProps<typeof 
   return (
     <Stack
       size={size}
-      className={cx("absolute top-0 inset-x-5 z-15 place-self-start -translate-y-1/2", className)}
+      className={cx("absolute top-0 inset-x-5 z-15 -translate-y-1/2", className)}
       {...props}
     />
   )
