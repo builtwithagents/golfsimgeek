@@ -10,12 +10,14 @@ type ProductQueryProps = ComponentProps<typeof ProductList> & {
   searchParams: Promise<SearchParams>
   checkoutData: ComponentProps<typeof Product>["checkoutData"]
   getProductProps?: (item: ProductWithPrices) => ProductProps
+  redirectToIfEmpty?: string
 }
 
 export const ProductQuery = async ({
   searchParams,
   checkoutData,
   getProductProps,
+  redirectToIfEmpty,
   ...props
 }: ProductQueryProps) => {
   const loadSearchParams = createLoader({ discountCode: parseAsString.withDefault("") })
@@ -26,8 +28,13 @@ export const ProductQuery = async ({
     .map(item => ({ ...item, customProps: getProductProps?.(item) }))
     .filter(({ customProps }) => isTruthy(customProps))
 
-  if (checkoutData.successUrl && !items.some(({ customProps }) => !customProps?.isDisabled)) {
-    throw redirect(checkoutData.successUrl)
+  // Handle empty items
+  if (!items.some(({ customProps }) => !customProps?.isDisabled)) {
+    if (redirectToIfEmpty) {
+      throw redirect(redirectToIfEmpty)
+    }
+
+    return null
   }
 
   return (

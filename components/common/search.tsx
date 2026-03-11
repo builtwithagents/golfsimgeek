@@ -10,7 +10,6 @@ import { useTheme } from "next-themes"
 import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import { type ComponentProps, type ReactNode, useEffect, useRef, useState } from "react"
-import type { AppRouter } from "~/server/router"
 import {
   CommandDialog,
   CommandEmpty,
@@ -23,6 +22,7 @@ import {
 import { useSearch } from "~/contexts/search-context"
 import { useSession } from "~/lib/auth-client"
 import { orpc } from "~/lib/orpc-query"
+import type { AppRouter } from "~/server/router"
 
 type SearchResults = InferRouterOutputs<AppRouter>["web"]["search"]["searchItems"]
 

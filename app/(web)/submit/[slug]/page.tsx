@@ -88,6 +88,7 @@ export default async function (props: Props) {
 
             return { product: { name }, isDisabled, buttonLabel }
           }}
+          redirectToIfEmpty={`${url}/success`}
         />
       </Suspense>
 
