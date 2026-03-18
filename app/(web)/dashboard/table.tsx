@@ -24,7 +24,7 @@ import { DataTableColumnHeader } from "~/components/data-table/data-table-column
 import { DataTableLink } from "~/components/data-table/data-table-link"
 import { DataTableToolbar } from "~/components/data-table/data-table-toolbar"
 import { useDataTable } from "~/hooks/use-data-table"
-import { isToolPremiumTier } from "~/lib/tools"
+import { isToolTopTier } from "~/lib/tools"
 import type { findTools } from "~/server/shared/tools/queries"
 import { toolListParams } from "~/server/shared/tools/schema"
 import type { DataTableFilterField } from "~/types"
@@ -95,7 +95,7 @@ export const DashboardTable = ({ tools, pageCount }: Awaited<ReturnType<typeof f
       {
         id: "actions",
         cell: ({ row }) => {
-          if (isToolPremiumTier(row.original)) {
+          if (isToolTopTier(row.original)) {
             return null
           }
 

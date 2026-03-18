@@ -78,7 +78,7 @@ export const notifySubmitterOfToolPublished = async (tool: Tool) => {
  * @param tool - The tool to notify the submitter of
  * @returns The email that was sent
  */
-export const notifySubmitterOfPremiumTool = async (tool: Tool) => {
+export const notifySubmitterOfPaidTool = async (tool: Tool) => {
   if (!tool.submitterEmail) {
     return
   }
@@ -99,7 +99,7 @@ export const notifySubmitterOfPremiumTool = async (tool: Tool) => {
  * @param tool - The tool to notify the admin of
  * @returns The email that was sent
  */
-export const notifyAdminOfPremiumTool = async (tool: Tool) => {
+export const notifyAdminOfPaidTool = async (tool: Tool) => {
   const to = siteConfig.email
   const subject = `New ${tool.tier.toLowerCase()} tool: ${tool.name}`
 

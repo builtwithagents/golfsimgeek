@@ -28,7 +28,7 @@ import { VerifiedBadge } from "~/components/web/verified-badge"
 import type { OpenGraphParams } from "~/lib/opengraph"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateCollectionPage } from "~/lib/structured-data"
-import { isToolPublished, isToolStandardTier } from "~/lib/tools"
+import { isToolPublished, hasToolTierCap } from "~/lib/tools"
 import { findTool, findToolSlugs } from "~/server/web/tools/queries"
 
 type Props = PageProps<"/[slug]">
@@ -120,7 +120,7 @@ export default async function (props: Props) {
           {isToolPublished(tool) && tool.screenshotUrl && (
             <OverlayImage
               href={tool.affiliateUrl || tool.websiteUrl}
-              doFollow={isToolStandardTier(tool)}
+              doFollow={hasToolTierCap(tool, "doFollow")}
               eventName="click_website"
               eventProps={{
                 url: removeQueryParams(tool.websiteUrl),

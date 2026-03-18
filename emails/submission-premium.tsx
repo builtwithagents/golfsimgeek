@@ -3,7 +3,7 @@ import { Text } from "@react-email/components"
 import { type Tool } from "~/.generated/prisma/client"
 import { EmailFeatureNudge } from "~/emails/components/feature-nudge"
 import { EmailWrapper, type EmailWrapperProps } from "~/emails/components/wrapper"
-import { isToolPremiumTier, isToolPublished } from "~/lib/tools"
+import { isToolPublished, isToolTopTier } from "~/lib/tools"
 
 type EmailProps = EmailWrapperProps & {
   tool: Tool
@@ -14,7 +14,7 @@ export const EmailSubmissionPremium = ({ tool, ...props }: EmailProps) => {
     <EmailWrapper {...props}>
       <Text>Hey {tool.submitterName?.trim()}!</Text>
 
-      {isToolPremiumTier(tool) ? (
+      {isToolTopTier(tool) ? (
         tool.publishedAt && isToolPublished(tool) ? (
           <Text>
             Thanks for featuring {tool.name}, it should soon be displayed at a prominent place on

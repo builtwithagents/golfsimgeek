@@ -2,7 +2,6 @@ import { removeQueryParams } from "@primoui/utils"
 import { PlusIcon } from "lucide-react"
 import { getTranslations } from "next-intl/server"
 import type { ComponentProps } from "react"
-import { ToolTier } from "~/.generated/prisma/client"
 import { Card } from "~/components/common/card"
 import { H5 } from "~/components/common/heading"
 import { Link } from "~/components/common/link"
@@ -10,12 +9,12 @@ import { Tooltip } from "~/components/common/tooltip"
 import { ExternalLink } from "~/components/web/external-link"
 import { ToolHoverCard } from "~/components/web/tools/tool-hover-card"
 import { Favicon } from "~/components/web/ui/favicon"
-import { isToolStandardTier } from "~/lib/tools"
+import { hasToolTierCap, getToolTiersWith } from "~/lib/tools"
 import { findTools } from "~/server/web/tools/queries"
 
 export const FeaturedToolsIcons = async ({ ...props }: ComponentProps<typeof Card>) => {
   const t = await getTranslations("components.featured_tools")
-  const tools = await findTools({ where: { tier: ToolTier.Premium } })
+  const tools = await findTools({ where: { tier: { in: getToolTiersWith("featuredPlacement") } } })
   const showAddButton = tools.length < 12
 
   if (!tools.length) {
@@ -31,7 +30,7 @@ export const FeaturedToolsIcons = async ({ ...props }: ComponentProps<typeof Car
           <ToolHoverCard key={tool.slug} tool={tool}>
             <ExternalLink
               href={tool.affiliateUrl || tool.websiteUrl}
-              doFollow={isToolStandardTier(tool)}
+              doFollow={hasToolTierCap(tool, "doFollow")}
               doTrack
               eventName="click_website"
               eventProps={{

@@ -1,5 +1,6 @@
 import type { Stripe } from "stripe"
 import { siteConfig } from "~/config/site"
+import { tiersConfig } from "~/config/tiers"
 import { stripe } from "~/services/stripe"
 
 const products: (Stripe.ProductCreateParams & { price_data?: Stripe.PriceCreateParams[] })[] = [
@@ -72,6 +73,14 @@ const products: (Stripe.ProductCreateParams & { price_data?: Stripe.PriceCreateP
 
 async function main() {
   try {
+    // Validate that all product tiers exist in tiersConfig
+    for (const product of products) {
+      const tier = product.metadata?.tier
+      if (tier && !(tier in tiersConfig)) {
+        throw new Error(`Product "${product.name}" has unknown tier "${tier}". Add it to config/tiers.ts.`)
+      }
+    }
+
     // Create products
     for (const { price_data, ...productData } of products) {
       const product = await stripe.products.create(productData)

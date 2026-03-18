@@ -1,6 +1,7 @@
 import { z } from "zod"
-import { ToolStatus, ToolTier } from "~/.generated/prisma/client"
+import { ToolStatus } from "~/.generated/prisma/client"
 import { withOptionalAuth } from "~/lib/orpc"
+import { getToolTiersWith } from "~/lib/tools"
 import { findCategories } from "~/server/web/categories/queries"
 import { findTags } from "~/server/web/tags/queries"
 import { findTools } from "~/server/web/tools/queries"
@@ -36,7 +37,7 @@ const searchItems = withOptionalAuth
   })
 
 const findFeaturedTools = withOptionalAuth.handler(async () => {
-  return findTools({ where: { tier: ToolTier.Premium } })
+  return findTools({ where: { tier: { in: getToolTiersWith("featuredPlacement") } } })
 })
 
 export const searchRouter = {

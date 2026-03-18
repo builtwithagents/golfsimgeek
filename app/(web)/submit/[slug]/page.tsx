@@ -2,13 +2,14 @@ import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
 import { notFound } from "next/navigation"
 import { cache, Suspense } from "react"
-import { ToolTier } from "~/.generated/prisma/browser"
+import { type ToolTier } from "~/.generated/prisma/browser"
 import { ProductListSkeleton } from "~/components/web/products/product-list"
 import { ProductQuery } from "~/components/web/products/product-query"
 import { Stats } from "~/components/web/stats"
 import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
 import { siteConfig } from "~/config/site"
 import { getPageData, getPageMetadata } from "~/lib/pages"
+import { getToolTierRank } from "~/lib/tools"
 import { toolOnePayload } from "~/server/web/tools/payloads"
 import { db } from "~/services/db"
 
@@ -52,12 +53,6 @@ export default async function (props: Props) {
   const { tool, url, metadata } = await getData(props)
   const t = await getTranslations()
 
-  const tierRank: Record<ToolTier, number> = {
-    [ToolTier.Free]: 0,
-    [ToolTier.Standard]: 1,
-    [ToolTier.Premium]: 2,
-  }
-
   return (
     <>
       <Intro alignment="center">
@@ -80,7 +75,7 @@ export default async function (props: Props) {
             if (!tier) return null
 
             const name = product.name.replace(" Listing", "")
-            const isDisabled = tierRank[tier] <= tierRank[tool.tier]
+            const isDisabled = getToolTierRank({ tier }) <= getToolTierRank(tool)
             const buttonLabel =
               tier === tool.tier
                 ? t(`${namespace}.current_tier`, { name })

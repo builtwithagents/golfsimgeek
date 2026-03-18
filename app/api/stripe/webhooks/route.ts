@@ -3,7 +3,7 @@ import { after } from "next/server"
 import type Stripe from "stripe"
 import { ToolTier } from "~/.generated/prisma/client"
 import { env } from "~/env"
-import { notifyAdminOfPremiumTool, notifySubmitterOfPremiumTool } from "~/lib/notifications"
+import { notifyAdminOfPaidTool, notifySubmitterOfPaidTool } from "~/lib/notifications"
 import { db } from "~/services/db"
 import { stripe } from "~/services/stripe"
 
@@ -88,10 +88,10 @@ export async function POST(req: Request) {
         revalidateTag("stripe-coupon", "infinite")
 
         // Notify the submitter of the premium tool
-        after(async () => await notifySubmitterOfPremiumTool(tool))
+        after(async () => await notifySubmitterOfPaidTool(tool))
 
         // Notify the admin of the premium tool
-        after(async () => await notifyAdminOfPremiumTool(tool))
+        after(async () => await notifyAdminOfPaidTool(tool))
 
         break
       }

@@ -6,7 +6,7 @@ import { Card } from "~/components/common/card"
 import { H5 } from "~/components/common/heading"
 import { Link } from "~/components/common/link"
 import { Note } from "~/components/common/note"
-import { isToolPublished, isToolStandardTier } from "~/lib/tools"
+import { isToolPublished, hasToolTierCap } from "~/lib/tools"
 import type { ToolOne } from "~/server/web/tools/payloads"
 
 type ToolPreviewAlertProps = ComponentProps<typeof Card> & {
@@ -32,7 +32,7 @@ export const ToolPreviewAlert = async ({ tool, ...props }: ToolPreviewAlertProps
           })}
       </H5>
 
-      {!isToolStandardTier(tool) && (
+      {!hasToolTierCap(tool, "doFollow") && (
         <>
           <Note className="-mt-2">{t("description", { toolName: tool.name })}</Note>
 

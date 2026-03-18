@@ -36,7 +36,7 @@ import { ToolButton } from "~/components/web/tools/tool-button"
 import { reportsConfig } from "~/config/reports"
 import { useSession } from "~/lib/auth-client"
 import { orpc } from "~/lib/orpc-query"
-import { isToolApproved, isToolPremiumTier, isToolPublished } from "~/lib/tools"
+import { isToolApproved, isToolPublished, isToolTopTier } from "~/lib/tools"
 import { cx } from "~/lib/utils"
 import type { ToolOne } from "~/server/web/tools/payloads"
 
@@ -173,7 +173,7 @@ export const ToolActions = ({ tool, children, className, ...props }: ToolActions
 
           <DropdownMenuSeparator />
 
-          {!isToolPremiumTier(tool) && tool.ownerId && tool.ownerId === session?.user.id && (
+          {!isToolTopTier(tool) && tool.ownerId && tool.ownerId === session?.user.id && (
             <DropdownMenuItem asChild>
               <Link href={`/submit/${tool.slug}`}>
                 <SparklesIcon />
@@ -206,7 +206,7 @@ export const ToolActions = ({ tool, children, className, ...props }: ToolActions
       </DropdownMenu>
 
       {/* Desktop buttons */}
-      {!isToolPremiumTier(tool) && tool.ownerId && tool.ownerId === session?.user.id && (
+      {!isToolTopTier(tool) && tool.ownerId && tool.ownerId === session?.user.id && (
         <Tooltip tooltip={t("upgrade_tooltip")}>
           <Button
             size="md"
