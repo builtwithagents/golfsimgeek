@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
     useCache: true,
     turbopackFileSystemCacheForDev: true,
     turbopackFileSystemCacheForBuild: true,
+    prefetchInlining: true,
   },
 
   images: {
