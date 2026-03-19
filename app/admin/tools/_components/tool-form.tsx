@@ -489,9 +489,9 @@ export function ToolForm({ className, title, tool, ...props }: ToolFormProps) {
                   <SelectValue placeholder="Select tier" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={ToolTier.Free}>Free</SelectItem>
-                  <SelectItem value={ToolTier.Standard}>Standard</SelectItem>
-                  <SelectItem value={ToolTier.Premium}>Premium</SelectItem>
+                  {Object.values(ToolTier).map(tier => (
+                    <SelectItem key={tier} value={tier}>{tier}</SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
