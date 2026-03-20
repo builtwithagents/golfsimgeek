@@ -9,6 +9,8 @@ import type Stripe from "stripe"
 import { Badge } from "~/components/common/badge"
 import { cx } from "~/lib/utils"
 
+const MotionBadge = motion.create(Badge)
+
 const getDefaultFormat = (currency: string): Format => ({
   style: "currency",
   currency: currency.toUpperCase(),
@@ -42,7 +44,6 @@ export const Price = ({
 }: PriceProps) => {
   const locale = useLocale()
   const t = useTranslations("components.price")
-  const MotionBadge = motion.create(Badge)
   const maxRedemptions = coupon?.max_redemptions || 0
   const timesRedeemed = coupon?.times_redeemed || 0
 
@@ -97,11 +98,12 @@ export const Price = ({
         <div className="self-end text-muted-foreground text-[0.9em] leading-none">/{interval}</div>
       )}
 
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {!!discount && (
           <MotionBadge
+            key={discount}
             variant="success"
-            className="absolute -top-3.5 right-0"
+            className="absolute -top-3.5 right-0 border-current/10"
             variants={animationVariants}
             initial="hidden"
             animate="visible"
@@ -109,7 +111,7 @@ export const Price = ({
           >
             {t("off", { discount })}
             {!!maxRedemptions && (
-              <span className="text-foreground/65">
+              <span className="opacity-50">
                 ({maxRedemptions - timesRedeemed}
                 {maxRedemptions > maxRedemptions - timesRedeemed && `/${maxRedemptions}`}{" "}
                 {t("left")})

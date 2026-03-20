@@ -41,6 +41,7 @@
     "page_label": "Page:"
   },
   "product": {
+    "most_popular": "Most popular",
     "interval": {
       "monthly": "Monthly",
       "yearly": "Yearly"

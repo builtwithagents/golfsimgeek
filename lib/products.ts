@@ -2,6 +2,7 @@ import { addDays, differenceInMonths } from "date-fns"
 import plur from "plur"
 import type { ReactNode } from "react"
 import type Stripe from "stripe"
+import { ToolTier } from "~/.generated/prisma/browser"
 import { submissionsConfig } from "~/config/submissions"
 import {
   findStripeCoupon,
@@ -123,10 +124,14 @@ export const getProductsWithPrices = async (
  * @returns A promise that resolves to an array of products with their prices and discount status.
  */
 export const getProductsForListing = async (discountCode?: string) => {
+  const tiers = Object.values(ToolTier) as string[]
+
   const [products, coupon] = await Promise.all([
     findStripeProducts(),
     findStripeCoupon(discountCode),
   ])
 
-  return getProductsWithPrices(sortProductsByPrice(products), coupon)
+  const listingProducts = products.filter(p => tiers.includes(p.metadata.tier))
+
+  return getProductsWithPrices(sortProductsByPrice(listingProducts), coupon)
 }

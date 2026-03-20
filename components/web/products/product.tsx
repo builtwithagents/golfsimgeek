@@ -2,16 +2,15 @@
 
 import { useLocalStorage } from "@mantine/hooks"
 import { useMutation } from "@tanstack/react-query"
-import { ArrowUpRightIcon, TicketPercentIcon } from "lucide-react"
+import { ArrowUpRightIcon } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import type { ComponentProps, ReactNode } from "react"
 import { toast } from "sonner"
 import type Stripe from "stripe"
 import type { z } from "zod"
-import { Badge } from "~/components/common/badge"
 import { Button } from "~/components/common/button"
-import { Card, CardBadges, CardBg } from "~/components/common/card"
+import { Card, CardBg } from "~/components/common/card"
 import { H4 } from "~/components/common/heading"
 import { Skeleton } from "~/components/common/skeleton"
 import { Stack } from "~/components/common/stack"
@@ -25,7 +24,7 @@ import { getProductFeatures, type ProductInterval } from "~/lib/products"
 import { cx } from "~/lib/utils"
 import type { checkoutSchema } from "~/server/web/products/schema"
 
-const productClassName = "items-stretch gap-8 basis-72 grow max-w-80 bg-transparent"
+const productClassName = "items-stretch gap-8 basis-72 grow max-w-80"
 
 type ProductData = {
   product: Stripe.Product
@@ -62,6 +61,12 @@ const Product = ({
     defaultValue: "month",
   })
 
+  const { isSubscription, currentPrice, price, fullPrice, discount, currency } = useProductPrices(
+    prices,
+    coupon,
+    interval,
+  )
+
   const { mutate, isPending } = useMutation(
     orpc.web.products.createCheckout.mutationOptions({
       onSuccess: data => {
@@ -86,80 +91,75 @@ const Product = ({
     return router.push(checkoutData.successUrl)
   }
 
-  const priceCalculations = useProductPrices(prices, coupon, interval)
-  const { isSubscription, currentPrice, price, fullPrice, discount, currency } = priceCalculations
-
   return (
-    <Card
-      hover={false}
-      className={cx(
-        productClassName,
-        isHighlighted && "not-only:lg:-my-3 lg:py-8",
-        isDisabled && "opacity-50 cursor-not-allowed",
-        className,
-      )}
-      {...props}
-    >
-      {isHighlighted && <CardBg />}
-
-      {coupon && (fullPrice || 0) > price && (
-        <CardBadges size="sm">
-          <Badge
-            variant="success"
-            prefix={<TicketPercentIcon />}
-            className="border-background shadow-sm"
-          >
-            Limited offer
-          </Badge>
-        </CardBadges>
+    <div className="relative flex">
+      {isHighlighted && (
+        <div className="absolute bottom-full inset-x-0 p-1 pb-2.5 -mb-2 rounded-t-lg bg-primary/85">
+          <div className="text-primary-foreground text-[10px] text-center font-mono tracking-wider font-medium uppercase">
+            {t("most_popular")}
+          </div>
+        </div>
       )}
 
-      <Stack size="lg" direction="column">
-        <Stack className="w-full justify-between">
-          <H4 className="flex-1 truncate">{product.name}</H4>
+      <Card
+        hover={false}
+        className={cx(
+          productClassName,
+          isHighlighted && "border-primary/75",
+          isDisabled && "opacity-50 cursor-not-allowed",
+          className,
+        )}
+        {...props}
+      >
+        {isHighlighted && <CardBg />}
 
-          {isSubscription && prices.length > 1 && (
-            <ProductIntervalSwitch
-              intervals={[
-                { label: t("interval.monthly"), value: "month" },
-                { label: t("interval.yearly"), value: "year" },
-              ]}
-              value={interval}
-              onChange={setInterval}
-            />
+        <Stack size="lg" direction="column">
+          <Stack className="w-full">
+            <H4 className="flex-1 truncate">{product.name}</H4>
+
+            {isSubscription && prices.length > 1 && (
+              <ProductIntervalSwitch
+                intervals={[
+                  { label: t("interval.monthly"), value: "month" },
+                  { label: t("interval.yearly"), value: "year" },
+                ]}
+                value={interval}
+                onChange={setInterval}
+              />
+            )}
+          </Stack>
+
+          {product.description && (
+            <p className="text-foreground/50 text-sm text-pretty">{product.description}</p>
           )}
         </Stack>
 
-        {product.description && (
-          <p className="text-foreground/50 text-sm text-pretty">{product.description}</p>
-        )}
-      </Stack>
+        <Price
+          price={price}
+          fullPrice={fullPrice}
+          interval={t(`price_period.${isSubscription ? "month" : "one_time"}`)}
+          discount={discount}
+          coupon={coupon}
+          currency={currency}
+          format={{ style: "decimal", notation: "compact", maximumFractionDigits: 0 }}
+          className="w-full"
+          priceClassName="text-[3em]"
+        />
 
-      <Price
-        price={price}
-        fullPrice={fullPrice}
-        interval={t(`price_period.${isSubscription ? "month" : "one_time"}`)}
-        discount={discount}
-        coupon={coupon}
-        currency={currency}
-        format={{ style: "decimal", notation: "compact", maximumFractionDigits: 0 }}
-        className="w-full"
-        priceClassName="text-[3em]"
-      />
+        <ProductFeatures features={features} />
 
-      <ProductFeatures features={features} />
-
-      <Button
-        type="button"
-        onClick={onSubmit}
-        variant={isHighlighted ? "primary" : "secondary"}
-        isPending={isPending}
-        disabled={isPending || isDisabled}
-        suffix={<ArrowUpRightIcon />}
-      >
-        {buttonLabel}
-      </Button>
-    </Card>
+        <Button
+          type="button"
+          onClick={onSubmit}
+          variant={isHighlighted ? "primary" : "secondary"}
+          isPending={isPending}
+          disabled={isPending || isDisabled}
+          suffix={<ArrowUpRightIcon />}
+        >
+          {buttonLabel}
+        </Button>
+      </Card>
+    </div>
   )
 }
 

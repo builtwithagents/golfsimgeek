@@ -94,12 +94,12 @@ const CardBg = ({ className, ...props }: ComponentProps<"div">) => {
   return (
     <div
       className={cx(
-        "absolute -top-px -inset-x-px -z-10 h-24 rounded-lg overflow-clip pointer-events-none",
+        "absolute -top-px -inset-x-px h-24 rounded-lg overflow-clip pointer-events-none",
         className,
       )}
       {...props}
     >
-      <div className="-mt-12 size-full -rotate-12 bg-primary/10 blur-xl rounded-full" />
+      <div className="-mt-12 size-full bg-primary/10 blur-xl rounded-full" />
     </div>
   )
 }
