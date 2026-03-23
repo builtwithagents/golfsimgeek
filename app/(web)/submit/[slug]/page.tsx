@@ -8,6 +8,7 @@ import { ProductQuery } from "~/components/web/products/product-query"
 import { Stats } from "~/components/web/stats"
 import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
 import { siteConfig } from "~/config/site"
+import { tiersConfig } from "~/config/tiers"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { getToolTierRank } from "~/lib/tools"
 import { toolOnePayload } from "~/server/web/tools/payloads"
@@ -72,7 +73,7 @@ export default async function (props: Props) {
             const tier = product.metadata.tier as ToolTier | undefined
 
             // Only show listing products with a valid tier
-            if (!tier) return null
+            if (!tier || !(tier in tiersConfig)) return null
 
             const name = product.name.replace(" Listing", "")
             const isDisabled = getToolTierRank({ tier }) <= getToolTierRank(tool)
