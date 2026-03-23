@@ -16,5 +16,9 @@
     "light": "Light",
     "dark": "Dark",
     "system": "System"
+  },
+  "interval": {
+    "month": "Monthly",
+    "year": "Yearly"
   }
 }

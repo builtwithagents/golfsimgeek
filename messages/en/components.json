@@ -42,10 +42,6 @@
   },
   "product": {
     "most_popular": "Most popular",
-    "interval": {
-      "monthly": "Monthly",
-      "yearly": "Yearly"
-    },
     "price_period": {
       "month": "month",
       "one_time": "one-time"

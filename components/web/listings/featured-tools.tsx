@@ -9,7 +9,10 @@ import { findTools } from "~/server/web/tools/queries"
 type FeaturedToolsProps = Omit<ComponentProps<typeof Listing>, "title">
 
 const FeaturedTools = async ({ ...props }: FeaturedToolsProps) => {
-  const tools = await findTools({ where: { tier: { in: getToolTiersWith("featuredPlacement") } }, take: 6 })
+  const tools = await findTools({
+    where: { tier: { in: getToolTiersWith("featuredPlacement") } },
+    take: 6,
+  })
 
   if (!tools.length) {
     return null

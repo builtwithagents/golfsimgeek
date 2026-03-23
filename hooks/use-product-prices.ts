@@ -1,4 +1,5 @@
 import type Stripe from "stripe"
+import { useProductInterval } from "~/hooks/use-product-interval"
 import type { ProductInterval } from "~/lib/products"
 
 const findPriceForInterval = (prices: Stripe.Price[], interval?: ProductInterval) => {
@@ -21,11 +22,8 @@ const calculateDiscountPercentage = (basePrice: number, discountedPrice: number)
   return basePrice > 0 ? Math.floor(((basePrice - discountedPrice) / basePrice) * 100) : 0
 }
 
-export const useProductPrices = (
-  prices: Stripe.Price[],
-  coupon: Stripe.Coupon | undefined,
-  interval: ProductInterval,
-) => {
+export const useProductPrices = (prices: Stripe.Price[], coupon: Stripe.Coupon | undefined) => {
+  const [interval] = useProductInterval()
   const isSubscription = prices.some(p => p.type === "recurring")
   const currentPrice = findPriceForInterval(prices, isSubscription ? interval : undefined)
   const currentPriceValue = (currentPrice?.unit_amount ?? 0) / 100

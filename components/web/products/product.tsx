@@ -1,6 +1,5 @@
 "use client"
 
-import { useLocalStorage } from "@mantine/hooks"
 import { useMutation } from "@tanstack/react-query"
 import { ArrowUpRightIcon } from "lucide-react"
 import { useTranslations } from "next-intl"
@@ -17,10 +16,9 @@ import { Stack } from "~/components/common/stack"
 import { Price } from "~/components/web/price"
 import { ProductFeatures } from "~/components/web/products/product-features"
 import { ProductIntervalSwitch } from "~/components/web/products/product-interval-switch"
-import { siteConfig } from "~/config/site"
 import { useProductPrices } from "~/hooks/use-product-prices"
 import { orpc } from "~/lib/orpc-query"
-import { getProductFeatures, type ProductInterval } from "~/lib/products"
+import { getProductFeatures } from "~/lib/products"
 import { cx } from "~/lib/utils"
 import type { checkoutSchema } from "~/server/web/products/schema"
 
@@ -56,15 +54,9 @@ const Product = ({
   const features = getProductFeatures(product)
   const t = useTranslations("components.product")
 
-  const [interval, setInterval] = useLocalStorage<ProductInterval>({
-    key: `${siteConfig.slug}-product-interval`,
-    defaultValue: "month",
-  })
-
   const { isSubscription, currentPrice, price, fullPrice, discount, currency } = useProductPrices(
     prices,
     coupon,
-    interval,
   )
 
   const { mutate, isPending } = useMutation(
@@ -117,16 +109,7 @@ const Product = ({
           <Stack className="w-full">
             <H4 className="flex-1 truncate">{product.name}</H4>
 
-            {isSubscription && prices.length > 1 && (
-              <ProductIntervalSwitch
-                intervals={[
-                  { label: t("interval.monthly"), value: "month" },
-                  { label: t("interval.yearly"), value: "year" },
-                ]}
-                value={interval}
-                onChange={setInterval}
-              />
-            )}
+            {isSubscription && prices.length > 1 && <ProductIntervalSwitch />}
           </Stack>
 
           {product.description && (

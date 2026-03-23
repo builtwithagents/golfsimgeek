@@ -91,4 +91,3 @@ export const isToolWithinExpediteThreshold = (tool: Pick<Tool, "publishedAt">) =
 
   return tool.publishedAt && differenceInDays(tool.publishedAt, new Date()) < threshold
 }
-

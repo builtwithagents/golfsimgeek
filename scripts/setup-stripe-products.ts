@@ -77,7 +77,9 @@ async function main() {
     for (const product of products) {
       const tier = product.metadata?.tier
       if (tier && !(tier in tiersConfig)) {
-        throw new Error(`Product "${product.name}" has unknown tier "${tier}". Add it to config/tiers.ts.`)
+        throw new Error(
+          `Product "${product.name}" has unknown tier "${tier}". Add it to config/tiers.ts.`,
+        )
       }
     }
 

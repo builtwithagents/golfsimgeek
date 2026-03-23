@@ -490,7 +490,9 @@ export function ToolForm({ className, title, tool, ...props }: ToolFormProps) {
                 </SelectTrigger>
                 <SelectContent>
                   {Object.values(ToolTier).map(tier => (
-                    <SelectItem key={tier} value={tier}>{tier}</SelectItem>
+                    <SelectItem key={tier} value={tier}>
+                      {tier}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
