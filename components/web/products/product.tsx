@@ -86,8 +86,8 @@ const Product = ({
   return (
     <div className="relative flex">
       {isHighlighted && (
-        <div className="absolute bottom-full inset-x-0 p-1 pb-2.5 -mb-2 rounded-t-lg bg-primary/85">
-          <div className="text-primary-foreground text-[10px] text-center font-mono tracking-wider font-medium uppercase">
+        <div className="absolute bottom-full inset-x-0 pt-1 pb-2.5 px-6 -mb-2 rounded-t-lg bg-primary/85">
+          <div className="text-primary-foreground text-[10px] font-mono -tracking-tighter font-medium uppercase">
             {t("most_popular")}
           </div>
         </div>

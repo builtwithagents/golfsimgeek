@@ -13,12 +13,12 @@ export const ProductIntervalSwitch = ({ className, ...props }: ComponentProps<"d
   const [value, onChange] = useProductInterval()
 
   return (
-    <div className={cx("relative flex rounded-md bg-foreground/10 p-0.5", className)} {...props}>
+    <div className={cx("flex rounded-md bg-foreground/10 p-0.5 text-xs", className)} {...props}>
       {productIntervals.map(interval => (
         <label
           key={interval}
           className={cx(
-            "relative z-10 flex items-center whitespace-nowrap px-2.5 py-1 text-xs font-medium cursor-pointer transition",
+            "relative z-10 flex items-center whitespace-nowrap px-2.5 py-1 font-medium cursor-pointer transition",
             interval !== value && "opacity-60",
           )}
         >
