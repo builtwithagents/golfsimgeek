@@ -3,7 +3,6 @@ import {
   type inferParserType,
   parseAsInteger,
   parseAsString,
-  parseAsStringEnum,
 } from "nuqs/server"
 import * as z from "zod"
 import type { Category } from "~/.generated/prisma/browser"
@@ -16,7 +15,6 @@ export const categoryListParams = {
   sort: getSortingStateParser<Category>().withDefault([{ id: "name", desc: false }]),
   from: parseAsString.withDefault(""),
   to: parseAsString.withDefault(""),
-  operator: parseAsStringEnum(["and", "or"]).withDefault("and"),
 }
 
 export const categoryListSchema = createStandardSchemaV1(categoryListParams)

@@ -5,7 +5,7 @@ import type { AdListParams } from "~/server/admin/ads/schema"
 import { db } from "~/services/db"
 
 export const findAds = async (search: AdListParams, where?: Prisma.AdWhereInput) => {
-  const { name, type, page, perPage, sort, from, to, operator } = search
+  const { name, type, page, perPage, sort, from, to } = search
 
   // Offset to paginate the results
   const offset = (page - 1) * perPage
@@ -29,7 +29,7 @@ export const findAds = async (search: AdListParams, where?: Prisma.AdWhereInput)
   ]
 
   const whereQuery: Prisma.AdWhereInput = {
-    [operator.toUpperCase()]: expressions.filter(isTruthy),
+    AND: expressions.filter(isTruthy),
   }
 
   // Transaction is used to ensure both queries are executed in a single transaction

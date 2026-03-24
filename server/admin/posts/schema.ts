@@ -17,7 +17,6 @@ export const postListParams = {
   sort: getSortingStateParser<Post>().withDefault([{ id: "createdAt", desc: true }]),
   from: parseAsString.withDefault(""),
   to: parseAsString.withDefault(""),
-  operator: parseAsStringEnum(["and", "or"]).withDefault("and"),
   status: parseAsArrayOf(parseAsStringEnum(Object.values(PostStatus))).withDefault([]),
 }
 

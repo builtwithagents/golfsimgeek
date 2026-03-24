@@ -3,7 +3,6 @@ import {
   type inferParserType,
   parseAsInteger,
   parseAsString,
-  parseAsStringEnum,
 } from "nuqs/server"
 import { z } from "zod"
 import type { User } from "~/.generated/prisma/browser"
@@ -16,7 +15,6 @@ export const userListParams = {
   sort: getSortingStateParser<User>().withDefault([{ id: "createdAt", desc: true }]),
   from: parseAsString.withDefault(""),
   to: parseAsString.withDefault(""),
-  operator: parseAsStringEnum(["and", "or"]).withDefault("and"),
 }
 
 export const userListSchema = createStandardSchemaV1(userListParams)

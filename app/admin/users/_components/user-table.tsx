@@ -1,21 +1,24 @@
 "use client"
 
-import { formatDate } from "@primoui/utils"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import type { ColumnDef } from "@tanstack/react-table"
 import { useQueryStates } from "nuqs"
 import type { ComponentProps } from "react"
 import type { User } from "~/.generated/prisma/browser"
 import { UserActions } from "~/app/admin/users/_components/user-actions"
-import { UserTableToolbarActions } from "~/app/admin/users/_components/user-table-toolbar-actions"
 import { DateRangePicker } from "~/components/admin/date-range-picker"
-import { RowCheckbox } from "~/components/admin/row-checkbox"
 import { Badge } from "~/components/common/badge"
 import { Note } from "~/components/common/note"
 import { DataTable } from "~/components/data-table/data-table"
 import { DataTableColumnHeader } from "~/components/data-table/data-table-column-header"
+import {
+  createActionsColumn,
+  createDateColumn,
+  createNameColumn,
+  createSelectColumn,
+} from "~/components/data-table/data-table-column-helpers"
+import { DataTableDeleteDialog } from "~/components/data-table/data-table-delete-dialog"
 import { DataTableHeader } from "~/components/data-table/data-table-header"
-import { DataTableLink } from "~/components/data-table/data-table-link"
 import { DataTableToolbar } from "~/components/data-table/data-table-toolbar"
 import { DataTableViewOptions } from "~/components/data-table/data-table-view-options"
 import { useDataTable } from "~/hooks/use-data-table"
@@ -25,57 +28,17 @@ import { userListParams } from "~/server/admin/users/schema"
 import type { DataTableFilterField } from "~/types"
 
 const roleBadges: Record<"admin" | "user", ComponentProps<typeof Badge>> = {
-  admin: {
-    variant: "info",
-    className: "capitalize",
-  },
-  user: {
-    variant: "outline",
-    className: "capitalize",
-  },
+  admin: { variant: "info", className: "capitalize" },
+  user: { variant: "outline", className: "capitalize" },
 }
 
 const columns: ColumnDef<User>[] = [
-  {
-    id: "select",
-    enableSorting: false,
-    enableHiding: false,
-    header: ({ table }) => (
-      <RowCheckbox
-        checked={table.getIsAllPageRowsSelected()}
-        ref={input => {
-          if (input) {
-            input.indeterminate =
-              table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()
-          }
-        }}
-        onChange={e => table.toggleAllPageRowsSelected(e.target.checked)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row, table }) => (
-      <RowCheckbox
-        checked={row.getIsSelected()}
-        onChange={e => row.toggleSelected(e.target.checked)}
-        disabled={row.original.role === "admin"}
-        aria-label="Select row"
-        table={table}
-        row={row}
-      />
-    ),
-  },
-  {
-    accessorKey: "name",
-    enableHiding: false,
-    size: 160,
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
-    cell: ({ row }) => (
-      <DataTableLink
-        href={`/admin/users/${row.original.id}`}
-        title={row.original.name || row.original.email}
-      />
-    ),
-  },
+  createSelectColumn<User>({ isDisabled: row => row.original.role === "admin" }),
+  createNameColumn<User>({
+    title: "Name",
+    href: row => `/admin/users/${row.id}`,
+    getTitle: row => row.name || row.email,
+  }),
   {
     accessorKey: "email",
     enableSorting: false,
@@ -100,15 +63,8 @@ const columns: ColumnDef<User>[] = [
       return <Badge {...roleBadges[role]}>{role}</Badge>
     },
   },
-  {
-    accessorKey: "createdAt",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Created At" />,
-    cell: ({ row }) => <Note>{formatDate(row.getValue<Date>("createdAt"))}</Note>,
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => <UserActions user={row.original} className="float-right" />,
-  },
+  createDateColumn<User>("createdAt", "Created At"),
+  createActionsColumn<User>(user => <UserActions user={user} className="float-right" />),
 ]
 
 export function UserTable() {
@@ -121,7 +77,6 @@ export function UserTable() {
     }),
   )
 
-  // Search filters
   const filterFields: DataTableFilterField<User>[] = [
     {
       id: "name",
@@ -157,7 +112,12 @@ export function UserTable() {
             void setParams(null)
           }}
         >
-          <UserTableToolbarActions table={table} />
+          <DataTableDeleteDialog
+            table={table}
+            label="user"
+            mutationOptions={orpc.admin.users.remove.mutationOptions}
+            queryKey={orpc.admin.users.key()}
+          />
           <DateRangePicker align="end" />
           <DataTableViewOptions table={table} />
         </DataTableToolbar>

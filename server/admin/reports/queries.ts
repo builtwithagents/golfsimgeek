@@ -5,7 +5,7 @@ import { db } from "~/services/db"
 import type { ReportListParams } from "./schema"
 
 export const findReports = async (search: ReportListParams) => {
-  const { message, page, perPage, sort, from, to, operator, type } = search
+  const { message, page, perPage, sort, from, to, type } = search
 
   // Offset to paginate the results
   const offset = (page - 1) * perPage
@@ -29,7 +29,7 @@ export const findReports = async (search: ReportListParams) => {
   ]
 
   const where: Prisma.ReportWhereInput = {
-    [operator.toUpperCase()]: expressions.filter(isTruthy),
+    AND: expressions.filter(isTruthy),
   }
 
   // Transaction is used to ensure both queries are executed in a single transaction

@@ -12,13 +12,12 @@ import { getSortingStateParser } from "~/lib/parsers"
 
 export const adListParams = {
   name: parseAsString.withDefault(""),
-  type: parseAsArrayOf(parseAsStringEnum(Object.values(AdType))).withDefault([]),
   page: parseAsInteger.withDefault(1),
   perPage: parseAsInteger.withDefault(25),
   sort: getSortingStateParser<Ad>().withDefault([{ id: "createdAt", desc: true }]),
   from: parseAsString.withDefault(""),
   to: parseAsString.withDefault(""),
-  operator: parseAsStringEnum(["and", "or"]).withDefault("and"),
+  type: parseAsArrayOf(parseAsStringEnum(Object.values(AdType))).withDefault([]),
 }
 
 export const adListSchema = createStandardSchemaV1(adListParams)

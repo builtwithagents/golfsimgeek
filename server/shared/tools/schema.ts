@@ -11,12 +11,11 @@ import { getSortingStateParser } from "~/lib/parsers"
 
 export const toolListParams = {
   name: parseAsString.withDefault(""),
-  sort: getSortingStateParser<Tool>().withDefault([{ id: "createdAt", desc: true }]),
   page: parseAsInteger.withDefault(1),
   perPage: parseAsInteger.withDefault(25),
+  sort: getSortingStateParser<Tool>().withDefault([{ id: "createdAt", desc: true }]),
   from: parseAsString.withDefault(""),
   to: parseAsString.withDefault(""),
-  operator: parseAsStringEnum(["and", "or"]).withDefault("and"),
   status: parseAsArrayOf(parseAsStringEnum(Object.values(ToolStatus))).withDefault([]),
 }
 

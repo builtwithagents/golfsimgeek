@@ -1,6 +1,5 @@
 "use client"
 
-import { formatDate } from "@primoui/utils"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import type { ColumnDef } from "@tanstack/react-table"
 import { CircleCheckIcon, CircleDashedIcon, CircleDotIcon, PlusIcon } from "lucide-react"
@@ -9,17 +8,21 @@ import type { ComponentProps } from "react"
 import type { Post } from "~/.generated/prisma/browser"
 import { PostStatus } from "~/.generated/prisma/browser"
 import { PostActions } from "~/app/admin/posts/_components/post-actions"
-import { PostTableToolbarActions } from "~/app/admin/posts/_components/post-table-toolbar-actions"
 import { DateRangePicker } from "~/components/admin/date-range-picker"
-import { RowCheckbox } from "~/components/admin/row-checkbox"
 import { Badge } from "~/components/common/badge"
 import { Button } from "~/components/common/button"
 import { Link } from "~/components/common/link"
 import { Note } from "~/components/common/note"
 import { DataTable } from "~/components/data-table/data-table"
 import { DataTableColumnHeader } from "~/components/data-table/data-table-column-header"
+import {
+  createActionsColumn,
+  createDateColumn,
+  createNameColumn,
+  createSelectColumn,
+} from "~/components/data-table/data-table-column-helpers"
+import { DataTableDeleteDialog } from "~/components/data-table/data-table-delete-dialog"
 import { DataTableHeader } from "~/components/data-table/data-table-header"
-import { DataTableLink } from "~/components/data-table/data-table-link"
 import { DataTableToolbar } from "~/components/data-table/data-table-toolbar"
 import { DataTableViewOptions } from "~/components/data-table/data-table-view-options"
 import { useDataTable } from "~/hooks/use-data-table"
@@ -29,15 +32,9 @@ import { postListParams } from "~/server/admin/posts/schema"
 import type { DataTableFilterField } from "~/types"
 
 const statusBadges: Record<PostStatus, ComponentProps<typeof Badge>> = {
-  [PostStatus.Draft]: {
-    variant: "soft",
-  },
-  [PostStatus.Scheduled]: {
-    variant: "info",
-  },
-  [PostStatus.Published]: {
-    variant: "success",
-  },
+  [PostStatus.Draft]: { variant: "soft" },
+  [PostStatus.Scheduled]: { variant: "info" },
+  [PostStatus.Published]: { variant: "success" },
 }
 
 type PostWithAuthor = Post & {
@@ -45,43 +42,13 @@ type PostWithAuthor = Post & {
 }
 
 const columns: ColumnDef<PostWithAuthor>[] = [
-  {
-    id: "select",
-    enableSorting: false,
-    enableHiding: false,
-    header: ({ table }) => (
-      <RowCheckbox
-        checked={table.getIsAllPageRowsSelected()}
-        ref={input => {
-          if (input) {
-            input.indeterminate =
-              table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()
-          }
-        }}
-        onChange={e => table.toggleAllPageRowsSelected(e.target.checked)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row, table }) => (
-      <RowCheckbox
-        checked={row.getIsSelected()}
-        onChange={e => row.toggleSelected(e.target.checked)}
-        aria-label="Select row"
-        table={table}
-        row={row}
-      />
-    ),
-  },
-  {
-    accessorKey: "title",
-    enableHiding: false,
+  createSelectColumn<PostWithAuthor>(),
+  createNameColumn<PostWithAuthor>({
+    title: "Title",
+    key: "title",
+    href: row => `/admin/posts/${row.id}`,
     size: 240,
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Title" />,
-    cell: ({ row }) => {
-      const { id, title } = row.original
-      return <DataTableLink href={`/admin/posts/${id}`} title={title} />
-    },
-  },
+  }),
   {
     accessorKey: "author",
     enableSorting: false,
@@ -93,25 +60,9 @@ const columns: ColumnDef<PostWithAuthor>[] = [
     header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
     cell: ({ row }) => <Badge {...statusBadges[row.original.status]}>{row.original.status}</Badge>,
   },
-  {
-    accessorKey: "publishedAt",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Published At" />,
-    cell: ({ row }) =>
-      row.original.publishedAt ? (
-        <Note>{formatDate(row.getValue<Date>("publishedAt"))}</Note>
-      ) : (
-        <Note>—</Note>
-      ),
-  },
-  {
-    accessorKey: "createdAt",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Created At" />,
-    cell: ({ row }) => <Note>{formatDate(row.getValue<Date>("createdAt"))}</Note>,
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => <PostActions post={row.original} className="float-right" />,
-  },
+  createDateColumn<PostWithAuthor>("publishedAt", "Published At", { optional: true }),
+  createDateColumn<PostWithAuthor>("createdAt", "Created At"),
+  createActionsColumn<PostWithAuthor>(post => <PostActions post={post} className="float-right" />),
 ]
 
 export const PostTable = () => {
@@ -124,7 +75,6 @@ export const PostTable = () => {
     }),
   )
 
-  // Search filters
   const filterFields: DataTableFilterField<PostWithAuthor>[] = [
     {
       id: "title",
@@ -191,7 +141,12 @@ export const PostTable = () => {
             void setParams(null)
           }}
         >
-          <PostTableToolbarActions table={table} />
+          <DataTableDeleteDialog
+            table={table}
+            label="post"
+            mutationOptions={orpc.admin.posts.remove.mutationOptions}
+            queryKey={orpc.admin.posts.key()}
+          />
           <DateRangePicker align="end" />
           <DataTableViewOptions table={table} />
         </DataTableToolbar>

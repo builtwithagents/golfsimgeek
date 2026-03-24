@@ -1,23 +1,26 @@
 "use client"
 
-import { formatDate } from "@primoui/utils"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import type { ColumnDef } from "@tanstack/react-table"
 import { HashIcon, PlusIcon } from "lucide-react"
 import { useQueryStates } from "nuqs"
 import type { Category } from "~/.generated/prisma/browser"
 import { CategoryActions } from "~/app/admin/categories/_components/category-actions"
-import { CategoryTableToolbarActions } from "~/app/admin/categories/_components/category-table-toolbar-actions"
 import { DateRangePicker } from "~/components/admin/date-range-picker"
-import { RowCheckbox } from "~/components/admin/row-checkbox"
 import { Badge } from "~/components/common/badge"
 import { Button } from "~/components/common/button"
 import { Link } from "~/components/common/link"
 import { Note } from "~/components/common/note"
 import { DataTable } from "~/components/data-table/data-table"
 import { DataTableColumnHeader } from "~/components/data-table/data-table-column-header"
+import {
+  createActionsColumn,
+  createDateColumn,
+  createNameColumn,
+  createSelectColumn,
+} from "~/components/data-table/data-table-column-helpers"
+import { DataTableDeleteDialog } from "~/components/data-table/data-table-delete-dialog"
 import { DataTableHeader } from "~/components/data-table/data-table-header"
-import { DataTableLink } from "~/components/data-table/data-table-link"
 import { DataTableToolbar } from "~/components/data-table/data-table-toolbar"
 import { DataTableViewOptions } from "~/components/data-table/data-table-view-options"
 import { useDataTable } from "~/hooks/use-data-table"
@@ -26,43 +29,14 @@ import { isDefaultState } from "~/lib/parsers"
 import { categoryListParams } from "~/server/admin/categories/schema"
 import type { DataTableFilterField } from "~/types"
 
-const columns: ColumnDef<Category & { _count?: { tools: number } }>[] = [
-  {
-    id: "select",
-    enableSorting: false,
-    enableHiding: false,
-    header: ({ table }) => (
-      <RowCheckbox
-        checked={table.getIsAllPageRowsSelected()}
-        ref={input => {
-          if (input) {
-            input.indeterminate =
-              table.getIsSomePageRowsSelected() && !table.getIsAllPageRowsSelected()
-          }
-        }}
-        onChange={e => table.toggleAllPageRowsSelected(e.target.checked)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row, table }) => (
-      <RowCheckbox
-        checked={row.getIsSelected()}
-        onChange={e => row.toggleSelected(e.target.checked)}
-        aria-label="Select row"
-        table={table}
-        row={row}
-      />
-    ),
-  },
-  {
-    accessorKey: "name",
-    enableHiding: false,
-    size: 160,
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Name" />,
-    cell: ({ row }) => (
-      <DataTableLink href={`/admin/categories/${row.original.id}`} title={row.original.name} />
-    ),
-  },
+type CategoryRow = Category & { _count?: { tools: number } }
+
+const columns: ColumnDef<CategoryRow>[] = [
+  createSelectColumn<CategoryRow>(),
+  createNameColumn<CategoryRow>({
+    title: "Name",
+    href: row => `/admin/categories/${row.id}`,
+  }),
   {
     accessorKey: "label",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Label" />,
@@ -78,15 +52,10 @@ const columns: ColumnDef<Category & { _count?: { tools: number } }>[] = [
       </Badge>
     ),
   },
-  {
-    accessorKey: "createdAt",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Created At" />,
-    cell: ({ row }) => <Note>{formatDate(row.getValue<Date>("createdAt"))}</Note>,
-  },
-  {
-    id: "actions",
-    cell: ({ row }) => <CategoryActions category={row.original} className="float-right" />,
-  },
+  createDateColumn<CategoryRow>("createdAt", "Created At"),
+  createActionsColumn<CategoryRow>(category => (
+    <CategoryActions category={category} className="float-right" />
+  )),
 ]
 
 export function CategoryTable() {
@@ -99,7 +68,6 @@ export function CategoryTable() {
     }),
   )
 
-  // Search filters
   const filterFields: DataTableFilterField<Category>[] = [
     {
       id: "name",
@@ -144,7 +112,12 @@ export function CategoryTable() {
             void setParams(null)
           }}
         >
-          <CategoryTableToolbarActions table={table} />
+          <DataTableDeleteDialog
+            table={table}
+            label="category"
+            mutationOptions={orpc.admin.categories.remove.mutationOptions}
+            queryKey={orpc.admin.categories.key()}
+          />
           <DateRangePicker align="end" />
           <DataTableViewOptions table={table} />
         </DataTableToolbar>

@@ -5,7 +5,7 @@ import type { TagListParams } from "~/server/admin/tags/schema"
 import { db } from "~/services/db"
 
 export const findTags = async (search: TagListParams, where?: Prisma.TagWhereInput) => {
-  const { name, page, perPage, sort, from, to, operator } = search
+  const { name, page, perPage, sort, from, to } = search
 
   // Offset to paginate the results
   const offset = (page - 1) * perPage
@@ -26,7 +26,7 @@ export const findTags = async (search: TagListParams, where?: Prisma.TagWhereInp
   ]
 
   const whereQuery: Prisma.TagWhereInput = {
-    [operator.toUpperCase()]: expressions.filter(isTruthy),
+    AND: expressions.filter(isTruthy),
   }
 
   // Transaction is used to ensure both queries are executed in a single transaction

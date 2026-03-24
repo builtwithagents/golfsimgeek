@@ -8,7 +8,7 @@ export const findCategories = async (
   search: CategoryListParams,
   where?: Prisma.CategoryWhereInput,
 ) => {
-  const { name, page, perPage, sort, from, to, operator } = search
+  const { name, page, perPage, sort, from, to } = search
 
   // Offset to paginate the results
   const offset = (page - 1) * perPage
@@ -29,7 +29,7 @@ export const findCategories = async (
   ]
 
   const whereQuery: Prisma.CategoryWhereInput = {
-    [operator.toUpperCase()]: expressions.filter(isTruthy),
+    AND: expressions.filter(isTruthy),
   }
 
   // Transaction is used to ensure both queries are executed in a single transaction

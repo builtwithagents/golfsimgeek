@@ -5,7 +5,7 @@ import type { PostListParams } from "~/server/admin/posts/schema"
 import { db } from "~/services/db"
 
 export const findPosts = async (search: PostListParams, where?: Prisma.PostWhereInput) => {
-  const { title, page, perPage, sort, from, to, operator, status } = search
+  const { title, page, perPage, sort, from, to, status } = search
 
   // Offset to paginate the results
   const offset = (page - 1) * perPage
@@ -29,7 +29,7 @@ export const findPosts = async (search: PostListParams, where?: Prisma.PostWhere
   ]
 
   const whereQuery: Prisma.PostWhereInput = {
-    [operator.toUpperCase()]: expressions.filter(isTruthy),
+    AND: expressions.filter(isTruthy),
   }
 
   // Transaction is used to ensure both queries are executed in a single transaction

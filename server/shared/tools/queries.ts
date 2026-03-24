@@ -5,7 +5,7 @@ import type { ToolListParams } from "~/server/shared/tools/schema"
 import { db } from "~/services/db"
 
 export const findTools = async (search: ToolListParams, where?: Prisma.ToolWhereInput) => {
-  const { name, sort, page, perPage, from, to, operator, status } = search
+  const { name, sort, page, perPage, from, to, status } = search
 
   // Offset to paginate the results
   const offset = (page - 1) * perPage
@@ -29,7 +29,7 @@ export const findTools = async (search: ToolListParams, where?: Prisma.ToolWhere
   ]
 
   const whereQuery: Prisma.ToolWhereInput = {
-    [operator.toUpperCase()]: expressions.filter(isTruthy),
+    AND: expressions.filter(isTruthy),
   }
 
   // Transaction is used to ensure both queries are executed in a single transaction

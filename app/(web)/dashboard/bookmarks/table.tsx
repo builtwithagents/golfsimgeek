@@ -13,7 +13,10 @@ import { Button } from "~/components/common/button"
 import { Note } from "~/components/common/note"
 import { DataTable } from "~/components/data-table/data-table"
 import { DataTableColumnHeader } from "~/components/data-table/data-table-column-header"
-import { DataTableLink } from "~/components/data-table/data-table-link"
+import {
+  createActionsColumn,
+  createNameColumn,
+} from "~/components/data-table/data-table-column-helpers"
 import { DataTableToolbar } from "~/components/data-table/data-table-toolbar"
 import { useDataTable } from "~/hooks/use-data-table"
 import { orpc } from "~/lib/orpc-query"
@@ -60,15 +63,11 @@ export const BookmarkTable = ({ tools, pageCount }: Awaited<ReturnType<typeof fi
 
   const columns = useMemo((): ColumnDef<Tool>[] => {
     return [
-      {
-        accessorKey: "name",
-        size: 160,
-        header: ({ column }) => <DataTableColumnHeader column={column} title={t("columns.name")} />,
-        cell: ({ row }) => {
-          const { name, slug, faviconUrl } = row.original
-          return <DataTableLink href={`/${slug}`} image={faviconUrl} title={name} />
-        },
-      },
+      createNameColumn<Tool>({
+        title: t("columns.name"),
+        href: row => `/${row.slug}`,
+        image: row => row.faviconUrl,
+      }),
       {
         accessorKey: "tagline",
         header: ({ column }) => (
@@ -76,10 +75,7 @@ export const BookmarkTable = ({ tools, pageCount }: Awaited<ReturnType<typeof fi
         ),
         cell: ({ row }) => <Note className="truncate">{row.original.tagline}</Note>,
       },
-      {
-        id: "actions",
-        cell: ({ row }) => <BookmarkRemoveButton toolId={row.original.id} />,
-      },
+      createActionsColumn<Tool>(tool => <BookmarkRemoveButton toolId={tool.id} />),
     ]
   }, [])
 

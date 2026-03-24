@@ -5,7 +5,7 @@ import { db } from "~/services/db"
 import type { UserListParams } from "./schema"
 
 export const findUsers = async (search: UserListParams) => {
-  const { name, page, perPage, sort, from, to, operator } = search
+  const { name, page, perPage, sort, from, to } = search
 
   // Offset to paginate the results
   const offset = (page - 1) * perPage
@@ -33,7 +33,7 @@ export const findUsers = async (search: UserListParams) => {
   ]
 
   const where: Prisma.UserWhereInput = {
-    [operator.toUpperCase()]: expressions.filter(isTruthy),
+    AND: expressions.filter(isTruthy),
   }
 
   // Transaction is used to ensure both queries are executed in a single transaction

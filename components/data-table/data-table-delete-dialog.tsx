@@ -2,16 +2,27 @@
 
 import type { Table } from "@tanstack/react-table"
 import { TrashIcon } from "lucide-react"
-import type { Report } from "~/.generated/prisma/browser"
 import { DeleteDialog } from "~/components/admin/dialogs/delete-dialog"
 import { Button } from "~/components/common/button"
-import { orpc } from "~/lib/orpc-query"
 
-interface ReportTableToolbarActionsProps {
-  table: Table<Report>
+type DeleteMutationOptions = (opts: {
+  onSuccess: () => void
+  onError: (error: Error) => void
+}) => any
+
+interface DataTableDeleteDialogProps<TData extends { id: string }> {
+  table: Table<TData>
+  label: string
+  mutationOptions: DeleteMutationOptions
+  queryKey: unknown[]
 }
 
-export const ReportTableToolbarActions = ({ table }: ReportTableToolbarActionsProps) => {
+export function DataTableDeleteDialog<TData extends { id: string }>({
+  table,
+  label,
+  mutationOptions,
+  queryKey,
+}: DataTableDeleteDialogProps<TData>) {
   const { rows } = table.getFilteredSelectedRowModel()
 
   if (!rows.length) {
@@ -21,9 +32,9 @@ export const ReportTableToolbarActions = ({ table }: ReportTableToolbarActionsPr
   return (
     <DeleteDialog
       ids={rows.map(row => row.original.id)}
-      label="report"
-      mutationOptions={orpc.admin.reports.remove.mutationOptions}
-      queryKey={orpc.admin.reports.key()}
+      label={label}
+      mutationOptions={mutationOptions}
+      queryKey={queryKey}
     >
       <Button variant="secondary" size="md" prefix={<TrashIcon />}>
         Delete ({rows.length})

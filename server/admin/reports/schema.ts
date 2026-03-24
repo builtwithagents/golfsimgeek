@@ -17,7 +17,6 @@ export const reportListParams = {
   sort: getSortingStateParser<Report>().withDefault([{ id: "createdAt", desc: true }]),
   from: parseAsString.withDefault(""),
   to: parseAsString.withDefault(""),
-  operator: parseAsStringEnum(["and", "or"]).withDefault("and"),
   type: parseAsArrayOf(parseAsStringEnum(Object.values(ReportType))).withDefault([]),
 }
 
