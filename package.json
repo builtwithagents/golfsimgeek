@@ -1,5 +1,5 @@
 {
-  "name": "dirstarter",
+  "name": "golfsimgeek",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -16,7 +16,7 @@
     "db:push": "prisma db push --skip-generate",
     "db:reset": "prisma migrate reset",
     "db:seed": "prisma db seed",
-    "postinstall": "bun run db:generate"
+    "postinstall": "npx prisma generate --no-hints"
   },
   "dependencies": {
     "@ai-sdk/react": "^3.0.138",

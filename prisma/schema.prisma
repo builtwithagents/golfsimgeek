@@ -136,31 +136,52 @@ model Ad {
 }
 
 model Tool {
-  id             String     @id @default(cuid(2))
-  name           String     @db.Citext
-  slug           String     @unique
-  websiteUrl     String
-  affiliateUrl   String?
-  tagline        String?
-  description    String?
-  content        String?
-  faviconUrl     String?
-  screenshotUrl  String?
-  tier           ToolTier   @default(Free)
-  tierPriority   Int        @default(dbgenerated())
-  submitterName  String?
-  submitterEmail String?
-  submitterNote  String?
-  status         ToolStatus @default(Draft)
-  publishedAt    DateTime?
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+  id              String     @id @default(cuid(2))
+  name            String     @db.Citext
+  slug            String     @unique
+  websiteUrl      String
+  affiliateUrl    String?
+  tagline         String?
+  description     String?
+  content         String?
+  faviconUrl      String?
+  screenshotUrl   String?
+  tier            ToolTier   @default(Free)
+  tierPriority    Int        @default(dbgenerated())
+  submitterName   String?
+  submitterEmail  String?
+  submitterNote   String?
+  status          ToolStatus @default(Draft)
+  publishedAt     DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  // Vendor / location fields
+  phone           String?
+  contactEmail    String?
+  address         String?
+  city            String?
+  state           String?
+  stateCode       String?    @db.VarChar(2)
+  zipCode         String?
+  region          String?
+  regionSlug      String?
+  priceRange      String?
+  serviceRadius   String?
+
+  // Google Places fields
+  placeId         String?    @unique
+  googleRating    Decimal?   @db.Decimal(2, 1)
+  reviewCount     Int?
+  photoReference  String?
+  mobileConfirmed Boolean    @default(false)
 
   // Relations
   categories Category[]
   tags       Tag[]
   reports    Report[]
   bookmarks  Bookmark[]
+  leads      Lead[]
   owner      User?      @relation(fields: [ownerId], references: [id])
   ownerId    String?
 
@@ -170,6 +191,9 @@ model Tool {
   @@index([ownerId])
   @@index([tierPriority, publishedAt])
   @@index([createdAt])
+  @@index([stateCode])
+  @@index([regionSlug])
+  @@index([placeId])
 }
 
 model Category {
@@ -233,6 +257,45 @@ model Bookmark {
   @@unique([userId, toolId])
   @@index([userId])
   @@index([toolId])
+}
+
+enum LeadStatus {
+  New
+  Contacted
+  Sold
+  Closed
+}
+
+model Lead {
+  id        String     @id @default(cuid(2))
+  name      String
+  email     String
+  phone     String?
+  eventDate String?
+  eventType String?
+  zipCode   String?
+  message   String?
+  status    LeadStatus @default(New)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  // Relations
+  tool   Tool   @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  toolId String
+
+  @@index([toolId])
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model PlacesRawResponse {
+  id            String   @id @default(cuid(2))
+  searchQuery   String
+  searchCity    String
+  responseData  Json
+  resultCount   Int      @default(0)
+  createdAt     DateTime @default(now())
 }
 
 model Post {
