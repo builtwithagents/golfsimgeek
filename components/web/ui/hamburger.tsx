@@ -5,8 +5,7 @@ export const Hamburger = ({ className, ...props }: ComponentProps<"svg">) => {
   return (
     <svg
       viewBox="0 0 100 100"
-      aria-label="Hamburger icon"
-      role="img"
+      aria-hidden="true"
       className={cx(
         "duration-300 select-none will-change-transform group-data-[state=open]/menu:rotate-45",
         className,

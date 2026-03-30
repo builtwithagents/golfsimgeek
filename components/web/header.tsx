@@ -1,23 +1,11 @@
 "use client"
 
 import { useHotkeys } from "@mantine/hooks"
-import {
-  CalendarDaysIcon,
-  ChevronDownIcon,
-  GalleryHorizontalEndIcon,
-  SearchIcon,
-  TagIcon,
-} from "lucide-react"
+import { SearchIcon } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { usePathname } from "next/navigation"
 import { type ComponentProps, useEffect, useState } from "react"
 import { Button } from "~/components/common/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "~/components/common/dropdown-menu"
 import { Link } from "~/components/common/link"
 import { Stack } from "~/components/common/stack"
 import { ThemeSwitcher } from "~/components/web/theme-switcher"
@@ -55,6 +43,8 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
               type="button"
               onClick={() => setNavOpen(!isNavOpen)}
               className="block -m-1 -ml-1.5 lg:hidden"
+              aria-label="Toggle menu"
+              aria-expanded={isNavOpen}
             >
               <Hamburger className="size-7" />
             </button>
@@ -63,45 +53,20 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
           </Stack>
 
           <nav className="flex flex-wrap gap-x-4 gap-y-0.5 flex-1 max-lg:hidden">
-            <DropdownMenu>
-              <NavLink
-                className="gap-1"
-                suffix={<ChevronDownIcon className="group-data-[state=open]:-rotate-180" />}
-                asChild
-              >
-                <DropdownMenuTrigger>{t("navigation.browse")}</DropdownMenuTrigger>
-              </NavLink>
-
-              <DropdownMenuContent align="start">
-                <DropdownMenuItem asChild>
-                  <NavLink href="/?sort=publishedAt.desc" prefix={<CalendarDaysIcon />}>
-                    {t("navigation.latest_tools")}
-                  </NavLink>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <NavLink href="/categories" prefix={<GalleryHorizontalEndIcon />}>
-                    {t("navigation.categories")}
-                  </NavLink>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <NavLink href="/tags" prefix={<TagIcon />}>
-                    {t("navigation.tags")}
-                  </NavLink>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
+            <NavLink href="/states">Simulator Locations</NavLink>
+            <NavLink href="/mobile">Mobile Simulators</NavLink>
+            <NavLink href="/simulators">Technology</NavLink>
             <NavLink href="/about">{t("navigation.about")}</NavLink>
             {adsConfig.enabled && <NavLink href="/advertise">{t("navigation.advertise")}</NavLink>}
           </nav>
 
           <Stack size="sm" wrap={false} className="justify-end max-lg:grow">
-            <Button size="sm" variant="ghost" className="p-1 text-base" onClick={search.open}>
+            <Button size="sm" variant="ghost" className="p-1 text-base" onClick={search.open} aria-label="Search">
               <SearchIcon />
             </Button>
 
             <Button size="sm" variant="ghost" className="p-1 -ml-1 text-base max-sm:hidden" asChild>
-              <ThemeSwitcher />
+              <ThemeSwitcher aria-label="Toggle theme" />
             </Button>
 
             <Button size="sm" variant="secondary" asChild>
@@ -113,17 +78,19 @@ const Header = ({ className, ...props }: ComponentProps<"div">) => {
         </div>
 
         <nav
+          aria-hidden={!isNavOpen}
+          onClick={() => setNavOpen(false)}
           className={cx(
             "absolute top-full inset-x-0 h-[calc(100dvh-var(--header-top)-var(--header-height))] -mt-px py-4 px-6 grid grid-cols-2 place-items-start place-content-start gap-x-4 gap-y-6 bg-background/90 backdrop-blur-lg transition-opacity lg:hidden",
             isNavOpen ? "opacity-100" : "opacity-0 pointer-events-none",
           )}
         >
-          <NavLink href="/?sort=publishedAt.desc">{t("navigation.latest_tools")}</NavLink>
-          <NavLink href="/categories">{t("navigation.categories")}</NavLink>
-          <NavLink href="/tags">{t("navigation.tags")}</NavLink>
-          <NavLink href="/submit">{t("navigation.submit")}</NavLink>
+          <NavLink href="/states">Simulator Locations</NavLink>
+          <NavLink href="/mobile">Mobile Simulators</NavLink>
+          <NavLink href="/simulators">Technology</NavLink>
           <NavLink href="/about">{t("navigation.about")}</NavLink>
           {adsConfig.enabled && <NavLink href="/advertise">{t("navigation.advertise")}</NavLink>}
+          <NavLink href="/submit">{t("navigation.submit")}</NavLink>
         </nav>
       </Container>
     </header>

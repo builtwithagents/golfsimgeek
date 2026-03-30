@@ -21,10 +21,10 @@ export const generateMetadata = async (): Promise<Metadata> => {
     metadataBase: new URL(siteConfig.url),
     title: {
       template: `%s – ${siteConfig.name}`,
-      default: `${t("brand.tagline")} – ${siteConfig.name}`,
+      default: siteConfig.name,
     },
     description: t("brand.description"),
-    icons: { icon: [{ type: "image/png", url: "/favicon.png" }] },
+    icons: { icon: [{ type: "image/svg+xml", url: "/favicon.svg" }, { type: "image/png", url: "/favicon.png" }] },
     ...metadataConfig,
   }
 }
@@ -46,7 +46,7 @@ export default async function ({ children }: LayoutProps<"/">) {
           <NuqsAdapter>
             <TooltipProvider delayDuration={250} skipDelayDuration={250}>
               <SearchProvider>
-                <ThemeProvider attribute="class" disableTransitionOnChange>
+                <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
                   <QueryProvider>
                     <MotionConfig reducedMotion="user">{children}</MotionConfig>
                     <Toaster />

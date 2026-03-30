@@ -6,7 +6,7 @@ import { cx } from "~/lib/utils"
 
 type OverlayImageProps = ComponentProps<typeof ExternalLink> & {
   src: string
-  alt?: string
+  alt: string
   loading?: ComponentProps<"img">["loading"]
 }
 
@@ -20,7 +20,7 @@ export const OverlayImage = ({ className, src, alt, loading, ...props }: Overlay
       >
         <Image
           src={src}
-          alt={alt ?? ""}
+          alt={alt}
           width={1280}
           height={1024}
           loading={loading}

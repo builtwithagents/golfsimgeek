@@ -3,8 +3,7 @@ import type { Metadata } from "next"
 import { getFormatter, getTranslations } from "next-intl/server"
 import Image from "next/image"
 import { notFound } from "next/navigation"
-import { cache, Suspense } from "react"
-import { AdCard, AdCardSkeleton } from "~/components/web/ads/ad-card"
+import { cache } from "react"
 import { extractHeadingsFromMarkdown, Markdown } from "~/components/web/markdown"
 import { Nav } from "~/components/web/nav"
 import { PostPreviewAlert } from "~/components/web/posts/post-preview-alert"
@@ -44,10 +43,7 @@ const getData = cache(async ({ params }: Props) => {
   return { post, ...data }
 })
 
-export const generateStaticParams = async () => {
-  const posts = await findPostSlugs({})
-  return posts.map(post => ({ slug: post.slug }))
-}
+export const generateStaticParams = async () => []
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => {
   const { post, url, metadata } = await getData(props)
@@ -127,11 +123,7 @@ export default async function (props: Props) {
             </Section.Content>
 
             <Section.Sidebar className="max-h-(--sidebar-max-height)">
-              <Suspense fallback={<AdCardSkeleton />}>
-                <AdCard type="BlogPost" />
-              </Suspense>
-
-              {blogConfig.tableOfContents.enabled && !!headings.length && (
+{blogConfig.tableOfContents.enabled && !!headings.length && (
                 <TableOfContents headings={headings} />
               )}
             </Section.Sidebar>

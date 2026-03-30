@@ -153,8 +153,14 @@ function shouldExclude(place: PlaceResult): { exclude: boolean; reason: string |
   }
 
   // Check excluded Google types
+  // Allow places that have "indoor_golf_course" even if they also have "golf_course"
+  const hasIndoorGolf = types.includes("indoor_golf_course")
   for (const excludedType of EXCLUDED_TYPES) {
     if (types.includes(excludedType)) {
+      if (excludedType === "golf_course" && hasIndoorGolf) {
+        // Indoor golf simulator venues are often dual-tagged — allow them through but flag for review
+        return { exclude: false, reason: "Indoor golf course (dual-tagged with golf_course)", flagForReview: true }
+      }
       return { exclude: true, reason: `Google type "${excludedType}"`, flagForReview: false }
     }
   }

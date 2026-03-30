@@ -46,6 +46,7 @@ export const env = createEnv({
     NEXT_PUBLIC_SITE_EMAIL: z.string().optional(),
     NEXT_PUBLIC_PLAUSIBLE_URL: z.string().optional(),
     NEXT_PUBLIC_PLAUSIBLE_DOMAIN: z.string().optional(),
+    NEXT_PUBLIC_GOOGLE_MAPS_KEY: z.string().optional(),
   },
 
   /**
@@ -56,6 +57,7 @@ export const env = createEnv({
     NEXT_PUBLIC_SITE_EMAIL: process.env.NEXT_PUBLIC_SITE_EMAIL,
     NEXT_PUBLIC_PLAUSIBLE_URL: process.env.NEXT_PUBLIC_PLAUSIBLE_URL,
     NEXT_PUBLIC_PLAUSIBLE_DOMAIN: process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN,
+    NEXT_PUBLIC_GOOGLE_MAPS_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY,
   },
 
   /**

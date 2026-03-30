@@ -1,4 +1,5 @@
 import { removeQueryParams } from "@primoui/utils"
+import type { Thing } from "schema-dts"
 import { HashIcon } from "lucide-react"
 import type { Metadata } from "next"
 import { getTranslations } from "next-intl/server"
@@ -8,9 +9,13 @@ import { Badge } from "~/components/common/badge"
 import { H2, H5 } from "~/components/common/heading"
 import { Link } from "~/components/common/link"
 import { Stack } from "~/components/common/stack"
-import { AdCard, AdCardSkeleton } from "~/components/web/ads/ad-card"
+import { LeadForm } from "~/components/web/lead-form"
 import { FeaturedToolsIcons } from "~/components/web/listings/featured-tools-icons"
+import { ListingInfoCard } from "~/components/web/listings/listing-info-card"
+import { ListingMap } from "~/components/web/listings/listing-map"
 import { RelatedTools, RelatedToolsSkeleton } from "~/components/web/listings/related-tools"
+import { SimTechBadges } from "~/components/web/listings/sim-tech-badges"
+import { StarRating } from "~/components/web/listings/star-rating"
 import { Markdown } from "~/components/web/markdown"
 import { Nav } from "~/components/web/nav"
 import { OverlayImage } from "~/components/web/overlay-image"
@@ -47,21 +52,66 @@ const getData = cache(async ({ params }: Props) => {
   const title = `${tool.name}: ${tool.tagline}`
   const description = tool.description ?? ""
 
+  // Build LocalBusiness JSON-LD
+  const localBusiness: Thing = {
+    "@type": "LocalBusiness",
+    name: tool.name,
+    url: tool.websiteUrl,
+  }
+  if (tool.description) localBusiness.description = tool.description
+  if (tool.phone) localBusiness.telephone = tool.phone
+  if (tool.address || tool.city || tool.stateCode) {
+    localBusiness.address = {
+      "@type": "PostalAddress",
+      ...(tool.address && { streetAddress: tool.address }),
+      ...(tool.city && { addressLocality: tool.city }),
+      ...(tool.stateCode && { addressRegion: tool.stateCode }),
+      ...(tool.zipCode && { postalCode: tool.zipCode }),
+      addressCountry: "US",
+    }
+  }
+  if (tool.googleRating && tool.reviewCount) {
+    localBusiness.aggregateRating = {
+      "@type": "AggregateRating",
+      ratingValue: Number(tool.googleRating),
+      reviewCount: tool.reviewCount,
+    }
+  }
+  if (tool.priceRange) localBusiness.priceRange = tool.priceRange
+
+  // Extract FAQ from content for FAQ schema
+  const faqSchema: Thing | null = (() => {
+    if (!tool.content) return null
+    const faqMatch = tool.content.match(/## Frequently Asked Questions\n\n([\s\S]+)$/)
+    if (!faqMatch) return null
+    const faqBlock = faqMatch[1]
+    const qaPairs = [...faqBlock.matchAll(/\*\*(.+?)\*\*\n\n(.+?)(?=\n\n\*\*|\s*$)/gs)]
+    if (qaPairs.length === 0) return null
+    return {
+      "@type": "FAQPage",
+      mainEntity: qaPairs.map(m => ({
+        "@type": "Question",
+        name: m[1].trim(),
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: m[2].trim(),
+        },
+      })),
+    }
+  })()
+
   const data = getPageData(url, title, description, {
     breadcrumbs: [
       { url: "/", title: t("navigation.tools") },
       { url, title: tool.name },
     ],
-    structuredData: [generateCollectionPage(url, title, description)],
+    structuredData: [generateCollectionPage(url, title, description), localBusiness, ...(faqSchema ? [faqSchema] : [])],
   })
 
   return { tool, ...data }
 })
 
-export const generateStaticParams = async () => {
-  const tools = await findToolSlugs({})
-  return tools.map(({ slug }) => ({ slug }))
-}
+export const generateStaticParams = async () => []
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => {
   const { tool, url, metadata } = await getData(props)
@@ -104,6 +154,16 @@ export default async function (props: Props) {
               <Backdrop />
             </Stack>
           </Sticky>
+
+          {tool.googleRating && (
+            <StarRating
+              rating={Number(tool.googleRating)}
+              reviewCount={tool.reviewCount}
+              className="-mt-fluid-md pt-4"
+            />
+          )}
+
+          <SimTechBadges content={tool.content} className="-mt-fluid-md pt-2" />
 
           {tool.description && (
             <IntroDescription className="-mt-fluid-md pt-4">{tool.description}</IntroDescription>
@@ -174,10 +234,21 @@ export default async function (props: Props) {
         </Section.Content>
 
         <Section.Sidebar className="max-md:contents">
-          {/* Advertisement */}
-          <Suspense fallback={<AdCardSkeleton className="max-md:order-3" />}>
-            <AdCard type="ToolPage" className="max-md:order-3" />
-          </Suspense>
+          {/* Quick Info Card */}
+          <ListingInfoCard tool={tool} className="max-md:order-1" />
+
+          {/* Map */}
+          <ListingMap
+            placeId={tool.placeId}
+            address={[tool.address, tool.city, tool.stateCode, tool.zipCode].filter(Boolean).join(", ")}
+            name={tool.name}
+            className="max-md:order-2"
+          />
+
+{/* Lead Form */}
+          {tool.mobileConfirmed && (
+            <LeadForm toolId={tool.id} toolName={tool.name} />
+          )}
 
           {/* Featured */}
           <Suspense>

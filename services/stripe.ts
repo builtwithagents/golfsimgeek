@@ -1,6 +1,18 @@
 import Stripe from "stripe"
 import { env } from "~/env"
 
-export const stripe = new Stripe(env.STRIPE_SECRET_KEY, {
-  apiVersion: "2026-02-25.clover",
+let _stripe: Stripe | null = null
+
+export const stripe = new Proxy({} as Stripe, {
+  get(_, prop) {
+    if (!_stripe) {
+      if (!env.STRIPE_SECRET_KEY) {
+        throw new Error("STRIPE_SECRET_KEY is not set")
+      }
+      _stripe = new Stripe(env.STRIPE_SECRET_KEY, {
+        apiVersion: "2026-02-25.clover",
+      })
+    }
+    return (_stripe as any)[prop]
+  },
 })

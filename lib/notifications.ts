@@ -103,6 +103,8 @@ export const notifyAdminOfPaidTool = async (tool: Tool) => {
   const to = siteConfig.email
   const subject = `New ${tool.tier.toLowerCase()} tool: ${tool.name}`
 
+  if (!to) return
+
   return await sendEmail({
     to,
     subject,

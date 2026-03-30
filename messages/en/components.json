@@ -11,14 +11,14 @@
   },
   "footer": {
     "cta_title": "Subscribe to our newsletter",
-    "cta_description": "Join {count}+ other members and get updates straight to your inbox."
+    "cta_description": "Join fellow golfers and get updates straight to your inbox."
   },
   "count_badge": {
-    "new_tools": "{count} new {count, plural, =0 {tools} =1 {tool} other {tools}} added",
-    "total_tools": "{count} {count, plural, =0 {tools} =1 {tool} other {tools}} listed"
+    "new_tools": "{count} new {count, plural, =0 {listings} =1 {listing} other {listings}} added",
+    "total_tools": "{count} {count, plural, =0 {listings} =1 {listing} other {listings}} listed"
   },
   "cta_proof": {
-    "message": "Join {count}+ directory enthusiasts"
+    "message": "Join {count}+ golf simulator enthusiasts"
   },
   "feature_nudge": {
     "message": "{name} has already been published on {siteName}. Upgrade its listing for extra exposure.",
@@ -26,13 +26,13 @@
     "dismiss_button": "Dismiss"
   },
   "featured_tools": {
-    "title": "Featured tools",
-    "add_tooltip": "Upgrade your tool's listing"
+    "title": "Featured Listings",
+    "add_tooltip": "Upgrade your listing"
   },
   "listings": {
-    "featured_tools": "Featured Tools",
+    "featured_tools": "Featured Listings",
     "similar_to": "Similar to {toolName}",
-    "view_all_tools": "View all tools"
+    "view_all_tools": "View all listings"
   },
   "pagination": {
     "prev": "Prev",
@@ -53,14 +53,14 @@
   },
   "stats": {
     "pageviews": "Monthly Pageviews",
-    "tools": "Listed Tools",
+    "tools": "Listed Simulators",
     "subscribers": "Newsletter Subscribers"
   },
   "testimonial": {
-    "quote": "After advertising on {siteName}, we saw a 38% increase in qualified leads and 2.4x ROI within the first month. The targeted audience was exactly what our business needed. Highly recommended!",
+    "quote": "GolfSimGeek helped us reach golfers actively searching for simulator rentals in our area. Within the first month we booked several new corporate events directly from our listing.",
     "author": {
-      "name": "Piotr Kulpinski",
-      "note": "Founder of Dirstarter"
+      "name": "Mobile Golf Simulator Operator",
+      "note": "Featured on GolfSimGeek"
     }
   },
   "data_table": {

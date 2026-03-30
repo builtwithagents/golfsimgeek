@@ -2,10 +2,11 @@ import { NextResponse } from "next/server"
 import { siteConfig } from "~/config/site"
 import { findCategorySlugs } from "~/server/web/categories/queries"
 import { findPostSlugs } from "~/server/web/posts/queries"
+import { findStatesWithCounts, findCitiesForState } from "~/server/web/states/queries"
 import { findTagSlugs } from "~/server/web/tags/queries"
 import { findToolSlugs } from "~/server/web/tools/queries"
 
-export const sitemaps = ["pages", "tools", "categories", "tags", "posts"] as const
+export const sitemaps = ["pages", "tools", "categories", "tags", "posts", "states", "simulators"] as const
 
 type SitemapEntry = {
   url: string
@@ -57,6 +58,8 @@ export async function GET(_: Request, { params }: RouteContext<"/sitemap/[id]">)
         `${siteUrl}/blog`,
         `${siteUrl}/advertise`,
         `${siteUrl}/submit`,
+        `${siteUrl}/states`,
+        `${siteUrl}/simulators`,
       ]
 
       entries = pages.map(url => ({
@@ -113,6 +116,39 @@ export async function GET(_: Request, { params }: RouteContext<"/sitemap/[id]">)
         changeFrequency: "monthly",
         priority: 0.7,
       }))
+      break
+    }
+
+    case "simulators": {
+      const techSlugs = ["trackman", "full-swing", "gcquad", "foresight", "golfzon", "uneekor", "flightscope", "skytrak", "toptracer", "aboutgolf"]
+      entries = [
+        { url: `${siteUrl}/simulators`, changeFrequency: "weekly", priority: 0.8 },
+        ...techSlugs.map(slug => ({ url: `${siteUrl}/simulators/${slug}`, changeFrequency: "weekly" as const, priority: 0.7 })),
+      ]
+      break
+    }
+
+    case "states": {
+      const states = await findStatesWithCounts()
+
+      // State pages
+      for (const state of states) {
+        entries.push({
+          url: `${siteUrl}/states/${state.slug}`,
+          changeFrequency: "weekly",
+          priority: 0.6,
+        })
+
+        // City pages for each state
+        const cities = await findCitiesForState(state.stateCode)
+        for (const city of cities) {
+          entries.push({
+            url: `${siteUrl}/states/${state.slug}/city/${city.citySlug}`,
+            changeFrequency: "weekly",
+            priority: 0.5,
+          })
+        }
+      }
       break
     }
   }

@@ -2,20 +2,14 @@ import type { MetadataRoute } from "next"
 import { siteConfig } from "~/config/site"
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = siteConfig.url
-
   return {
     rules: [
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin*", "/auth*", "/dashboard*"],
-      },
-      {
-        userAgent: "Googlebot",
-        disallow: "/*/opengraph-image-",
+        disallow: ["/admin/", "/api/"],
       },
     ],
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: `${siteConfig.url}/sitemap.xml`,
   }
 }

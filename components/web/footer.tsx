@@ -11,7 +11,6 @@ import {
   DropdownMenuTrigger,
 } from "~/components/common/dropdown-menu"
 import { H5, H6 } from "~/components/common/heading"
-import { BrandGitHubIcon } from "~/components/common/icons/brand-github"
 import { Note } from "~/components/common/note"
 import { Stack } from "~/components/common/stack"
 import { Tooltip } from "~/components/common/tooltip"
@@ -25,7 +24,12 @@ import { linksConfig } from "~/config/links"
 import { siteConfig } from "~/config/site"
 import { cx } from "~/lib/utils"
 
-export const Footer = ({ children, className, ...props }: ComponentProps<"div">) => {
+export const Footer = ({
+  children,
+  columns,
+  className,
+  ...props
+}: ComponentProps<"div"> & { columns?: import("react").ReactNode }) => {
   const t = useTranslations()
 
   return (
@@ -57,7 +61,7 @@ export const Footer = ({ children, className, ...props }: ComponentProps<"div">)
 
             <DropdownMenu modal={false}>
               <Tooltip tooltip={t("navigation.rss_feed")}>
-                <DropdownMenuTrigger className={navLinkVariants()}>
+                <DropdownMenuTrigger className={navLinkVariants()} aria-label="RSS feeds">
                   <RssIcon />
                 </DropdownMenuTrigger>
               </Tooltip>
@@ -72,38 +76,31 @@ export const Footer = ({ children, className, ...props }: ComponentProps<"div">)
             </DropdownMenu>
 
             <Tooltip tooltip={t("navigation.contact_us")}>
-              <ExternalLink href={`mailto:${siteConfig.email}`} className={navLinkVariants()}>
+              <ExternalLink href={`mailto:${siteConfig.email}`} className={navLinkVariants()} aria-label="Contact us">
                 <AtSignIcon />
               </ExternalLink>
             </Tooltip>
 
-            <Tooltip tooltip={t("navigation.source_code")}>
-              <ExternalLink href={linksConfig.github} className={navLinkVariants()}>
-                <BrandGitHubIcon />
-              </ExternalLink>
-            </Tooltip>
           </Stack>
         </Stack>
 
-        <Stack direction="column" className="text-sm md:col-span-3 md:col-start-8">
-          <H6 as="strong">{t("navigation.browse")}:</H6>
-
-          <NavLink href="/">{t("navigation.tools")}</NavLink>
-          <NavLink href="/categories">{t("navigation.categories")}</NavLink>
-          <NavLink href="/tags">{t("navigation.tags")}</NavLink>
-          <NavLink href="/blog">{t("navigation.blog")}</NavLink>
-        </Stack>
+        {columns}
 
         <Stack direction="column" className="text-sm md:col-span-3">
           <H6 as="strong">{t("navigation.quick_links")}:</H6>
 
-          <NavLink href="/submit">{t("navigation.submit")}</NavLink>
+          <NavLink href="/locations">Locations</NavLink>
+          <NavLink href="/states">Simulator Locations</NavLink>
+          <NavLink href="/mobile">Mobile Simulators</NavLink>
+          <NavLink href="/simulators">Technology</NavLink>
+          <NavLink href="/blog">{t("navigation.blog")}</NavLink>
           <NavLink href="/about">{t("navigation.about")}</NavLink>
           {adsConfig.enabled && <NavLink href="/advertise">{t("navigation.advertise")}</NavLink>}
+          <NavLink href="/submit">{t("navigation.submit")}</NavLink>
         </Stack>
       </div>
 
-      <BuiltWith medium="footer" className="self-start" />
+      {/* <BuiltWith medium="footer" className="self-start" /> */}
 
       {children}
     </footer>

@@ -32,25 +32,21 @@ const ToolCard = ({ tool, ...props }: ToolCardProps) => {
         {tool.ownerId && <VerifiedBadge size="md" className="-ml-1.5" />}
       </CardHeader>
 
-      <div className="relative size-full flex flex-col">
-        <Stack size="lg" direction="column" className="flex-1 duration-200 group-hover:opacity-0">
-          {tool.tagline && <CardDescription className="min-h-10">{tool.tagline}</CardDescription>}
-
-          <ShowMore
-            items={tool.categories}
-            limit={1}
-            renderItem={({ name }) => <Badge variant="outline">{name}</Badge>}
-            size="xs"
-            showMoreType="text"
-            className="mt-auto"
-          />
-        </Stack>
-
-        {tool.description && (
-          <div className="absolute inset-0 opacity-0 duration-200 group-hover:opacity-100">
-            <CardDescription className="line-clamp-3">{tool.description}</CardDescription>
-          </div>
+      <div className="size-full flex flex-col gap-3">
+        {(tool.description || tool.tagline) && (
+          <CardDescription className="line-clamp-3">
+            {tool.description || tool.tagline}
+          </CardDescription>
         )}
+
+        <ShowMore
+          items={tool.categories}
+          limit={1}
+          renderItem={({ name }) => <Badge variant="outline">{name}</Badge>}
+          size="xs"
+          showMoreType="text"
+          className="mt-auto"
+        />
       </div>
     </Card>
   )

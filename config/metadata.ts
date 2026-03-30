@@ -12,8 +12,8 @@ export const metadataConfig: Metadata = {
     images: { url: getOpenGraphImageUrl({}), width: 1200, height: 630 },
   },
   twitter: {
-    site: "@dirstarter",
-    creator: "@piotrkulpinski",
+    site: "@golfsimgeek",
+    creator: "@golfsimgeek",
     card: "summary_large_image",
   },
   alternates: {

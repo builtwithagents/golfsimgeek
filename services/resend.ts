@@ -1,7 +1,16 @@
 import { type CreateContactOptions, Resend } from "resend"
 import { env } from "~/env"
 
-export const resend = new Resend(env.RESEND_API_KEY)
+let _resend: Resend | null = null
+
+export const resend = new Proxy({} as Resend, {
+  get(_, prop) {
+    if (!_resend) {
+      _resend = new Resend(env.RESEND_API_KEY ?? "")
+    }
+    return (_resend as any)[prop]
+  },
+})
 
 export const createResendContact = async (payload: CreateContactOptions) => {
   const { error, data } = await resend.contacts.create(payload)

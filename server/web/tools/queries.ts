@@ -120,6 +120,19 @@ export const countSubmittedTools = async ({ where, ...args }: Prisma.ToolCountAr
   })
 }
 
+export const findMobileTools = async () => {
+  "use cache"
+
+  cacheTag("tools", "mobile-tools")
+  cacheLife("infinite")
+
+  return db.tool.findMany({
+    where: { status: ToolStatus.Published, mobileConfirmed: true },
+    orderBy: [{ tierPriority: "asc" }, { publishedAt: "desc" }],
+    select: toolManyPayload,
+  })
+}
+
 export const findTool = async ({ where, ...args }: Prisma.ToolFindFirstArgs = {}) => {
   "use cache"
 

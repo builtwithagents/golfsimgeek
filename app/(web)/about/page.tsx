@@ -46,30 +46,32 @@ export default async function () {
         <h2>What is {siteConfig.name}?</h2>
 
         <p>
-          <Link href="/">{siteConfig.name}</Link> is a community driven list of{" "}
-          <strong>tools and resources for developers</strong>. The goal of the site is to be your
-          first stop when researching for a new tool or resource to help you grow your business. It
-          will help you find alternatives and reviews of the products you already use.
-        </p>
-
-        <h2>About the Author</h2>
-
-        <p>
-          I'm a software developer and entrepreneur. I've been building web applications for over 15
-          years. I'm passionate about software development and I love to contribute to the community
-          in any way I can.
+          <Link href="/">{siteConfig.name}</Link> is the most comprehensive directory of{" "}
+          <strong>golf simulator venues, mobile rentals, and training studios</strong> in the United
+          States. Whether you are looking for a place to play a virtual round, rent a mobile
+          simulator for your next corporate event, or find a studio with tour-level technology for
+          serious practice, GolfSimGeek helps you find it.
         </p>
 
         <p>
-          I'm always looking for new projects to work on and new people to collaborate with. Feel
-          free to reach out to me if you have any questions or suggestions.
+          We also publish expert reviews, setup guides, cost breakdowns, and comparisons of the most
+          popular golf simulator brands including TrackMan, Foresight Sports, SkyTrak, Full Swing,
+          and more.
+        </p>
+
+        <h2>Our Mission</h2>
+
+        <p>
+          Indoor golf is booming, but finding the right simulator experience near you can be
+          surprisingly difficult. GolfSimGeek was built to solve that problem — giving golfers a
+          single place to discover, compare, and connect with golf simulator businesses across every
+          US state.
         </p>
 
         <p>
-          –{" "}
-          <ExternalLink href={linksConfig.author} doFollow>
-            Piotr Kulpinski
-          </ExternalLink>
+          For business owners, we offer free listings with the option to upgrade for premium
+          placement and verified badges. If you operate a golf simulator business,{" "}
+          <Link href="/submit">submit your listing</Link> today.
         </p>
       </Prose>
 

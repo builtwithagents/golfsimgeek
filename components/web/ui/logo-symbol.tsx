@@ -5,16 +5,48 @@ export const LogoSymbol = ({ className, ...props }: ComponentProps<"svg">) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 216 251"
+      viewBox="0 0 100 100"
       role="img"
-      aria-label="Logo"
-      className={cx("h-5 w-auto shrink-0 fill-current", className)}
+      aria-label="GolfSimGeek Logo"
+      className={cx("h-5 w-auto shrink-0", className)}
       {...props}
     >
-      <path
-        fill="currentColor"
-        d="M0 105v93c0 3.18.29 6.35 2.53 8.6l42.25 42.24C48.56 252.62 55 250.34 55 245v-93c0-3.19-1.05-6.36-3.31-8.62l-42.6-42.6C5.28 96.97-.02 99.64 0 105Zm74-49v132c0 3.18.79 6.14 3.03 8.38l42.25 42.24c3.77 3.78 10.72.73 10.72-4.62V103c0-3.18-1.55-6.5-3.8-8.76L83.56 51.62C79.8 47.84 74 50.66 74 56Zm74-50v155c0 3.18.84 6.6 3.08 8.85l54.99 54.98c3.78 3.78 9.93 1.02 9.93-4.33v-155c0-3.18-.76-6.1-3.01-8.36L157.62 1.77C153.84-2 148 .66 148 6Z"
-      />
+      {/* Golf ball */}
+      <circle cx="50" cy="50" r="45" fill="white" stroke="#d1d5db" strokeWidth="2.5" />
+
+      {/* Dimples - upper area */}
+      <circle cx="50" cy="20" r="3" fill="#e5e7eb" />
+      <circle cx="38" cy="25" r="2.5" fill="#e5e7eb" />
+      <circle cx="62" cy="25" r="2.5" fill="#e5e7eb" />
+      <circle cx="28" cy="34" r="2.5" fill="#e5e7eb" />
+      <circle cx="72" cy="34" r="2.5" fill="#e5e7eb" />
+
+      {/* Dimples - lower area */}
+      <circle cx="22" cy="62" r="2.5" fill="#e5e7eb" />
+      <circle cx="78" cy="62" r="2.5" fill="#e5e7eb" />
+      <circle cx="30" cy="74" r="2.5" fill="#e5e7eb" />
+      <circle cx="70" cy="74" r="2.5" fill="#e5e7eb" />
+      <circle cx="42" cy="82" r="2.5" fill="#e5e7eb" />
+      <circle cx="58" cy="82" r="2.5" fill="#e5e7eb" />
+      <circle cx="50" cy="86" r="2.5" fill="#e5e7eb" />
+
+      {/* Nerd glasses frames - left lens */}
+      <circle cx="34" cy="52" r="14" fill="rgba(219,234,254,0.4)" stroke="#111827" strokeWidth="5" />
+      {/* Nerd glasses frames - right lens */}
+      <circle cx="66" cy="52" r="14" fill="rgba(219,234,254,0.4)" stroke="#111827" strokeWidth="5" />
+      {/* Bridge between lenses */}
+      <line x1="48" y1="50" x2="52" y2="50" stroke="#111827" strokeWidth="4.5" strokeLinecap="round" />
+      {/* Left temple arm */}
+      <line x1="20" y1="46" x2="21" y2="47" stroke="#111827" strokeWidth="4" strokeLinecap="round" />
+      {/* Right temple arm */}
+      <line x1="80" y1="46" x2="79" y2="47" stroke="#111827" strokeWidth="4" strokeLinecap="round" />
+
+      {/* Eyes / pupils inside lenses */}
+      <circle cx="34" cy="53" r="4" fill="#111827" />
+      <circle cx="66" cy="53" r="4" fill="#111827" />
+      {/* Eye shine */}
+      <circle cx="36" cy="51" r="1.5" fill="white" />
+      <circle cx="68" cy="51" r="1.5" fill="white" />
     </svg>
   )
 }

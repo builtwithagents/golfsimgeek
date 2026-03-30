@@ -44,7 +44,7 @@
   },
   "subscribe": {
     "email_placeholder": "Enter your email",
-    "proof": "Join {count}+ other members",
+    "proof": "Join fellow golfers",
     "button_md": "Subscribe",
     "button_lg": "Join our community",
     "success_message": "You've been subscribed to the newsletter.",
