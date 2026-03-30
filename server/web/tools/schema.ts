@@ -10,6 +10,7 @@ import { createSortParser } from "~/lib/parsers"
 
 export const toolSort = createSortParser<Prisma.ToolOrderByWithRelationInput>({
   "publishedAt.desc": { label: "sort_latest", orderBy: { publishedAt: "desc" } },
+  "googleRating.desc": { label: "sort_rating", orderBy: { googleRating: { sort: "desc", nulls: "last" } } },
   "name.asc": { label: "sort_name_asc", orderBy: { name: "asc" } },
   "name.desc": { label: "sort_name_desc", orderBy: { name: "desc" } },
 })

@@ -24,7 +24,13 @@ export default async function (props: PageProps<"/">) {
       <Hero />
 
       <Suspense fallback={<ToolListingSkeleton />}>
-        <ToolQuery searchParams={props.searchParams} options={{ enableFilters: true }} ad="Tools" />
+        <ToolQuery
+          searchParams={props.searchParams}
+          overrideParams={{ sort: "googleRating.desc" }}
+          where={{ googleRating: { not: null } }}
+          options={{ enableFilters: true }}
+          ad="Tools"
+        />
       </Suspense>
 
       <StructuredData data={structuredData} />
