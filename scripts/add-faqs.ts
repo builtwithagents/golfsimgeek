@@ -1,7 +1,7 @@
 import { PrismaPg } from "@prisma/adapter-pg"
 import { PrismaClient } from "../.generated/prisma/client"
 
-const GOOGLE_API_KEY = "AIzaSyAuY8QnV55QCki4xbjWifeg06N02ahbb60"
+const GOOGLE_API_KEY = process.env.GOOGLE_PLACES_API_KEY ?? ""
 
 function pick<T>(arr: T[], seed: number): T {
   return arr[seed % arr.length]

@@ -1,7 +1,7 @@
 import { db } from "~/services/db"
 import { ToolStatus } from "~/.generated/prisma/client"
 
-const API_KEY = "AIzaSyAuY8QnV55QCki4xbjWifeg06N02ahbb60"
+const API_KEY = process.env.GOOGLE_PLACES_API_KEY ?? ""
 
 const QUERIES = [
   "mobile golf simulator rental",
