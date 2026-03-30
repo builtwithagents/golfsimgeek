@@ -49,7 +49,11 @@ const getData = cache(async ({ params }: Props) => {
 
   const t = await getTranslations()
   const url = `/${tool.slug}`
-  const title = `${tool.name}: ${tool.tagline}`
+  const year = new Date().getFullYear()
+  const hasLocation = tool.city && tool.stateCode
+  const title = hasLocation
+    ? `${tool.name} | Golf Simulator in ${tool.city}, ${tool.stateCode} (${year})`
+    : `${tool.name}: ${tool.tagline}`
   const description = tool.description ?? ""
 
   // Build LocalBusiness JSON-LD

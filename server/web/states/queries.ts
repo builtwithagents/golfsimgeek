@@ -1,6 +1,6 @@
 import { cacheLife, cacheTag } from "next/cache"
 import { ToolStatus } from "~/.generated/prisma/client"
-import { toolManyPayload } from "~/server/web/tools/payloads"
+import { toolCityPayload, toolManyPayload } from "~/server/web/tools/payloads"
 import { db } from "~/services/db"
 
 /** Get all states with listing counts, sorted by count desc */
@@ -67,6 +67,25 @@ export const findToolsForState = async (stateCode: string, regionSlug?: string) 
     select: toolManyPayload,
     orderBy: [{ tierPriority: "asc" }, { name: "asc" }],
   })
+}
+
+/** Get tools for a region with enriched data for SEO */
+export const findToolsForRegion = async (stateCode: string, regionSlug: string) => {
+  "use cache"
+  cacheTag("states", `state-${stateCode}`)
+  cacheLife("infinite")
+
+  const tools = await db.tool.findMany({
+    where: {
+      status: ToolStatus.Published,
+      stateCode,
+      regionSlug,
+    },
+    select: toolCityPayload,
+    orderBy: [{ tierPriority: "asc" }, { name: "asc" }],
+  })
+
+  return serializeTools(tools)
 }
 
 /** Get state info (name + count) by state code */
@@ -143,7 +162,15 @@ export const findCityBySlug = async (stateCode: string, citySlug: string) => {
   }
 }
 
-/** Get tools for a specific city */
+/** Serialize Decimal fields to plain numbers for client component compatibility */
+function serializeTools<T extends { googleRating?: unknown }>(tools: T[]) {
+  return tools.map(t => ({
+    ...t,
+    googleRating: t.googleRating != null ? Number(t.googleRating) : null,
+  }))
+}
+
+/** Get tools for a specific city (with enriched data for SEO) */
 export const findToolsForCity = async (stateCode: string, citySlug: string) => {
   "use cache"
   cacheTag("states", `state-${stateCode}`)
@@ -151,15 +178,45 @@ export const findToolsForCity = async (stateCode: string, citySlug: string) => {
 
   const cityName = citySlug.replace(/-/g, " ")
 
-  return db.tool.findMany({
+  const tools = await db.tool.findMany({
     where: {
       status: ToolStatus.Published,
       stateCode,
       city: { mode: "insensitive", equals: cityName },
     },
-    select: toolManyPayload,
+    select: toolCityPayload,
     orderBy: [{ tierPriority: "asc" }, { name: "asc" }],
   })
+
+  return serializeTools(tools)
+}
+
+/** Get nearby cities in the same state (excluding current city) */
+export const findNearbyCities = async (stateCode: string, excludeCity: string) => {
+  "use cache"
+  cacheTag("states", `state-${stateCode}`)
+  cacheLife("infinite")
+
+  const results = await db.tool.groupBy({
+    by: ["city"],
+    _count: { id: true },
+    where: {
+      status: ToolStatus.Published,
+      stateCode,
+      city: { not: null },
+      NOT: { city: { mode: "insensitive", equals: excludeCity } },
+    },
+    orderBy: { _count: { id: "desc" } },
+    take: 6,
+  })
+
+  return results
+    .filter(r => r.city && r._count.id >= 2)
+    .map(r => ({
+      city: r.city!,
+      citySlug: r.city!.toLowerCase().replace(/\s+/g, "-"),
+      count: r._count.id,
+    }))
 }
 
 /** Get region info by state code and region slug */
