@@ -15,7 +15,7 @@ const namespace = "pages.blog"
 
 // Get page data
 const getData = cache(async () => {
-  const posts = await findPosts({})
+  const posts = await findPosts({ take: 24 })
 
   const t = await getTranslations()
   const url = "/blog"

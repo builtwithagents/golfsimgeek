@@ -60,6 +60,7 @@ export default async function (props: PageProps<"/">) {
           where={{ googleRating: { not: null } }}
           options={{ enableFilters: true }}
           ad="Tools"
+          name="Top-Rated Golf Simulator Venues"
         />
       </Suspense>
 

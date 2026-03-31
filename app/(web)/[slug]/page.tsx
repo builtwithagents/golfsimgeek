@@ -35,7 +35,21 @@ import { getPageData, getPageMetadata } from "~/lib/pages"
 import { STATE_NAMES } from "~/config/states"
 import { generateCollectionPage } from "~/lib/structured-data"
 import { isToolPublished, hasToolTierCap } from "~/lib/tools"
-import { findTool, findToolSlugs } from "~/server/web/tools/queries"
+import { findTool, findNearbyTools, findToolSlugs } from "~/server/web/tools/queries"
+
+import { ToolList } from "~/components/web/tools/tool-list"
+import { Listing } from "~/components/web/listing"
+
+async function NearbyVenues({ slug, city, stateCode }: { slug: string; city: string; stateCode: string }) {
+  const tools = await findNearbyTools(slug, city, stateCode)
+  if (!tools.length) return null
+
+  return (
+    <Listing title={`More Golf Simulators in ${city}, ${stateCode}`}>
+      <ToolList tools={tools} />
+    </Listing>
+  )
+}
 
 type Props = PageProps<"/[slug]">
 
@@ -267,6 +281,13 @@ export default async function (props: Props) {
           </Suspense>
         </Section.Sidebar>
       </Section>
+
+      {/* Nearby venues in same city */}
+      {tool.city && tool.stateCode && (
+        <Suspense>
+          <NearbyVenues slug={tool.slug} city={tool.city} stateCode={tool.stateCode} />
+        </Suspense>
+      )}
 
       {/* Related */}
       <Suspense fallback={<RelatedToolsSkeleton tool={tool} />}>

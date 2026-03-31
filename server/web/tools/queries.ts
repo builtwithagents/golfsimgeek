@@ -105,6 +105,29 @@ export const findTools = async ({ where, orderBy, ...args }: Prisma.ToolFindMany
   return tools.map(serializeToolMany)
 }
 
+export const findNearbyTools = async (slug: string, city: string | null, stateCode: string | null) => {
+  "use cache"
+
+  cacheTag("tools")
+  cacheLife("infinite")
+
+  if (!city || !stateCode) return []
+
+  const tools = await db.tool.findMany({
+    where: {
+      status: ToolStatus.Published,
+      slug: { not: slug },
+      stateCode,
+      city: { mode: "insensitive", equals: city },
+    },
+    select: toolManyPayload,
+    orderBy: { googleRating: { sort: "desc", nulls: "last" } },
+    take: 3,
+  })
+
+  return tools.map(serializeToolMany)
+}
+
 export const findToolSlugs = async ({ where, orderBy, ...args }: Prisma.ToolFindManyArgs) => {
   "use cache"
 

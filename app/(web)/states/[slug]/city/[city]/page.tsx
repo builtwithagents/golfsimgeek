@@ -1,16 +1,16 @@
 import { MapPinIcon } from "lucide-react"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
-import { cache } from "react"
+import { cache, Suspense } from "react"
 import type { FAQPage, ItemList, Thing } from "schema-dts"
 import { H5 } from "~/components/common/heading"
 import { Link } from "~/components/common/link"
 import { StarRating } from "~/components/web/listings/star-rating"
 import { SimTechBadges } from "~/components/web/listings/sim-tech-badges"
 import { StructuredData } from "~/components/web/structured-data"
-import { ToolCard } from "~/components/web/tools/tool-card"
+import { ToolListingSkeleton } from "~/components/web/tools/tool-listing"
+import { ToolQuery } from "~/components/web/tools/tool-query"
 import { Breadcrumbs } from "~/components/web/ui/breadcrumbs"
-import { Grid } from "~/components/web/ui/grid"
 import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
 import { siteConfig } from "~/config/site"
 import { STATE_NAMES } from "~/config/states"
@@ -19,7 +19,7 @@ import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateCityFAQs, generateCityIntro, getTopPicks } from "~/lib/seo-content"
 import { findCityBySlug, findNearbyCities, findToolsForCity } from "~/server/web/states/queries"
 
-type Props = { params: Promise<{ slug: string; city: string }> }
+type Props = PageProps<"/states/[slug]/city/[city]">
 
 const getData = cache(async ({ params }: Props) => {
   const { slug, city: citySlug } = await params
@@ -103,7 +103,7 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
 }
 
 export default async function CityPage(props: Props) {
-  const { cityInfo, tools, stateName, metadata, breadcrumbs, structuredData, topPicks, intro, faqs, nearbyCities, slug } =
+  const { cityInfo, tools, stateName, stateCode, metadata, breadcrumbs, structuredData, topPicks, intro, faqs, nearbyCities, slug } =
     await getData(props)
 
   return (
@@ -155,16 +155,18 @@ export default async function CityPage(props: Props) {
         </section>
       )}
 
-      {/* All venues */}
+      {/* All venues — paginated */}
       <section className="flex flex-col gap-4">
         <h2 className="text-lg font-semibold">
           All Golf Simulators in {cityInfo.city} ({cityInfo.count})
         </h2>
-        <Grid>
-          {tools.map((tool, order) => (
-            <ToolCard key={tool.slug} tool={tool} style={{ order }} />
-          ))}
-        </Grid>
+
+        <Suspense fallback={<ToolListingSkeleton />}>
+          <ToolQuery
+            searchParams={props.searchParams}
+            where={{ stateCode, city: { mode: "insensitive", equals: cityInfo.city } }}
+          />
+        </Suspense>
       </section>
 
       {/* FAQ Section */}

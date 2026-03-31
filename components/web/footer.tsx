@@ -93,6 +93,7 @@ export const Footer = ({
           <NavLink href="/states">Simulator Locations</NavLink>
           <NavLink href="/mobile">Mobile Simulators</NavLink>
           <NavLink href="/simulators">Technology</NavLink>
+          <NavLink href="/tags">Tags</NavLink>
           <NavLink href="/blog">{t("navigation.blog")}</NavLink>
           <NavLink href="/about">{t("navigation.about")}</NavLink>
           {adsConfig.enabled && <NavLink href="/advertise">{t("navigation.advertise")}</NavLink>}

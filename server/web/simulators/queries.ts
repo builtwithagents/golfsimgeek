@@ -1,8 +1,15 @@
 import { cacheLife, cacheTag } from "next/cache"
+import type { Prisma } from "~/.generated/prisma/client"
 import { ToolStatus } from "~/.generated/prisma/client"
 import { simulatorTechs } from "~/config/simulator-tech"
-import { toolManyPayload } from "~/server/web/tools/payloads"
+import { toolManyPayload, type ToolMany } from "~/server/web/tools/payloads"
 import { db } from "~/services/db"
+
+type RawToolMany = Prisma.ToolGetPayload<{ select: typeof toolManyPayload }>
+const serialize = (t: RawToolMany): ToolMany => ({
+  ...t,
+  googleRating: t.googleRating !== null ? Number(t.googleRating) : null,
+})
 
 export const findToolsByTech = async (techSlug: string) => {
   "use cache"
@@ -17,7 +24,7 @@ export const findToolsByTech = async (techSlug: string) => {
   // Convert regex to simple search term
   const searchTerm = tech.slug === "gcquad" ? "GCQuad" : tech.shortName
 
-  return db.tool.findMany({
+  const tools = await db.tool.findMany({
     where: {
       status: ToolStatus.Published,
       content: { contains: searchTerm, mode: "insensitive" },
@@ -25,6 +32,8 @@ export const findToolsByTech = async (techSlug: string) => {
     select: toolManyPayload,
     orderBy: [{ tierPriority: "asc" }, { name: "asc" }],
   })
+
+  return tools.map(serialize)
 }
 
 export interface TechWithCount {
