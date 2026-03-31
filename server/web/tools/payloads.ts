@@ -64,6 +64,8 @@ export const toolManyPayload = {
   city: true,
   stateCode: true,
   priceRange: true,
+  googleRating: true,
+  reviewCount: true,
   categories: toolCategoriesPayload,
 } satisfies Prisma.ToolSelect
 
@@ -82,7 +84,9 @@ export const toolCityPayload = {
 } satisfies Prisma.ToolSelect
 
 export type ToolOne = Prisma.ToolGetPayload<{ select: typeof toolOnePayload }>
-export type ToolMany = Prisma.ToolGetPayload<{ select: typeof toolManyPayload }>
+export type ToolMany = Omit<Prisma.ToolGetPayload<{ select: typeof toolManyPayload }>, "googleRating"> & {
+  googleRating: number | null
+}
 export type ToolCity = Omit<Prisma.ToolGetPayload<{ select: typeof toolCityPayload }>, "googleRating"> & {
   googleRating: number | null
 }

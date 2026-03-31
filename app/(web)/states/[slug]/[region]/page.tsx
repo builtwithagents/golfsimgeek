@@ -13,6 +13,7 @@ import { Grid } from "~/components/web/ui/grid"
 import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
 import { siteConfig } from "~/config/site"
 import { STATE_NAMES } from "~/config/states"
+import type { OpenGraphParams } from "~/lib/opengraph"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateRegionFAQs, generateRegionIntro, getTopPicks } from "~/lib/seo-content"
 import { findRegionBySlug, findToolsForRegion } from "~/server/web/states/queries"
@@ -85,7 +86,8 @@ const getData = cache(async ({ params }: Props) => {
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => {
   const { url, metadata } = await getData(props)
-  return getPageMetadata({ url, metadata })
+  const ogImage: OpenGraphParams = { title: metadata.title as string, description: metadata.description as string }
+  return getPageMetadata({ url, metadata, ogImage })
 }
 
 export default async function RegionPage(props: Props) {

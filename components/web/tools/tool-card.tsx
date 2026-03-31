@@ -40,16 +40,30 @@ const ToolCard = ({ tool, ...props }: ToolCardProps) => {
           </CardDescription>
         )}
 
-        {(tool.city || tool.priceRange) && (
-          <p className="flex items-center gap-1 text-xs text-muted-foreground">
+        {(tool.googleRating !== null || tool.city || tool.priceRange) && (
+          <p className="flex items-center gap-1 text-xs text-muted-foreground flex-wrap">
+            {tool.googleRating !== null && tool.googleRating !== undefined && (
+              <>
+                <span className="text-yellow-500" aria-hidden="true">★</span>
+                <span aria-label={`${tool.googleRating.toFixed(1)} stars`}>
+                  {tool.googleRating.toFixed(1)}
+                </span>
+                {tool.reviewCount && (
+                  <span className="opacity-60">({tool.reviewCount})</span>
+                )}
+              </>
+            )}
+            {tool.googleRating !== null && tool.city && tool.stateCode && (
+              <span className="px-0.5">·</span>
+            )}
             {tool.city && tool.stateCode && (
               <>
                 <MapPinIcon className="size-3 shrink-0" aria-hidden="true" />
                 <span>{tool.city}, {tool.stateCode}</span>
               </>
             )}
-            {tool.city && tool.stateCode && tool.priceRange && (
-              <span className="px-1">·</span>
+            {(tool.city || tool.googleRating !== null) && tool.priceRange && (
+              <span className="px-0.5">·</span>
             )}
             {tool.priceRange && <span>{tool.priceRange}</span>}
           </p>

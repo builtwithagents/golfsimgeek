@@ -1,9 +1,15 @@
 import { getRandomElement } from "@primoui/utils"
 import { cacheLife, cacheTag } from "next/cache"
 import { type Prisma, ToolStatus } from "~/.generated/prisma/client"
-import { toolManyPayload, toolOnePayload } from "~/server/web/tools/payloads"
+import { toolManyPayload, toolOnePayload, type ToolMany } from "~/server/web/tools/payloads"
 import { toolSort, type ToolFilterParams } from "~/server/web/tools/schema"
 import { db } from "~/services/db"
+
+type RawToolMany = Prisma.ToolGetPayload<{ select: typeof toolManyPayload }>
+const serializeToolMany = (t: RawToolMany): ToolMany => ({
+  ...t,
+  googleRating: t.googleRating !== null ? Number(t.googleRating) : null,
+})
 
 export const searchTools = async (search: ToolFilterParams, where?: Prisma.ToolWhereInput) => {
   "use cache"
@@ -28,7 +34,7 @@ export const searchTools = async (search: ToolFilterParams, where?: Prisma.ToolW
     ]
   }
 
-  const [tools, total] = await db.$transaction([
+  const [rawTools, total] = await db.$transaction([
     db.tool.findMany({
       orderBy: toolSort.resolve(sort) ?? [{ tierPriority: "asc" }, { publishedAt: "desc" }],
       where: { ...whereQuery, ...where },
@@ -42,7 +48,7 @@ export const searchTools = async (search: ToolFilterParams, where?: Prisma.ToolW
     }),
   ])
 
-  return { tools, total, page, perPage }
+  return { tools: rawTools.map(serializeToolMany), total, page, perPage }
 }
 
 export const findRelatedTools = async ({
@@ -71,7 +77,7 @@ export const findRelatedTools = async ({
   const orderBy = getRandomElement(properties)
   const orderDir = getRandomElement(["asc", "desc"] as const)
 
-  return db.tool.findMany({
+  const tools = await db.tool.findMany({
     ...args,
     where: relatedWhereClause,
     select: toolManyPayload,
@@ -79,6 +85,8 @@ export const findRelatedTools = async ({
     take,
     skip,
   })
+
+  return tools.map(serializeToolMany)
 }
 
 export const findTools = async ({ where, orderBy, ...args }: Prisma.ToolFindManyArgs) => {
@@ -87,12 +95,14 @@ export const findTools = async ({ where, orderBy, ...args }: Prisma.ToolFindMany
   cacheTag("tools")
   cacheLife("infinite")
 
-  return db.tool.findMany({
+  const tools = await db.tool.findMany({
     ...args,
     where: { status: ToolStatus.Published, ...where },
     orderBy: orderBy ?? [{ tierPriority: "asc" }, { publishedAt: "desc" }],
     select: toolManyPayload,
   })
+
+  return tools.map(serializeToolMany)
 }
 
 export const findToolSlugs = async ({ where, orderBy, ...args }: Prisma.ToolFindManyArgs) => {
@@ -126,11 +136,13 @@ export const findMobileTools = async () => {
   cacheTag("tools", "mobile-tools")
   cacheLife("infinite")
 
-  return db.tool.findMany({
+  const tools = await db.tool.findMany({
     where: { status: ToolStatus.Published, mobileConfirmed: true },
     orderBy: [{ tierPriority: "asc" }, { publishedAt: "desc" }],
     select: toolManyPayload,
   })
+
+  return tools.map(serializeToolMany)
 }
 
 export const findTool = async ({ where, ...args }: Prisma.ToolFindFirstArgs = {}) => {

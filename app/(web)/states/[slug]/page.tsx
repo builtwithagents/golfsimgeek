@@ -10,6 +10,7 @@ import { ToolQuery } from "~/components/web/tools/tool-query"
 import { siteConfig } from "~/config/site"
 import { STATE_SEO_CONTENT } from "~/config/state-seo"
 import { STATE_NAMES } from "~/config/states"
+import type { OpenGraphParams } from "~/lib/opengraph"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import {
   findCitiesForState,
@@ -53,7 +54,8 @@ const getData = cache(async ({ params }: Props) => {
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => {
   const { url, metadata } = await getData(props)
-  return getPageMetadata({ url, metadata })
+  const ogImage: OpenGraphParams = { title: metadata.title as string, description: metadata.description as string }
+  return getPageMetadata({ url, metadata, ogImage })
 }
 
 export default async function StatePage(props: Props) {
