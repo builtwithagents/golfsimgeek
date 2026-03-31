@@ -32,6 +32,7 @@ import { Tag } from "~/components/web/ui/tag"
 import { VerifiedBadge } from "~/components/web/verified-badge"
 import type { OpenGraphParams } from "~/lib/opengraph"
 import { getPageData, getPageMetadata } from "~/lib/pages"
+import { STATE_NAMES } from "~/config/states"
 import { generateCollectionPage } from "~/lib/structured-data"
 import { isToolPublished, hasToolTierCap } from "~/lib/tools"
 import { findTool, findToolSlugs } from "~/server/web/tools/queries"
@@ -104,9 +105,15 @@ const getData = cache(async ({ params }: Props) => {
     }
   })()
 
+  const stateSlug = tool.stateCode?.toLowerCase()
+  const citySlug = tool.city?.toLowerCase().replace(/\s+/g, "-")
+  const stateName = tool.stateCode ? STATE_NAMES[tool.stateCode] : undefined
+
   const data = getPageData(url, title, description, {
     breadcrumbs: [
       { url: "/", title: t("navigation.tools") },
+      ...(stateSlug && stateName ? [{ url: `/states/${stateSlug}`, title: stateName }] : []),
+      ...(stateSlug && citySlug && tool.city ? [{ url: `/states/${stateSlug}/city/${citySlug}`, title: tool.city }] : []),
       { url, title: tool.name },
     ],
     structuredData: [generateCollectionPage(url, title, description), localBusiness, ...(faqSchema ? [faqSchema] : [])],

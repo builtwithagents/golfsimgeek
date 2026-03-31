@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { siteConfig } from "~/config/site"
 import { findCategorySlugs } from "~/server/web/categories/queries"
 import { findPostSlugs } from "~/server/web/posts/queries"
-import { findStatesWithCounts, findCitiesForState } from "~/server/web/states/queries"
+import { findStatesWithCounts, findCitiesForState, findRegionsForState } from "~/server/web/states/queries"
 import { findTagSlugs } from "~/server/web/tags/queries"
 import { findToolSlugs } from "~/server/web/tools/queries"
 
@@ -144,6 +144,16 @@ export async function GET(_: Request, { params }: RouteContext<"/sitemap/[id]">)
         for (const city of cities) {
           entries.push({
             url: `${siteUrl}/states/${state.slug}/city/${city.citySlug}`,
+            changeFrequency: "weekly",
+            priority: 0.5,
+          })
+        }
+
+        // Region pages for each state
+        const regions = await findRegionsForState(state.stateCode)
+        for (const region of regions) {
+          entries.push({
+            url: `${siteUrl}/states/${state.slug}/${region.regionSlug}`,
             changeFrequency: "weekly",
             priority: 0.5,
           })

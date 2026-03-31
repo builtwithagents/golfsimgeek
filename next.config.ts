@@ -24,7 +24,7 @@ const nextConfig: NextConfig = {
   },
 
   images: {
-    unoptimized: true,
+    formats: ["image/avif", "image/webp"],
     remotePatterns: [
       (function () {
         const { S3_PUBLIC_URL, S3_BUCKET, S3_REGION } = process.env

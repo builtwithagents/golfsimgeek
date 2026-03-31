@@ -2,11 +2,11 @@ import { MapPinIcon } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { cache } from "react"
-import { ToolCard } from "~/components/web/tools/tool-card"
+import { cache, Suspense } from "react"
 import { Breadcrumbs } from "~/components/web/ui/breadcrumbs"
-import { Grid } from "~/components/web/ui/grid"
 import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
+import { ToolListingSkeleton } from "~/components/web/tools/tool-listing"
+import { ToolQuery } from "~/components/web/tools/tool-query"
 import { siteConfig } from "~/config/site"
 import { STATE_SEO_CONTENT } from "~/config/state-seo"
 import { STATE_NAMES } from "~/config/states"
@@ -15,10 +15,9 @@ import {
   findCitiesForState,
   findRegionsForState,
   findStateByCode,
-  findToolsForState,
 } from "~/server/web/states/queries"
 
-type Props = { params: Promise<{ slug: string }> }
+type Props = PageProps<"/states/[slug]">
 
 const getData = cache(async ({ params }: Props) => {
   const { slug } = await params
@@ -30,9 +29,8 @@ const getData = cache(async ({ params }: Props) => {
   const state = await findStateByCode(stateCode)
   if (!state) notFound()
 
-  const [regions, tools, cities] = await Promise.all([
+  const [regions, cities] = await Promise.all([
     findRegionsForState(stateCode),
-    findToolsForState(stateCode),
     findCitiesForState(stateCode),
   ])
 
@@ -50,7 +48,7 @@ const getData = cache(async ({ params }: Props) => {
     ],
   })
 
-  return { state, regions, tools, cities, seo, ...data }
+  return { state, regions, cities, seo, ...data }
 })
 
 export const generateMetadata = async (props: Props): Promise<Metadata> => {
@@ -59,7 +57,8 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
 }
 
 export default async function StatePage(props: Props) {
-  const { state, regions, tools, cities, metadata, breadcrumbs } = await getData(props)
+  const { state, regions, cities, metadata, breadcrumbs } = await getData(props)
+  const stateCode = state.stateCode
 
   return (
     <>
@@ -118,16 +117,19 @@ export default async function StatePage(props: Props) {
         </section>
       )}
 
-      {/* All listings */}
+      {/* All listings — paginated */}
       <section className="flex flex-col gap-4">
         <h2 className="text-lg font-semibold">
           All Golf Simulators in {state.stateName} ({state.count})
         </h2>
-        <Grid>
-          {tools.map((tool, order) => (
-            <ToolCard key={tool.slug} tool={tool} style={{ order }} />
-          ))}
-        </Grid>
+
+        <Suspense fallback={<ToolListingSkeleton />}>
+          <ToolQuery
+            searchParams={props.searchParams}
+            where={{ stateCode }}
+            options={{ enableFilters: true }}
+          />
+        </Suspense>
       </section>
     </>
   )

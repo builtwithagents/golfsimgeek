@@ -61,6 +61,9 @@ export const toolManyPayload = {
   publishedAt: true,
   updatedAt: true,
   ownerId: true,
+  city: true,
+  stateCode: true,
+  priceRange: true,
   categories: toolCategoriesPayload,
 } satisfies Prisma.ToolSelect
 

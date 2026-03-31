@@ -4,6 +4,7 @@ import { getFormatter, getTranslations } from "next-intl/server"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import { cache } from "react"
+import { Link } from "~/components/common/link"
 import { extractHeadingsFromMarkdown, Markdown } from "~/components/web/markdown"
 import { Nav } from "~/components/web/nav"
 import { PostPreviewAlert } from "~/components/web/posts/post-preview-alert"
@@ -14,9 +15,17 @@ import { Breadcrumbs } from "~/components/web/ui/breadcrumbs"
 import { Intro, IntroDescription, IntroTitle } from "~/components/web/ui/intro"
 import { Section } from "~/components/web/ui/section"
 import { blogConfig } from "~/config/blog"
+import { STATE_NAMES } from "~/config/states"
 import { getPageData, getPageMetadata } from "~/lib/pages"
 import { generateArticle } from "~/lib/structured-data"
 import { findPost, findPostSlugs } from "~/server/web/posts/queries"
+
+/** Scan post content for state name mentions and return matching state slugs */
+function extractMentionedStates(content: string) {
+  return Object.entries(STATE_NAMES)
+    .filter(([, name]) => content.includes(name))
+    .map(([code, name]) => ({ stateCode: code, stateName: name, slug: code.toLowerCase() }))
+}
 
 type Props = PageProps<"/blog/[slug]">
 
@@ -62,6 +71,7 @@ export const generateMetadata = async (props: Props): Promise<Metadata> => {
 
 export default async function (props: Props) {
   const { post, breadcrumbs, structuredData } = await getData(props)
+  const mentionedStates = extractMentionedStates(post.content ?? "")
   const t = await getTranslations()
   const format = await getFormatter()
 
@@ -132,6 +142,40 @@ export default async function (props: Props) {
           <Nav title={post.title} className="self-start" />
         </>
       )}
+
+      {/* State cross-links */}
+      <section className="border-t pt-8 flex flex-col gap-4">
+        <h2 className="text-base font-semibold">Find Golf Simulators Near You</h2>
+
+        {mentionedStates.length > 0 ? (
+          <>
+            <p className="text-sm text-muted-foreground">Browse venues in states mentioned in this article:</p>
+            <div className="flex flex-wrap gap-2">
+              {mentionedStates.map(s => (
+                <Link
+                  key={s.stateCode}
+                  href={`/states/${s.slug}`}
+                  className="inline-flex items-center rounded-md border px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent"
+                >
+                  {s.stateName}
+                </Link>
+              ))}
+            </div>
+          </>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            Explore our full directory of golf simulator venues{" "}
+            <Link href="/states" className="underline underline-offset-4 hover:text-foreground">
+              by state
+            </Link>{" "}
+            or{" "}
+            <Link href="/" className="underline underline-offset-4 hover:text-foreground">
+              browse top-rated venues
+            </Link>{" "}
+            near you.
+          </p>
+        )}
+      </section>
 
       <StructuredData data={structuredData} />
     </>

@@ -1,5 +1,6 @@
 "use client"
 
+import { MapPinIcon } from "lucide-react"
 import type { ComponentProps } from "react"
 import { Badge } from "~/components/common/badge"
 import { Card, CardDescription, CardHeader } from "~/components/common/card"
@@ -37,6 +38,21 @@ const ToolCard = ({ tool, ...props }: ToolCardProps) => {
           <CardDescription className="line-clamp-3">
             {tool.description || tool.tagline}
           </CardDescription>
+        )}
+
+        {(tool.city || tool.priceRange) && (
+          <p className="flex items-center gap-1 text-xs text-muted-foreground">
+            {tool.city && tool.stateCode && (
+              <>
+                <MapPinIcon className="size-3 shrink-0" aria-hidden="true" />
+                <span>{tool.city}, {tool.stateCode}</span>
+              </>
+            )}
+            {tool.city && tool.stateCode && tool.priceRange && (
+              <span className="px-1">·</span>
+            )}
+            {tool.priceRange && <span>{tool.priceRange}</span>}
+          </p>
         )}
 
         <ShowMore
