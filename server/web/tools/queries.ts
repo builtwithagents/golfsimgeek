@@ -113,7 +113,8 @@ export const findNearbyTools = async (slug: string, city: string | null, stateCo
 
   if (!city || !stateCode) return []
 
-  const tools = await db.tool.findMany({
+  // First try same city
+  const sameCity = await db.tool.findMany({
     where: {
       status: ToolStatus.Published,
       slug: { not: slug },
@@ -125,7 +126,22 @@ export const findNearbyTools = async (slug: string, city: string | null, stateCo
     take: 3,
   })
 
-  return tools.map(serializeToolMany)
+  if (sameCity.length >= 3) return sameCity.map(serializeToolMany)
+
+  // Fall back to same state to fill remaining slots
+  const existingSlugs = [slug, ...sameCity.map(t => t.slug)]
+  const sameState = await db.tool.findMany({
+    where: {
+      status: ToolStatus.Published,
+      slug: { notIn: existingSlugs },
+      stateCode,
+    },
+    select: toolManyPayload,
+    orderBy: { googleRating: { sort: "desc", nulls: "last" } },
+    take: 3 - sameCity.length,
+  })
+
+  return [...sameCity, ...sameState].map(serializeToolMany)
 }
 
 export const findToolSlugs = async ({ where, orderBy, ...args }: Prisma.ToolFindManyArgs) => {
